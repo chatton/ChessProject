@@ -14,7 +14,7 @@ public class KingTest {
 
     @Test
     public void testKingPossiblePositions(){
-        ChessBoard board = new ChessBoard(8,8);
+        ChessBoard board = new ChessBoard(8);
         King king = new King(board, new Position(2,2), Colour.BLACK);
         Piece whiteRook = new Rook(board, new Position(2,3), Colour.WHITE);
         Piece blackRook = new Rook(board, new Position(3,2), Colour.BLACK);
@@ -33,4 +33,14 @@ public class KingTest {
         assertFalse(positions.contains(new Position(3,2))); // the position of an allied piece should not be in the list.
 
     }
+
+    @Test
+    public void testCornerCase(){
+        ChessBoard board = new ChessBoard(8);
+        King king = new King(board, new Position(0,0), Colour.BLACK);
+        board.setAt(new Position(0,0), king);
+        List<Position> positions = king.getPossiblePositions();
+        assertEquals("Expected size " + 3 + " but got " + positions.size(), 3, positions.size());
+    }
+
 }

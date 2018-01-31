@@ -2,6 +2,7 @@ package ie.gmit.sw.chess.board;
 
 import ie.gmit.sw.chess.board.pieces.Colour;
 import ie.gmit.sw.chess.board.pieces.Piece;
+import javafx.geometry.Pos;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.List;
@@ -9,15 +10,13 @@ import java.util.List;
 public class ChessBoard {
 
     private final Piece[][] board;
-    private final int rows;
-    private final int cols;
+    private final int size;
 
     private int turnNo;
 
-    public ChessBoard(int rows, int cols){
-        this.rows = rows;
-        this.cols = cols;
-        this.board = new Piece[rows][cols];
+    public ChessBoard(int size) {
+        this.size = size;
+        this.board = new Piece[size][size];
         this.turnNo = 1;
     }
 
@@ -29,16 +28,16 @@ public class ChessBoard {
      * @param pos the position in question
      * @return the Piece that occupies the position or null if empty.
      */
-    public Piece getAt(Position pos){
+    public Piece getAt(Position pos) {
         // TODO handle index out of bounds errors here. IndexOutOfBoundsException possible
         return board[pos.x()][pos.y()];
     }
 
     /**
-     * @param pos the position the new piece will be inserted into
+     * @param pos   the position the new piece will be inserted into
      * @param piece the piece that is to be inserted.
      */
-    public void setAt(Position pos, Piece piece){
+    public void setAt(Position pos, Piece piece) {
         board[pos.x()][pos.y()] = piece;
     }
 
@@ -46,7 +45,7 @@ public class ChessBoard {
      * @param pos the position in question.
      * @return true or false for if the position is unoccupied.
      */
-    public boolean posIsEmpty(Position pos){
+    public boolean posIsEmpty(Position pos) {
         return getAt(pos) == null;
     }
 
@@ -62,7 +61,7 @@ public class ChessBoard {
      * @param move
      * @return true or false for if the provided move is valid with the current board state.
      */
-    public boolean moveIsValid(Move move){
+    public boolean moveIsValid(Move move) {
         throw new NotImplementedException(); // TODO implement
     }
 
@@ -89,7 +88,19 @@ public class ChessBoard {
      * @param colour either BLACK or WHITE
      * @return all the non-null pieces of that colour.
      */
-    public List<Piece> getPieces(Colour colour){
+    public List<Piece> getPieces(Colour colour) {
         throw new NotImplementedException(); // TODO implement
+    }
+
+    public boolean isOnBoard(Position pos) {
+        return !(pos.x() < 0
+                || pos.y() < 0
+                || pos.y() >= size()
+                || pos.x() >= size());
+
+    }
+
+    public int size() {
+        return size;
     }
 }
