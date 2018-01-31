@@ -9,6 +9,5 @@ public class ChessController {
     @RequestMapping("/")
     public String index(){
         return "<h1>Hi lads, Cian first commit!, Majo here</h1>";
-        return "<h1>
     }
 }
