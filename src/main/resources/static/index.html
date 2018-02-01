@@ -1,14 +1,31 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <title>Chess App</title>
+    <meta charset="UTF-8">
+    <title>CHESS</title>
+
+    <style type="text/css">
+        canvas {
+            background: pink;
+            border: 5px solid black;
+        }
+    </style>
+
 </head>
 
-<body>
-<canvas id="canvas" width="800" height="800" style="border:1px solid #000000;">
-</canvas>
+<body onload = "draw()" bgcolor ="lightblue">
+<div style="text-align: center;">
+    <h1>Chess</h1>
+</div>
+<div style="text-align: center;">
+    <canvas id="Chess" height="504" width="504"></canvas>
+</div>
 
-<script src="script.js"></script>
+<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+<script src = "script.js"></script>
+
 </body>
+
 
 </html>
