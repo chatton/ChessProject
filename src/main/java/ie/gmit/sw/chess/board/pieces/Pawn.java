@@ -6,8 +6,8 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.List;
 
-public class Rook extends Piece {
-    public Rook(ChessBoard board, Position pos, Colour colour) {
+public class Pawn extends Piece {
+    public Pawn(ChessBoard board, Position pos, Colour colour) {
         super(board, pos, colour);
     }
 

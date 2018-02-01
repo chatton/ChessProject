@@ -2,7 +2,6 @@ package ie.gmit.sw.chess.board;
 
 import ie.gmit.sw.chess.board.pieces.Colour;
 import ie.gmit.sw.chess.board.pieces.Piece;
-import javafx.geometry.Pos;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.List;

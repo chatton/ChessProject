@@ -2,6 +2,7 @@ package ie.gmit.sw.chess.board.pieces;
 
 import ie.gmit.sw.chess.board.ChessBoard;
 import ie.gmit.sw.chess.board.Position;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.List;
 
@@ -13,6 +14,6 @@ public class Bishop extends Piece {
 
     @Override
     public List<Position> getPossiblePositions() {
-        return null;
+        throw new NotImplementedException();
     }
 }
