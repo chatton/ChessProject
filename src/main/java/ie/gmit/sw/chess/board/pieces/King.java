@@ -40,6 +40,10 @@ public class King extends Piece {
     }
 
     private void addIfValid(List<Position> positions, Position pos) {
+        if(!board.isOnBoard(pos)){
+            return;
+        }
+
         if (board.posIsEmpty(pos)) {
             positions.add(pos);
         } else {
