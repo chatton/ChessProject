@@ -38,6 +38,7 @@ public class ChessBoard {
      */
     public void setAt(Position pos, Piece piece) {
         board[pos.x()][pos.y()] = piece;
+        piece.setPosition(pos);
     }
 
     /**
