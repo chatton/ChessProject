@@ -8,8 +8,8 @@ import java.util.List;
 
 public class Bishop extends Piece {
 
-    public Bishop(ChessBoard board, Position pos, Colour colour) {
-        super(board, pos, colour);
+    public Bishop(ChessBoard board, Colour colour) {
+        super(board, colour);
     }
 
     @Override

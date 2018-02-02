@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Pawn extends Piece {
-    public Pawn(ChessBoard board, Position pos, Colour colour) {
-        super(board, pos, colour);
+    public Pawn(ChessBoard board,  Colour colour) {
+        super(board, colour);
     }
 
     @Override

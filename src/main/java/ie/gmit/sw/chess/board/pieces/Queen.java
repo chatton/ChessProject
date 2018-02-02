@@ -10,10 +10,12 @@ public class Queen extends Piece {
     private final Rook rook;
     private final Bishop bishop;
 
-    public Queen(ChessBoard board, Position pos, Colour colour) {
-        super(board, pos, colour);
-        this.rook = new Rook(board, pos, colour);
-        this.bishop = new Bishop(board, pos, colour);
+    public Queen(ChessBoard board, Colour colour) {
+        super(board, colour);
+        this.rook = new Rook(board, colour);
+        rook.setPosition(position);
+        this.bishop = new Bishop(board, colour);
+        this.bishop.setPosition(position);
     }
 
     @Override

@@ -11,9 +11,8 @@ public abstract class Piece {
     protected final Colour colour;
     protected Position position;
 
-    public Piece(ChessBoard board, Position pos, Colour colour) {
+    public Piece(ChessBoard board, Colour colour) {
         this.board = board;
-        this.position = pos;
         this.colour = colour;
     }
 

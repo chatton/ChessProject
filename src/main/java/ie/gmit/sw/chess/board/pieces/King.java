@@ -9,8 +9,8 @@ import java.util.List;
 
 public class King extends Piece {
 
-    public King(ChessBoard board, Position pos, Colour colour) {
-        super(board, pos, colour);
+    public King(ChessBoard board,  Colour colour) {
+        super(board, colour);
     }
 
     @Override
