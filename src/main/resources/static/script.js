@@ -65,7 +65,8 @@ canvas.addEventListener("click", function (e) {
         x: Math.floor(pos.x / GRID_SIZE),
         y: Math.floor(pos.y / GRID_SIZE)
     };
-    alert(mapToChess(boardPos.x, boardPos.y));
+    const chessNotation = mapToChess(boardPos.x, boardPos.y);
+    alert(board.positions[chessNotation] + " at " + chessNotation);
 });
 
 function isBlackSquare(x, y) {
