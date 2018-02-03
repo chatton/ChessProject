@@ -12,8 +12,8 @@ const board = {
         "A8": "bRook",
         "B1": "wKnight",
         "B2": "wPawn",
-        "B7": "bKnight",
-        "B8": "bPawn",
+        "B8": "bKnight",
+        "B7": "bPawn",
         "C1": "wBishop",
         "C2": "wPawn",
         "C7": "bPawn",
@@ -28,12 +28,12 @@ const board = {
         "E8": "bQueen",
         "F1": "wBishop",
         "F2": "wPawn",
-        "F7": "bBishop",
-        "F8": "bPawn",
+        "F7": "bPawn",
+        "F8": "bBishop",
         "G1": "wKnight",
         "G2": "wPawn",
-        "G7": "bKnight",
-        "G8": "bPawn",
+        "G7": "bPawn",
+        "G8": "bKnight",
         "H1": "wRook",
         "H2": "wPawn",
         "H7": "bPawn",
@@ -88,7 +88,7 @@ function draw() {
 // fills up the square of the chess board with either black or white.
 function drawSquare(colour, x, y) {
     const image = new Image();
-    const currentChessPosition = mapToChess(x, y); // ex. 0,0 -> H1
+    const currentChessPosition = mapToChess(x, y); // ex. 0,0 -> A8
     // the name of the image from the response matches the name of the image files.
     image.src = "images/" + board.positions[currentChessPosition] + ".png";
     image.onload = () => {
