@@ -45,6 +45,15 @@ public class Pawn extends Piece {
     }
 
     private void addIfFrontPositionValid(List<Position> positions, Position pos) {
+        // white row
+        if(position.y() == board.size() - 1){ // white pawns are in the second last row
+
+        } else if (position.y() == 1){ // back row
+
+        }
+        if (!board.isOnBoard(pos)) {
+            return;
+        }
         if (!board.isOnBoard(pos)) {
             return;
         }
