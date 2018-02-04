@@ -2,6 +2,7 @@ package ie.gmit.sw.chess.board;
 
 import ie.gmit.sw.chess.board.pieces.Colour;
 import ie.gmit.sw.chess.board.pieces.Piece;
+import ie.gmit.sw.utilities.Util;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.List;
@@ -32,6 +33,10 @@ public class ChessBoard {
         return board[pos.x()][pos.y()];
     }
 
+    public Piece getAt(String chessNotation) {
+        return getAt(Util.stringToPosition(chessNotation, size));
+    }
+
     /**
      * @param pos   the position the new piece will be inserted into
      * @param piece the piece that is to be inserted.
@@ -41,12 +46,20 @@ public class ChessBoard {
         piece.setPosition(pos);
     }
 
+    public void setAt(String chessNotation, Piece piece) {
+        setAt(Util.stringToPosition(chessNotation, size), piece);
+    }
+
     /**
      * @param pos the position in question.
      * @return true or false for if the position is unoccupied.
      */
     public boolean posIsEmpty(Position pos) {
         return getAt(pos) == null;
+    }
+
+    public boolean posIsEmpty(String chessNotation) {
+        return posIsEmpty(Util.stringToPosition(chessNotation, size));
     }
 
     /**
