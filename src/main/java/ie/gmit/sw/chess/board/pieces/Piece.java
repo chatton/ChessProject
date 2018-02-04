@@ -20,6 +20,10 @@ public abstract class Piece {
         this.position = newPos;
     }
 
+    public Colour getColour(){
+        return colour;
+    }
+
     public abstract List<Position> getPossiblePositions();
 
 }

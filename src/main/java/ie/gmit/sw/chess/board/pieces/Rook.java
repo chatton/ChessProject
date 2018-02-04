@@ -14,8 +14,20 @@ public class Rook extends Piece {
     public List<Position> getPossiblePositions() {
         List<Position> validPositions = new ArrayList<>();
         //loop to traverse every possible position in a straight line
+        // x never changes so we don't need to add it in the loop condition.
+
+
         int x = position.x();
         int y = position.y();
+        //int y2;
+        // try a re-write with a for loop and see how it looks
+        for(y = position.y() - 1; y < board.size(); y-- ){
+            if (checkPositions(validPositions, x, y)) {
+                continue;
+            }
+            break;
+        }
+
         do {
 
             y--;
@@ -23,7 +35,7 @@ public class Rook extends Piece {
                 continue;
             }
             break; // there was a piece blocking this direction
-        } while (x < board.size() && y < board.size()); // until we hit the bottom right corner
+        } while (y < board.size()); // until we hit the bottom
 
         x = position.x();
         y = position.y();

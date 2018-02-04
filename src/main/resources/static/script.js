@@ -77,10 +77,10 @@ function draw() {
     for (let x = 0; x < BOARD_SIZE; x++) {
         for (let y = 0; y < BOARD_SIZE; y++) {
             if (isBlackSquare(x, y)) {
-                drawSquare("black", x, y);
+                drawSquare("white", x, y);
             }
             else {
-                drawSquare("white", x, y)
+                drawSquare("black", x, y)
             }
         }
     }

@@ -5,6 +5,7 @@ import ie.gmit.sw.chess.board.pieces.Piece;
 import ie.gmit.sw.utilities.Util;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ChessBoard {
@@ -75,8 +76,28 @@ public class ChessBoard {
      * @return true or false for if the provided move is valid with the current board state.
      */
     public boolean moveIsValid(Move move) {
-        throw new NotImplementedException(); // TODO implement
+
+        /*
+        The move object represents 2 positions on the board. The piece at move.from()
+        should be repositioned to move.to(), we need to confirm the move is valid before
+        we mess with the board.
+         */
+
+        // get the piece that we are going to move.
+        Piece targetPiece = getAt(move.from());
+        if (targetPiece == null) { // empty position
+            // invalid because the user tried to move from an empty piece to another piece. (not a legal move)
+            return false; // it's not a valid move because it's not actually moving a piece.
+        }
+        // it is a piece we want to move.
+        Position destination = move.to(); // the place we will move the piece to.
+        List<Position> possibleMoves = targetPiece.getPossiblePositions(); // depends on the piece type what these are.
+        // the move is valid if and only if the piece can actually move there. Otherwise it's invalid.
+        boolean positionIsValid = possibleMoves.contains(destination); // the piece can go to the destination. i.e. it is a legal move.
+        return positionIsValid; // true/false
+
     }
+
 
     /**
      * Making a move will update the piece at the from position and move it to the
@@ -86,14 +107,26 @@ public class ChessBoard {
      * @param move the move that will update the board state.
      */
     public void makeMove(Move move) {
+        // ttry this one. Check if the move is valid using that method,
+        // then update the board - so put the piece at move.from() into move.to()
+        // then delete this comment!!!!!!!
         throw new NotImplementedException(); // TODO implement
     }
 
     /**
-     * @return a list of all the non-null pieces in the game.
+     * @return a list of all the non-null pieces in the game. Includes black and white pieces.
      */
     public List<Piece> getPieces() {
-        throw new NotImplementedException(); // TODO implement
+        List<Piece> allPieces = new ArrayList<>();
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                Piece piece = board[i][j];
+                if (piece != null) {
+                    allPieces.add(piece);
+                }
+            }
+        }
+        return allPieces;
     }
 
 
@@ -102,6 +135,7 @@ public class ChessBoard {
      * @return all the non-null pieces of that colour.
      */
     public List<Piece> getPieces(Colour colour) {
+        // same but only of the colour provided! if piece.getColour() == colour
         throw new NotImplementedException(); // TODO implement
     }
 
