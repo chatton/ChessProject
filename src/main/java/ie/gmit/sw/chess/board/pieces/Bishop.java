@@ -9,6 +9,7 @@ import java.util.List;
 public class Bishop extends Piece {
 
     public Bishop(ChessBoard board, Colour colour) {
+
         super(board, colour);
     }
 
@@ -20,8 +21,8 @@ public class Bishop extends Piece {
         int x = position.x();
         int y = position.y();
         do {
-            x++; // x-- // x++ // x--
-            y++; // y++ // y-- // y--
+            x++;
+            y++;
             if (checkPositions(validPositions, x, y)) {
                 continue;
             }
@@ -31,8 +32,8 @@ public class Bishop extends Piece {
         x = position.x();
         y = position.y();
         do {
-            x--;  // x++ // x--
-            y++;  // y-- // y--
+            x--;
+            y++;
             if (checkPositions(validPositions, x, y)) {
                 continue;
             }
@@ -42,8 +43,8 @@ public class Bishop extends Piece {
         x = position.x();
         y = position.y();
         do {
-            x++;  // x--
-            y--;  // y--
+            x++;
+            y--;
             if (checkPositions(validPositions, x, y)) {
                 continue;
             }
