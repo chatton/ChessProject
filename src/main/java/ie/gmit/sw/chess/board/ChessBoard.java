@@ -82,19 +82,16 @@ public class ChessBoard {
         should be repositioned to move.to(), we need to confirm the move is valid before
         we mess with the board.
          */
-
-        // get the piece that we are going to move.
-        Piece targetPiece = getAt(move.from());
-        if (targetPiece == null) { // empty position
-            // invalid because the user tried to move from an empty piece to another piece. (not a legal move)
+        // invalid because the user tried to move from an empty piece to another piece. (not a legal move)
+        if(posIsEmpty(move.from())){
             return false; // it's not a valid move because it's not actually moving a piece.
         }
+        // get the piece that we are going to move.
+        Piece targetPiece = getAt(move.from());
         // it is a piece we want to move.
-        Position destination = move.to(); // the place we will move the piece to.
         List<Position> possibleMoves = targetPiece.getPossiblePositions(); // depends on the piece type what these are.
         // the move is valid if and only if the piece can actually move there. Otherwise it's invalid.
-        boolean positionIsValid = possibleMoves.contains(destination); // the piece can go to the destination. i.e. it is a legal move.
-        return positionIsValid; // true/false
+        return possibleMoves.contains(move.to()); // true if the destination is in the piece's list of valid positions.
 
     }
 
@@ -107,10 +104,20 @@ public class ChessBoard {
      * @param move the move that will update the board state.
      */
     public void makeMove(Move move) {
-        // ttry this one. Check if the move is valid using that method,
-        // then update the board - so put the piece at move.from() into move.to()
-        // then delete this comment!!!!!!!
-        throw new NotImplementedException(); // TODO implement
+        // 1. check if the move is valid
+        if(!moveIsValid(move)){
+            // 2. if not, throw exception, otherwise, perform movement.
+            throw  new IllegalArgumentException("Provided an invalid move.");
+        }
+        // 3. get the piece we want to move.
+        Piece piece = getAt(move.from());
+
+        // 4. reposition it and the new position
+        setAt(move.to(), piece);
+
+        // 5, ned to empty the original position so it's now free for other pieces.
+        setAt(move.from(), null); // null means an empty spot
+
     }
 
     /**
