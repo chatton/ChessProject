@@ -13,6 +13,8 @@ public class Bishop extends Piece {
         super(board, colour);
     }
 
+
+
     @Override
     public List<Position> getPossiblePositions() {
         List<Position> validPositions = new ArrayList<>();

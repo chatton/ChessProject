@@ -1,7 +1,6 @@
 package ie.gmit.sw.chess.board;
 
 import ie.gmit.sw.chess.board.pieces.*;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class ChessFactory {
 

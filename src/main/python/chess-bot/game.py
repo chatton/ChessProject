@@ -14,7 +14,7 @@ class Board:
 
     def pos_on_board(self, pos):
         x, y = pos
-        return x > 0 < 8 and y > 0 < 8
+        return 0 < x < 8 and 0 < y < 8
 
     def pos_is_empty(self, pos):
         return self.get_piece(pos) is None

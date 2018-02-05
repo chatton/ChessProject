@@ -16,12 +16,21 @@ public abstract class Piece {
         this.colour = colour;
     }
 
+
+    public String getName(){
+        return "bKnight";
+    }
+
     public void setPosition(Position newPos) {
         this.position = newPos;
     }
 
-    public Colour getColour(){
+    public Colour getColour() {
         return colour;
+    }
+
+    public Position getPosition() {
+        return position;
     }
 
     public abstract List<Position> getPossiblePositions();
