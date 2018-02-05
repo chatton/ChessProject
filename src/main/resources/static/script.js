@@ -38,7 +38,7 @@ canvas.addEventListener("click", function (e) {
     alert(board.positions[chessNotation] + " at " + chessNotation);
 });
 
-function isBlackSquare(x, y) {
+function isWhiteSquare(x, y) {
     return x % 2 === y % 2;
 }
 
@@ -46,7 +46,7 @@ function draw() {
     for (let x = 0; x < BOARD_SIZE; x++) {
         for (let y = 0; y < BOARD_SIZE; y++) {
             if (shouldraw) {
-                if (isBlackSquare(x, y)) {
+                if (isWhiteSquare(x, y)) {
                     drawSquare("white", x, y);
                 }
                 else {
