@@ -1,16 +1,49 @@
 from enum import Enum
-from util import new_pos
+from util import new_pos, pos_to_str
 
 class Colour(Enum):
     WHITE = "white"
     BLACK = "black"
 
-class Pawn:
+class Piece:
+
+    def __init__(self):
+        self.name = "Piece"
+        self.pos = -1,-1
+        self.colour = Colour.BLACK
+
+    @property
+    def moves(self):
+        return []
+
+    def __eq__(self, other):
+        return (
+            other.pos == self.pos 
+            and other.name == self.name 
+            and other.colour == self.colour
+        )
+
+    def __iter__(self):
+        return iter(self.moves)
+
+    def __hash__(self):
+        x,y = self.pos
+        return hash(self.colour) + x ^ y
+
+    def __str__(self):
+        return (
+            str(self.colour).split(".")[1].capitalize() + " "  + 
+            self.name + " at " + pos_to_str(self.pos) + " - legal moves: " +
+            str(list(map(pos_to_str, self.moves)))
+        )
+
+class Pawn(Piece):
     def __init__(self, board, colour):
         self.board = board
         self.colour = colour
         self.pos = None
         self.value = 100
+        self.name = "Pawn"
 
     def _front_pos_valid(self, pos):
         return self.board.pos_on_board(pos) and self.board.pos_is_empty(pos)
@@ -19,7 +52,7 @@ class Pawn:
         if not self.board.pos_on_board(pos):
             return False
 
-        if not self.board.pos_is_empty(pos):
+        if self.board.pos_is_empty(pos):
             return False
 
         piece = self.board.get_piece(pos)
@@ -51,12 +84,13 @@ class Pawn:
         return valid_positions
         
 
-class Rook:
+class Rook(Piece):
     def __init__(self, board, colour):
         self.board = board
         self.colour = colour
         self.pos = None
         self.value = 500
+        self.name = "Rook"
     
     @property
     def moves(self):
@@ -118,14 +152,17 @@ class Rook:
         return valid_positions
 
 
-class Knight:
+class Knight(Piece):
     def __init__(self, board, colour):
         self.board = board
         self.colour = colour
         self.value = 320
         self.pos = None
+        self.name = "Knight"
 
     def _valid_pos(self, pos):
+        if not pos:
+            return False
         if not self.board.pos_on_board(pos):
             return False
         if self.board.pos_is_empty(pos):
@@ -148,14 +185,17 @@ class Knight:
         return [pos for pos in positions if self._valid_pos(pos)]
 
 
-class King:
+class King(Piece):
     def __init__(self, board, colour):
         self.board = board
         self.colour = colour
         self.pos = None
         self.value = 20000
+        self.name = "King"
 
     def _valid_pos(self, pos):
+        if not pos:
+            return False
         if not self.board.pos_on_board(pos):
             return False
         if self.board.pos_is_empty(pos):
@@ -178,12 +218,13 @@ class King:
 
         return [pos for pos in positions if self._valid_pos(pos)]
 
-class Queen:
+class Queen(Piece):
     def __init__(self, board, colour):
         self.board = board
         self.colour = colour
         self.pos = None
         self.value = 900
+        self.name = "Queen"
 
     @property
     def moves(self):
@@ -194,17 +235,17 @@ class Queen:
         return bishop.moves + rook.moves
 
 
-class Bishop:
+class Bishop(Piece):
     def __init__(self, board, colour):
         self.board = board
         self.colour = colour
         self.pos = None
         self.value = 320
+        self.name = "Bishop"
 
     @property
     def moves(self):
         valid_positions = []
-
         row, col = self.pos
 
         # down and right
@@ -270,3 +311,21 @@ class Bishop:
             break
 
         return valid_positions
+
+# a mapping of the piece names as given in the response to which 
+# python classes and colours they correspond to.
+
+piece_map = {
+    "wPawn" : (Pawn, Colour.WHITE),
+    "wRook" : (Rook, Colour.WHITE),
+    "wBishop" : (Bishop, Colour.WHITE),
+    "wKing" : (King, Colour.WHITE),
+    "wQueen" : (Queen, Colour.WHITE),
+    "wKnight" : (Knight, Colour.WHITE),
+    "bPawn" : (Pawn, Colour.BLACK),
+    "bRook" : (Rook, Colour.BLACK),
+    "bBishop" : (Bishop, Colour.BLACK),
+    "bKing" : (King, Colour.BLACK),
+    "bQueen" : (Queen, Colour.BLACK),
+    "bKnight" : (Knight, Colour.BLACK)
+}
