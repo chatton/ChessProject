@@ -5,6 +5,11 @@ class Colour(Enum):
     WHITE = "white"
     BLACK = "black"
 
+class Move:
+    def __init__(self, origin, dest):
+        self.origin = pos_to_str(origin)
+        self.dest = pos_to_str(dest)
+
 class Piece:
 
     def __init__(self):
@@ -78,9 +83,9 @@ class Pawn(Piece):
             ]
 
         if self._front_pos_valid(pos_in_front):
-            valid_positions.append(pos_in_front)
+            valid_positions.append(Move(self.pos, pos_in_front))
 
-        valid_positions.extend([pos for pos in diagonals if self._diagonal_valid(pos)])
+        valid_positions.extend([Move(self.pos, pos) for pos in diagonals if self._diagonal_valid(pos)])
         return valid_positions
         
 
@@ -102,12 +107,12 @@ class Rook(Piece):
             pos = i, y
             i += 1
             if self.board.pos_is_empty(pos):
-                valid_positions.append(pos)
+                valid_positions.append(Move(self.pos, pos))
                 continue
 
             piece = self.board.get_piece(pos)
             if piece.colour != self.colour:
-                valid_positions.append(pos)
+                valid_positions.append(Move(self.pos, pos))
             break
 
         i = x - 1
@@ -115,12 +120,12 @@ class Rook(Piece):
             pos = i, y
             i -= 1
             if self.board.pos_is_empty(pos):
-                valid_positions.append(pos)
+                valid_positions.append(Move(self.pos, pos))
                 continue
 
             piece = self.board.get_piece(pos)
             if piece.colour != self.colour:
-                valid_positions.append(pos)
+                valid_positions.append(Move(self.pos, pos))
             break
 
         j = y - 1
@@ -128,12 +133,12 @@ class Rook(Piece):
             pos = x, j
             j -= 1
             if self.board.pos_is_empty(pos):
-                valid_positions.append(pos)
+                valid_positions.append(Move(self.pos, pos))
                 continue
 
             piece = self.board.get_piece(pos)
             if piece.colour != self.colour:
-                valid_positions.append(pos)
+                valid_positions.append(Move(self.pos, pos))
             break
 
         j = y + 1
@@ -141,12 +146,12 @@ class Rook(Piece):
             pos = x, j
             j += 1
             if self.board.pos_is_empty(pos):
-                valid_positions.append(pos)
+                valid_positions.append(Move(self.pos, pos))
                 continue
 
             piece = self.board.get_piece(pos)
             if piece.colour != self.colour:
-                valid_positions.append(pos)
+                valid_positions.append(Move(self.pos, pos))
             break
 
         return valid_positions
@@ -182,7 +187,7 @@ class Knight(Piece):
             new_pos(self.pos, down=2, left=1),
             new_pos(self.pos, down=1, left=2)
         ]
-        return [pos for pos in positions if self._valid_pos(pos)]
+        return [Move(self.pos, pos) for pos in positions if self._valid_pos(pos)]
 
 
 class King(Piece):
@@ -216,7 +221,7 @@ class King(Piece):
             new_pos(self.pos, up=1, right=1)
         ]
 
-        return [pos for pos in positions if self._valid_pos(pos)]
+        return [Move(self.pos, pos) for pos in positions if self._valid_pos(pos)]
 
 class Queen(Piece):
     def __init__(self, board, colour):
@@ -254,12 +259,12 @@ class Bishop(Piece):
             col += 1
             pos = (row, col)
             if self.board.pos_is_empty(pos):
-                valid_positions.append(pos)
+                valid_positions.append(Move(self.pos, pos))
                 continue
 
             piece = self.board.get_piece(pos)
             if piece.colour != self.colour:
-                valid_positions.append(pos)
+                valid_positions.append(Move(self.pos, pos))
             break
 
         row, col = self.pos
@@ -269,12 +274,12 @@ class Bishop(Piece):
             col += 1
             pos = (row, col)
             if self.board.pos_is_empty(pos):
-                valid_positions.append(pos)
+                valid_positions.append(Move(self.pos, pos))
                 continue
 
             piece = self.board.get_piece(pos)
             if piece.colour != self.colour:
-                valid_positions.append(pos)
+                valid_positions.append(Move(self.pos, pos))
 
             break
 
@@ -285,12 +290,12 @@ class Bishop(Piece):
             col -= 1
             pos = (row, col)
             if self.board.pos_is_empty(pos):
-                valid_positions.append(pos)
+                valid_positions.append(Move(self.pos, pos))
                 continue
 
             piece = self.board.get_piece(pos)
             if piece.colour != self.colour:
-                valid_positions.append(pos)
+                valid_positions.append(Move(self.pos, pos))
 
             break
 
@@ -301,12 +306,12 @@ class Bishop(Piece):
             col -= 1
             pos = (row, col)
             if self.board.pos_is_empty(pos):
-                valid_positions.append(pos)
+                valid_positions.append(Move(self.pos, pos))
                 continue
 
             piece = self.board.get_piece(pos)
             if piece.colour != self.colour:
-                valid_positions.append(pos)
+                valid_positions.append(Move(self.pos, pos))
 
             break
 

@@ -1,3 +1,5 @@
+import random
+
 def new_pos(pos, up=0, down=0, left=0, right=0):
     """helper method to generate positions relative distances from an oritin position"""
     if not pos:
@@ -18,4 +20,7 @@ def pos_to_str(pos):
     letter = chr(ord("A") + x)
     y = 8 - y
     return letter + str(y)
+
+def random_choice(seq):
+    return None if not seq else random.choice(seq)
 
