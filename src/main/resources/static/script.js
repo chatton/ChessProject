@@ -3,20 +3,20 @@ const canvas = document.getElementById("Chess");
 // Set the canvas up for drawing in 2D.
 const ctx = canvas.getContext("2d");
 
-let shouldraw = false;
-let board = {};
+const GRID_SIZE = 63;
+const BOARD_SIZE = 8;
 
+let shouldDraw = false;
+let board = {"positions": {}};// create empty object to start with so the draw method knows to draw an empty tile.
 
 
 // Map an x/y co-ordinate to the chess location.
 function mapToChess(x, y) {
-    const a_ascii_code = 65;
-    const mapped_int = BOARD_SIZE - y;
-    return String.fromCharCode(a_ascii_code + x) + "" + mapped_int;
+    const AasciiCode = 65;
+    const mappedInt = BOARD_SIZE - y;
+    return String.fromCharCode(AasciiCode + x) + "" + mappedInt;
 }
 
-const GRID_SIZE = 63;
-const BOARD_SIZE = 8;
 
 function getMousePos(canvas, evt) {
     const rect = canvas.getBoundingClientRect();
@@ -43,15 +43,12 @@ function isWhiteSquare(x, y) {
 function draw() {
     for (let x = 0; x < BOARD_SIZE; x++) {
         for (let y = 0; y < BOARD_SIZE; y++) {
-            if (shouldraw) {
-                if (isWhiteSquare(x, y)) {
-                    drawSquare("white", x, y);
-                }
-                else {
-                    drawSquare("black", x, y)
-                }
+            if (isWhiteSquare(x, y)) {
+                drawSquare("white", x, y);
             }
-
+            else {
+                drawSquare("black", x, y)
+            }
         }
     }
 }
@@ -72,41 +69,50 @@ function drawSquare(colour, x, y) {
 }
 
 let gameId;
-let shouldPoll = false;
+
 function drawButton() {
     // 1. Create the button
-    var button = document.getElementById("myBtn");
+    const button = document.getElementById("myBtn");
     button.innerHTML = "Do Something";
 
     // 2. Append somewhere
-    var body = document.getElementsByTagName("body")[0];
+    const body = document.getElementsByTagName("body")[0];
     body.appendChild(button);
 
     // 3. Add event handler
     button.addEventListener("click", function () {
-        $.get("/chess/v1/newgame", function(data){
+        $.get("/chess/v1/newgame", function (data) {
             gameId = data.gameId;
             console.log(data);
 
-            // TODO, put in a setInterval to poll it
-            $.get("/chess/v1/gamestate?gameId=" + gameId, function (data) {
-                board = data;
-                shouldraw = true;
-            });
+            // this polling function will query the server every 5
+            // seconds, we can use this to continually update game state.
+            function poll() {
+                console.log("Polling...");
 
-            shouldPoll = true;
+                /*
+                get will be used to get a new board
+                 */
+                $.get("/chess/v1/gamestate?gameId=" + gameId, function (data) {
+                    board = data;
+                    shouldDraw = true;
+                });
+                setTimeout(poll, 5000)
+            }
+
+            setTimeout(poll, 5000);
         })
 
     });
 }
 
 function start() {
-    if (shouldraw) {
+    if (shouldDraw) {
         draw();
     }
-    //drawButton();
     window.requestAnimationFrame(start);
 }
 
+draw(); // draw the initial board before the first GET request finishes/
 start();
 
