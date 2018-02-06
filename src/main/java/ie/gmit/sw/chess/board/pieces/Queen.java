@@ -13,16 +13,19 @@ public class Queen extends Piece {
     public Queen(ChessBoard board, Colour colour) {
         super(board, colour);
         this.rook = new Rook(board, colour);
-        rook.setPosition(position);
         this.bishop = new Bishop(board, colour);
-        this.bishop.setPosition(position);
     }
+
     @Override
-    public String getName(){
+    public String getName() {
         return super.getName() + "Queen";
     }
+
     @Override
     public List<Position> getPossiblePositions() {
+        // reset the position each time so the moves generated are correct.
+        rook.setPosition(position);
+        bishop.setPosition(position);
         List<Position> possiblePositions = rook.getPossiblePositions();
         possiblePositions.addAll(bishop.getPossiblePositions());
         return possiblePositions;

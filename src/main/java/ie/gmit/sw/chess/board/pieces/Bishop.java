@@ -72,6 +72,10 @@ public class Bishop extends Piece {
 
     private boolean checkPositions(List<Position> validPositions, int x, int y) {
         Position next = new Position(x, y); // get the position at x,y
+        if(!board.isOnBoard(next)){
+            return false;
+        }
+
         if (board.posIsEmpty(next)) {
             validPositions.add(next);
             return true;

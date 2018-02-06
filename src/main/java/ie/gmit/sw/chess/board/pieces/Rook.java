@@ -2,6 +2,7 @@ package ie.gmit.sw.chess.board.pieces;
 
 import ie.gmit.sw.chess.board.ChessBoard;
 import ie.gmit.sw.chess.board.Position;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +12,7 @@ public class Rook extends Piece {
     }
 
     @Override
-    public String getName(){
+    public String getName() {
         return super.getName() + "Rook";
     }
 
@@ -24,14 +25,6 @@ public class Rook extends Piece {
 
         int x = position.x();
         int y = position.y();
-        //int y2;
-        // try a re-write with a for loop and see how it looks
-        for(y = position.y() - 1; y < board.size(); y-- ){
-            if (checkPositions(validPositions, x, y)) {
-                continue;
-            }
-            break;
-        }
 
         do {
 
@@ -69,7 +62,7 @@ public class Rook extends Piece {
         do {
             x++;
 
-            if(checkPositions(validPositions, x, y)) {
+            if (checkPositions(validPositions, x, y)) {
                 continue;
             }
             break; // there was a piece blocking this direction
@@ -78,8 +71,15 @@ public class Rook extends Piece {
         return validPositions;
 
     }
+
     private boolean checkPositions(List<Position> validPositions, int x, int y) {
         Position next = new Position(x, y); // get the position at x,y
+
+        if (!board.isOnBoard(next)) {
+            return false;
+        }
+
+
         if (board.posIsEmpty(next)) {
             validPositions.add(next);
             return true;
