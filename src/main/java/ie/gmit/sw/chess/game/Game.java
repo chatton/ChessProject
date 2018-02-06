@@ -35,7 +35,7 @@ public class Game {
         this.player2 = player2;
     }
 
-    public GameState GameState() {
+    public GameState getGameState() {
         return new GameState(chessBoard);
     }
 

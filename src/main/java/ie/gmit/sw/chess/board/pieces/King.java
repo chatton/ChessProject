@@ -14,6 +14,11 @@ public class King extends Piece {
     }
 
     @Override
+    public String getName(){
+        return super.getName() + "King";
+    }
+
+    @Override
     public List<Position> getPossiblePositions() {
 
         List<Position> validPositions = new ArrayList<>();

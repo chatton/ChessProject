@@ -18,7 +18,8 @@ public abstract class Piece {
 
 
     public String getName(){
-        return "bKnight";
+
+        return colour.name().toLowerCase().charAt(0) + "";
     }
 
     public void setPosition(Position newPos) {

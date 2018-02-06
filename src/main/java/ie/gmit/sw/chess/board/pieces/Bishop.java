@@ -13,7 +13,10 @@ public class Bishop extends Piece {
         super(board, colour);
     }
 
-
+    @Override
+    public String getName(){
+        return super.getName() + "Bishop";
+    }
 
     @Override
     public List<Position> getPossiblePositions() {

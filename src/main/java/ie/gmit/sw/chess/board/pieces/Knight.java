@@ -12,6 +12,10 @@ public class Knight extends Piece {
 
         super(board, colour);
     }
+    @Override
+    public String getName(){
+        return super.getName() + "Knight";
+    }
 
     @Override
     public List<Position> getPossiblePositions() {

@@ -17,7 +17,10 @@ public class Queen extends Piece {
         this.bishop = new Bishop(board, colour);
         this.bishop.setPosition(position);
     }
-
+    @Override
+    public String getName(){
+        return super.getName() + "Queen";
+    }
     @Override
     public List<Position> getPossiblePositions() {
         List<Position> possiblePositions = rook.getPossiblePositions();

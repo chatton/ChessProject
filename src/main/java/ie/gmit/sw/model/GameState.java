@@ -1,6 +1,7 @@
 package ie.gmit.sw.model;
 
 import ie.gmit.sw.chess.board.ChessBoard;
+import ie.gmit.sw.chess.board.pieces.Colour;
 import ie.gmit.sw.chess.board.pieces.Piece;
 import ie.gmit.sw.utilities.Util;
 
@@ -12,9 +13,11 @@ public class GameState {
 
     private Map<String, String> positions;
 
+    private Colour currentTurn;
+
     public GameState(ChessBoard board) {
         positions = new HashMap<>();
-
+        currentTurn = Colour.BLACK; // TODO remove hard coded colour.
         // all the pieces on the board (32 pieces)
         List<Piece> allPieces = board.getPieces();
         for (Piece piece : allPieces) {
@@ -26,5 +29,9 @@ public class GameState {
 
     public Map<String, String> getPositions() {
         return positions;
+    }
+
+    public Colour getCurrentTurn() {
+        return currentTurn;
     }
 }

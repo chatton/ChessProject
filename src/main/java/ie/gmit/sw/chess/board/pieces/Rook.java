@@ -11,6 +11,11 @@ public class Rook extends Piece {
     }
 
     @Override
+    public String getName(){
+        return super.getName() + "Rook";
+    }
+
+    @Override
     public List<Position> getPossiblePositions() {
         List<Position> validPositions = new ArrayList<>();
         //loop to traverse every possible position in a straight line

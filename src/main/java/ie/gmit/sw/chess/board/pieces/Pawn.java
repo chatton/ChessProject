@@ -12,6 +12,11 @@ public class Pawn extends Piece {
     }
 
     @Override
+    public String getName(){
+        return super.getName() + "Pawn";
+    }
+
+    @Override
     public List<Position> getPossiblePositions() {
         List<Position> validPositions = new ArrayList<>();
         if (colour == Colour.WHITE) {

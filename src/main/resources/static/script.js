@@ -5,10 +5,8 @@ const ctx = canvas.getContext("2d");
 
 let shouldraw = false;
 let board = {};
-$.get("/chess/v1/gamestate", function(data) {
-    board = data;
-    shouldraw = true;
-});
+
+
 
 // Map an x/y co-ordinate to the chess location.
 function mapToChess(x, y) {
@@ -73,7 +71,9 @@ function drawSquare(colour, x, y) {
     };
 }
 
-function drawButton(){
+let gameId;
+let shouldPoll = false;
+function drawButton() {
     // 1. Create the button
     var button = document.getElementById("myBtn");
     button.innerHTML = "Do Something";
@@ -83,13 +83,27 @@ function drawButton(){
     body.appendChild(button);
 
     // 3. Add event handler
-    button.addEventListener ("click", function() {
-        alert("did something");
+    button.addEventListener("click", function () {
+        $.get("/chess/v1/newgame", function(data){
+            gameId = data.gameId;
+            console.log(data);
+
+            // TODO, put in a setInterval to poll it
+            $.get("/chess/v1/gamestate?gameId=" + gameId, function (data) {
+                board = data;
+                shouldraw = true;
+            });
+
+            shouldPoll = true;
+        })
+
     });
 }
 
 function start() {
-    draw();
+    if (shouldraw) {
+        draw();
+    }
     //drawButton();
     window.requestAnimationFrame(start);
 }

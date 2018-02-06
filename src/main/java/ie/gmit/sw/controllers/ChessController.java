@@ -1,35 +1,32 @@
 package ie.gmit.sw.controllers;
 
-import ie.gmit.sw.chess.board.ChessBoard;
-import ie.gmit.sw.chess.board.ChessFactory;
-import ie.gmit.sw.chess.board.pieces.Colour;
-import ie.gmit.sw.chess.board.pieces.King;
 import ie.gmit.sw.model.GameState;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
+import ie.gmit.sw.model.NewGameResponse;
+import ie.gmit.sw.services.ChessService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class ChessController {
 
+    private ChessService chessService;
 
-    @RequestMapping("/chess/v1/gamestate")
-    public ResponseEntity<GameState> getGameState() {
-        ChessBoard board = ChessFactory.newStandardChessBoard();
-        board.setAt("B5", new King(board, Colour.WHITE));
-        return ResponseEntity.ok(new GameState(board));
+    @Autowired
+    public ChessController(ChessService chessService) {
+        this.chessService = chessService;
     }
 
+    @GetMapping("chess/v1/newgame")
+    public NewGameResponse newGameResponse(){
+        return chessService.newGame();
+    }
 
-    // /chess/v1/newgame
-    // give back the new game's id and if it's ready or not
-
-
-    // /chess/v1/get-game-state/id=12345
-    // gives back what the board looks like
-
-    // /chess/v1/make-move?id=12345&from=A1&to=A2
-    // makes the move if it is valid, otherwise returns error code.
+    @GetMapping("chess/v1/gamestate")
+    public GameState getGameState(@RequestParam("gameId") int gameId) {
+        return chessService.getGameState(gameId);
+    }
 
 
 }
