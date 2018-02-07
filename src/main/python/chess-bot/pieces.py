@@ -39,7 +39,7 @@ class Piece:
         return (
             str(self.colour).split(".")[1].capitalize() + " "  + 
             self.name + " at " + pos_to_str(self.pos) + " - legal moves: " +
-            str(list(map(pos_to_str, self.moves)))
+            str( self.moves)
         )
 
 class Pawn(Piece):

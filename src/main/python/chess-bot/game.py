@@ -18,11 +18,16 @@ class Board:
         return grid
 
     def get_piece(self, pos):
+        if isinstance(pos, str):
+            pos = str_to_pos(pos)
+
         return self._grid.get(pos)
 
     def pos_on_board(self, pos):
         if not pos:
             return False
+        if isinstance(pos, str):
+            pos = str_to_pos(pos)
         x, y = pos
         return 0 <= x < 8 and 0 <= y < 8
 

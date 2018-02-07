@@ -14,7 +14,7 @@ class ChessBot:
         self.game_state = {}
         self.player_id = None
         self.game_id = None
-        self.colour = Colour.WHITE
+        self.colour = str(Colour.WHITE).split(".")[1]
 
     def request_game(self):
         """connect to a game and set the player and game ids as well as what colour the bot
@@ -27,7 +27,6 @@ class ChessBot:
         result = resp.json()
         self.player_id = result["playerId"]
         self.game_id = result["gameId"]
-        self.colour = result["colour"]
 
         self._colour_enum = Colour.WHITE if self.colour == "WHITE" else Colour.BLACK
 
@@ -50,11 +49,12 @@ class ChessBot:
         print("Making move: " + str(move))
         query = "http://" + self.config["host"] + ":" + str(self.config["port"]) + "/chess/v1/makemove"
         # sends the move as a post request to the server.
-        resp = requests.post(query, data={
+        rep = requests.post(query, data={
             "from" : move.origin,
             "to" : move.dest,
             "gameId" : self.game_id
         })
+
 
     @property
     def is_turn(self):
@@ -62,7 +62,21 @@ class ChessBot:
         return False if "currentTurn" not in self.game_state else self.game_state["currentTurn"] == self.colour
 
     def _get_next_move(self):
-        return random_choice(self.moves)
+        optimal_move = None
+        highest_value = -1
+        moves = self.moves
+        random.shuffle(moves)
+        for move in moves:
+            val = self._get_move_value(move)
+            if val > highest_value:
+                optimal_move = move
+                highest_value = val
+        return optimal_move
+     
+    def _get_move_value(self, move):
+        piece = self.board.get_piece(move.dest)
+        return piece.value if piece else 0
+        
 
     @property
     def pieces(self):
