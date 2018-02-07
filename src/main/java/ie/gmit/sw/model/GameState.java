@@ -15,9 +15,9 @@ public class GameState {
 
     private Colour currentTurn;
 
-    public GameState(ChessBoard board) {
+    public GameState(ChessBoard board, Colour colour) {
         positions = new HashMap<>();
-        currentTurn = Colour.BLACK; // TODO remove hard coded colour.
+        currentTurn = colour;
         // all the pieces on the board (32 pieces)
         List<Piece> allPieces = board.getPieces();
         for (Piece piece : allPieces) {

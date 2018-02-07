@@ -3,6 +3,7 @@ package ie.gmit.sw.services;
 import com.fasterxml.jackson.annotation.JsonValue;
 import ie.gmit.sw.chess.board.ChessBoard;
 import ie.gmit.sw.chess.board.ChessFactory;
+import ie.gmit.sw.chess.board.Move;
 import ie.gmit.sw.chess.board.pieces.Colour;
 import ie.gmit.sw.chess.board.pieces.Knight;
 import ie.gmit.sw.chess.board.pieces.Pawn;
@@ -44,5 +45,9 @@ public class ChessService {
         // put player in that game.
         // otherwise, make a new game, put in player in that game.
         return new NewGameResponse(1, 123, Colour.WHITE);
+    }
+
+    public void makeMove(Move move, int gameId) {
+        games.get(gameId).makeMove(move);
     }
 }

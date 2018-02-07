@@ -8,12 +8,12 @@ import ie.gmit.sw.chess.board.pieces.Colour;
  */
 public class NewGameResponse {
     private int gameId;
-    private int payerId;
+    private int playerId;
     private Colour colour;
 
-    public NewGameResponse(int gameId, int payerId, Colour colour) {
+    public NewGameResponse(int gameId, int playerId, Colour colour) {
         this.gameId = gameId;
-        this.payerId = payerId;
+        this.playerId = playerId;
         this.colour = colour;
     }
 
@@ -21,8 +21,8 @@ public class NewGameResponse {
         return gameId;
     }
 
-    public int getPayerId() {
-        return payerId;
+    public int getPlayerId() {
+        return playerId;
     }
 
     public Colour getColour() {

@@ -26,6 +26,24 @@ function getMousePos(canvas, evt) {
     };
 }
 
+let numClicks = 0;
+let move = {"from": "", "to": ""};
+
+function sendMove(data) {
+    $.ajax({
+        type: "POST",
+        contentType: "application/json", // this is required by spring boot. Otherwise get a 415 error.
+        data: JSON.stringify(data), // send object as string to server
+        dataType: "json",
+        url: window.location + "chess/v1/makemove",
+        /*
+         when the move is made, call poll to update the state of the board so the change
+         appears right away instead of needing to wait up to 5 seconds to see the change take effect.
+         */
+        complete: poll
+    });
+}
+
 canvas.addEventListener("click", function (e) {
     const pos = getMousePos(canvas, e);
     const boardPos = {
@@ -33,7 +51,15 @@ canvas.addEventListener("click", function (e) {
         y: Math.floor(pos.y / GRID_SIZE)
     };
     const chessNotation = mapToChess(boardPos.x, boardPos.y);
-    alert(board.positions[chessNotation] + " at " + chessNotation);
+
+    numClicks++;
+    if (numClicks === 1) {
+        move.from = chessNotation;
+    } else if (numClicks === 2) {
+        move.to = chessNotation;
+        numClicks = 0;
+        sendMove(move);
+    }
 });
 
 function isWhiteSquare(x, y) {
@@ -70,6 +96,20 @@ function drawSquare(colour, x, y) {
 
 let gameId;
 
+// this polling function will query the server every 5
+// seconds, we can use this to continually update game state.
+function poll() {
+    /*
+     get will be used to get a new board
+     */
+    $.get("/chess/v1/gamestate?gameId=" + gameId, function (data) {
+        board = data;
+        move["gameId"] = gameId;
+        shouldDraw = true;
+    });
+    setTimeout(poll, 5000)
+}
+
 function drawButton() {
     // 1. Create the button
     const button = document.getElementById("myBtn");
@@ -83,26 +123,8 @@ function drawButton() {
     button.addEventListener("click", function () {
         $.get("/chess/v1/newgame", function (data) {
             gameId = data.gameId;
-            console.log(data);
-
-            // this polling function will query the server every 5
-            // seconds, we can use this to continually update game state.
-            function poll() {
-                console.log("Polling...");
-
-                /*
-                get will be used to get a new board
-                 */
-                $.get("/chess/v1/gamestate?gameId=" + gameId, function (data) {
-                    board = data;
-                    shouldDraw = true;
-                });
-                setTimeout(poll, 5000)
-            }
-
-            setTimeout(poll, 5000);
+            poll();
         })
-
     });
 }
 
@@ -113,6 +135,6 @@ function start() {
     window.requestAnimationFrame(start);
 }
 
-draw(); // draw the initial board before the first GET request finishes/
+draw(); // draw the initial board before the first GET request finishes
 start();
 
