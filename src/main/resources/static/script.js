@@ -107,6 +107,7 @@ function poll() {
         move["gameId"] = gameId;
         shouldDraw = true;
     });
+    $("textarea").val(JSON.stringify(board.positions)); // TODO display messages from server in this text area
     setTimeout(poll, 5000)
 }
 
@@ -123,6 +124,7 @@ function drawButton() {
     button.addEventListener("click", function () {
         $.get("/chess/v1/newgame", function (data) {
             gameId = data.gameId;
+
             poll();
         })
     });
@@ -137,4 +139,5 @@ function start() {
 
 draw(); // draw the initial board before the first GET request finishes
 start();
+
 
