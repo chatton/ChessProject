@@ -32,10 +32,6 @@ public class Knight extends Piece {
                 new Position(position.x() - 2, position.y() + 1)
         );
 
-        // TODO Handle index out of bounds
-
-        // TODO handle check/checkmate validation!
-
         for (Position pos : positions) {
             addIfValid(validPositions, pos);
         }
@@ -48,13 +44,17 @@ public class Knight extends Piece {
             return;
         }
 
-        if (board.posIsEmpty(pos)) {
-            positions.add(pos);
-        } else {
-            Piece piece = board.getAt(pos);
-            if (piece.colour != colour) {
-                positions.add(pos);
+        // it's a valid move if the position is empty or the piece is the opposite colour.
+        boolean valid = board.posIsEmpty(pos) || board.getAt(pos).colour != colour;
+        if(valid){
+            // move to that position, updates the board state.
+            moveTo(pos, true);
+            // and see if that updated position would result in Check.
+            if(!board.isCheck(colour)){
+                positions.add(pos); // if it doesn't, it's a valid move.
             }
+            // undo the move so we don't interfere with the expected board state.
+            board.undoLastMove();
         }
     }
 }

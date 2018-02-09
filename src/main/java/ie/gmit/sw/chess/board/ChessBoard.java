@@ -104,6 +104,25 @@ public class ChessBoard {
     }
 
 
+    /**Makes the move and saves it in history
+     * and DOES enforce validation.
+     *
+     * @param move the move to make
+     */
+    public void makeMove(Move move) {
+        makeMove(move, true);
+    }
+
+
+    /**Makes the move and saves it in history
+     * but doesn't apply any validation rules.
+     *
+     * @param move the move to make
+     */
+    public void forceMove(Move move){
+        makeMove(move, false);
+    }
+
     /**
      * Making a move will update the piece at the from position and move it to the
      * to position. You should check if the move is valid before calling this method.
@@ -111,9 +130,9 @@ public class ChessBoard {
      *
      * @param move the move that will update the board state.
      */
-    public void makeMove(Move move) {
+    private void makeMove(Move move, boolean validate){
         // 1. check if the move is valid
-        if (!moveIsValid(move)) {
+        if (validate && !moveIsValid(move)) {
             // 2. if not, throw exception, otherwise, perform movement.
             throw new IllegalArgumentException("Provided an invalid move.");
         }
@@ -137,6 +156,8 @@ public class ChessBoard {
         setAt(undoMove.to(), undoMove.getToPiece());
         setAt(undoMove.from(), undoMove.getFromPiece());
     }
+
+
 
     /**
      * @return a list of all the non-null pieces in the game. Includes black and white pieces.
