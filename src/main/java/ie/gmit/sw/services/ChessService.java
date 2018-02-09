@@ -16,35 +16,59 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 @Service
 public class ChessService {
 
     private Map<Integer, Game> games;
 
-    public ChessService(){
+    public ChessService() {
         games = new HashMap<>();
-        ChessBoard board = ChessFactory.newStandardChessBoard();
-        board.setAt("A8", null);
-        board.setAt("D4", new Pawn(board, Colour.WHITE));
-        board.setAt("D5", new Knight(board, Colour.BLACK));
-        board.setAt("H5", new Rook(board, Colour.BLACK));
-        Game game = new Game(new Player(1, Colour.WHITE), new Player(2, Colour.BLACK), board);
-        games.put(1, game);
+        // TODO populate from DB
     }
 
-    public GameState getGameState(int gameId){
+    public GameState getGameState(int gameId) {
         // make sure gameId exists
         // TODO handle errors and don't hard code
         return games.get(gameId).getGameState();
     }
 
+    // TODO handle duplicate ids generated.
+    private Player generatePlayer() {
+        System.out.println("Generating Player...");
+        Random rnd = new Random();
+        int playerId = rnd.nextInt();
+        return new Player(playerId);
+    }
+
+    private Game generateGame() {
+        System.out.println("Generating Game...");
+        ChessBoard board = ChessFactory.newStandardChessBoard();
+        Random rnd = new Random();
+        int gameId = rnd.nextInt();
+        return new Game(board, gameId);
+    }
+
     public NewGameResponse newGame() {
-        // TODO implement and remove hard coded response.
-        // determine if there is a free game to join
-        // put player in that game.
-        // otherwise, make a new game, put in player in that game.
-        return new NewGameResponse(1, 123, Colour.WHITE);
+        // there are existing games to join.
+        for (Game game : games.values()) { // look at all existing games
+            // determine if there is a free game to join
+            if (game.isFree()) {
+                System.out.println("Game was free. Adding player to game: " + game.getId());
+                Player player = generatePlayer();
+                game.addPlayer(player); // put player in that game.
+                return new NewGameResponse(game.getId(), player.getId(), game.getColourFor(player.getId()));
+            }
+        }
+
+        System.out.println("Found no free games. Making new game.");
+        Game game = generateGame();
+        Player player = generatePlayer();
+        game.addPlayer(player);
+        games.put(game.getId(), game);
+        System.out.println("Saving game: " + game.getId());
+        return new NewGameResponse(game.getId(), player.getId(), game.getColourFor(player.getId()));
     }
 
     public void makeMove(Move move, int gameId) {
