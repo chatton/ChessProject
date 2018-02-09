@@ -3,7 +3,6 @@ package ie.gmit.sw;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,7 +10,7 @@ import java.util.Map;
 public class ChessProjectApplication {
 
     public static void main(String[] args) {
-        System.out.println(Arrays.toString(args));
+
         int port = 8080; // by default use port 8080
         if (args.length > 0) { // specific port provided by user.
             try {
@@ -21,7 +20,6 @@ public class ChessProjectApplication {
                 return;
             }
         }
-        System.out.println(port);
         final Map<String, Object> props = new HashMap<>();
         props.put("server.port", port);
 

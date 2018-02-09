@@ -1,5 +1,6 @@
 package ie.gmit.sw.chess.board;
 
+import ie.gmit.sw.chess.board.pieces.Piece;
 import ie.gmit.sw.utilities.Util;
 
 /**
@@ -9,6 +10,8 @@ import ie.gmit.sw.utilities.Util;
 public class Move {
     private final Position from;
     private final Position to;
+    private Piece fromPiece;
+    private Piece toPiece;
 
     public Move(Position from, Position to) {
         this.from = from;
@@ -25,5 +28,28 @@ public class Move {
 
     public Position to() {
         return to;
+    }
+
+    public Move reverse(){
+        Move reversed = new Move(to, from);
+        reversed.setToPiece(fromPiece);
+        reversed.setFromPiece(toPiece);
+        return reversed;
+    }
+
+    public void setFromPiece(Piece fromPiece) {
+        this.fromPiece = fromPiece;
+    }
+
+    public Piece getToPiece() {
+        return toPiece;
+    }
+
+    public void setToPiece(Piece toPiece) {
+        this.toPiece = toPiece;
+    }
+
+    public Piece getFromPiece() {
+        return fromPiece;
     }
 }

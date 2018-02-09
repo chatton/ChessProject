@@ -10,17 +10,20 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Stack;
 
 public class ChessBoard {
 
     private final Piece[][] board;
     private final int size;
+    private final Stack<Move> moveHistory;
 
     private int turnNo;
 
     public ChessBoard(int size) {
         this.size = size;
         this.board = new Piece[size][size];
+        moveHistory = new Stack<>();
         this.turnNo = 1;
     }
 
@@ -47,7 +50,7 @@ public class ChessBoard {
      */
     public void setAt(Position pos, Piece piece) {
         board[pos.x()][pos.y()] = piece;
-        if(piece != null){
+        if (piece != null) {
             piece.setPosition(pos);
         }
     }
@@ -88,7 +91,7 @@ public class ChessBoard {
         we mess with the board.
          */
         // invalid because the user tried to move from an empty piece to another piece. (not a legal move)
-        if(posIsEmpty(move.from())){
+        if (posIsEmpty(move.from())) {
             return false; // it's not a valid move because it's not actually moving a piece.
         }
         // get the piece that we are going to move.
@@ -110,19 +113,29 @@ public class ChessBoard {
      */
     public void makeMove(Move move) {
         // 1. check if the move is valid
-        if(!moveIsValid(move)){
+        if (!moveIsValid(move)) {
             // 2. if not, throw exception, otherwise, perform movement.
-            throw  new IllegalArgumentException("Provided an invalid move.");
+            throw new IllegalArgumentException("Provided an invalid move.");
         }
         // 3. get the piece we want to move.
         Piece piece = getAt(move.from());
+        move.setFromPiece(piece);
+        move.setToPiece(getAt(move.to()));
 
         // 4. reposition it and the new position
         setAt(move.to(), piece);
 
         // 5, ned to empty the original position so it's now free for other pieces.
         setAt(move.from(), null); // null means an empty spot
+        moveHistory.push(move);
 
+    }
+
+    public void undoLastMove() {
+        Move lastMove = moveHistory.pop();
+        Move undoMove = lastMove.reverse();
+        setAt(undoMove.to(), undoMove.getToPiece());
+        setAt(undoMove.from(), undoMove.getFromPiece());
     }
 
     /**
@@ -176,20 +189,20 @@ public class ChessBoard {
      * @param colour
      * @return the King of the given colour. Assumes only one king of each colour on the board.
      */
-    public King getKing(Colour colour){
-        for(Piece piece : getPieces(colour)){
-            if(piece instanceof King){
+    public King getKing(Colour colour) {
+        for (Piece piece : getPieces(colour)) {
+            if (piece instanceof King) {
                 return (King) piece;
             }
         }
         return null;
     }
 
-    public void emptyPosition(String chessNotion){
+    public void emptyPosition(String chessNotion) {
         setAt(chessNotion, null);
     }
 
-    public void emptyPosition(Position position){
+    public void emptyPosition(Position position) {
         setAt(position, null);
     }
 
@@ -197,14 +210,14 @@ public class ChessBoard {
      * @param colour
      * @return true/false for if the board is in check for a given colour.
      */
-    public boolean isCheck(Colour colour){
+    public boolean isCheck(Colour colour) {
 
         King king = getKing(colour);
 
         Colour otherColour;
-        if(colour == Colour.WHITE){
+        if (colour == Colour.WHITE) {
             otherColour = Colour.BLACK;
-        } else{
+        } else {
             otherColour = Colour.WHITE;
         }
 
@@ -212,14 +225,14 @@ public class ChessBoard {
 
         // get all possible other team moves
         Set<Position> positionsOtherColourCanMoveTo = new HashSet<>();
-        for(Piece piece : opponentPieces){
+        for (Piece piece : opponentPieces) {
             positionsOtherColourCanMoveTo.addAll(piece.getPossiblePositions());
         }
         // if the king's position is in any of them he's in check
         return positionsOtherColourCanMoveTo.contains(king.getPosition());
     }
 
-    public boolean isCheckMate(Colour colour){
+    public boolean isCheckMate(Colour colour) {
         throw new NotImplementedException();
     }
 
