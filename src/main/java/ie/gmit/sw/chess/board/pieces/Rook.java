@@ -4,6 +4,8 @@ import ie.gmit.sw.chess.board.ChessBoard;
 import ie.gmit.sw.chess.board.Position;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 public class Rook extends Piece {
@@ -17,8 +19,8 @@ public class Rook extends Piece {
     }
 
     @Override
-    public List<Position> getPossiblePositions() {
-        List<Position> validPositions = new ArrayList<>();
+    public Collection<Position> getPossiblePositions() {
+        Collection<Position> validPositions = new HashSet<>();
         //loop to traverse every possible position in a straight line
         // x never changes so we don't need to add it in the loop condition.
 
@@ -72,7 +74,7 @@ public class Rook extends Piece {
 
     }
 
-    private boolean checkPositions(List<Position> validPositions, int x, int y) {
+    private boolean checkPositions(Collection<Position> validPositions, int x, int y) {
         Position next = new Position(x, y); // get the position at x,y
 
         if (!board.isOnBoard(next)) {

@@ -7,6 +7,7 @@ import ie.gmit.sw.utilities.Util;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -97,31 +98,12 @@ public class ChessBoard {
         // get the piece that we are going to move.
         Piece targetPiece = getAt(move.from());
         // it is a piece we want to move.
-        List<Position> possibleMoves = targetPiece.getPossiblePositions(); // depends on the piece type what these are.
+        Collection<Position> possibleMoves = targetPiece.getPossiblePositions(); // depends on the piece type what these are.
         // the move is valid if and only if the piece can actually move there. Otherwise it's invalid.
         return possibleMoves.contains(move.to()); // true if the destination is in the piece's list of valid positions.
 
     }
 
-
-    /**Makes the move and saves it in history
-     * and DOES enforce validation.
-     *
-     * @param move the move to make
-     */
-    public void makeMove(Move move) {
-        makeMove(move, true);
-    }
-
-
-    /**Makes the move and saves it in history
-     * but doesn't apply any validation rules.
-     *
-     * @param move the move to make
-     */
-    public void forceMove(Move move){
-        makeMove(move, false);
-    }
 
     /**
      * Making a move will update the piece at the from position and move it to the
@@ -130,9 +112,9 @@ public class ChessBoard {
      *
      * @param move the move that will update the board state.
      */
-    private void makeMove(Move move, boolean validate){
+    public void makeMove(Move move){
         // 1. check if the move is valid
-        if (validate && !moveIsValid(move)) {
+        if (!moveIsValid(move)) {
             // 2. if not, throw exception, otherwise, perform movement.
             throw new IllegalArgumentException("Provided an invalid move.");
         }

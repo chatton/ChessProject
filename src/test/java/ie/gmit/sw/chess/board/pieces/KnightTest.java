@@ -6,6 +6,7 @@ import ie.gmit.sw.chess.board.Move;
 import ie.gmit.sw.chess.board.Position;
 import org.junit.Test;
 
+import java.util.Collection;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -19,7 +20,7 @@ public class KnightTest{
         // create a populated board.
         ChessBoard board = ChessFactory.newStandardChessBoard();
         Knight blackKnight = (Knight) board.getAt("B8"); // grab the black knight
-        List<Position> positions = blackKnight.getPossiblePositions();
+        Collection<Position> positions = blackKnight.getPossiblePositions();
         // should have 2 possible moves
         assertTrue("Knight had possible moves but was partially surrounded.", positions.size() == 2);
 
@@ -54,23 +55,6 @@ public class KnightTest{
         // should have 7 possible moves from this board state.
         positions = whiteKnight.getPossiblePositions();
         assertEquals(8, positions.size());
-    }
-
-    @Test
-    public void testMovesThatResultInCheckAreNotValid(){
-        ChessBoard board = new ChessBoard(8);
-
-        Knight knight = new Knight(board, Colour.WHITE);
-        King king = new King(board, Colour.WHITE);
-        Queen blackQueen = new Queen(board, Colour.BLACK);
-
-        board.setAt("D3", king);
-        board.setAt("D4", knight);
-        board.setAt("D7", blackQueen);
-
-        List<Position> knightMoves = knight.getPossiblePositions();
-        assertEquals(0, knightMoves.size());
-
     }
 
 }

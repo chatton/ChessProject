@@ -5,6 +5,8 @@ import ie.gmit.sw.chess.board.Position;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 public class King extends Piece {
@@ -19,9 +21,9 @@ public class King extends Piece {
     }
 
     @Override
-    public List<Position> getPossiblePositions() {
+    public Collection<Position> getPossiblePositions() {
 
-        List<Position> validPositions = new ArrayList<>();
+        Collection<Position> validPositions = new HashSet<>();
         List<Position> positions = Arrays.asList(
                 new Position(position.x() - 1, position.y() - 1),
                 new Position(position.x(), position.y() - 1),
@@ -44,7 +46,7 @@ public class King extends Piece {
         return validPositions;
     }
 
-    private void addIfValid(List<Position> positions, Position pos) {
+    private void addIfValid(Collection<Position> positions, Position pos) {
         if(!board.isOnBoard(pos)){
             return;
         }

@@ -4,6 +4,8 @@ import ie.gmit.sw.chess.board.ChessBoard;
 import ie.gmit.sw.chess.board.Position;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 public class Pawn extends Piece {
@@ -17,8 +19,8 @@ public class Pawn extends Piece {
     }
 
     @Override
-    public List<Position> getPossiblePositions() {
-        List<Position> validPositions = new ArrayList<>();
+    public Collection<Position> getPossiblePositions() {
+        Collection<Position> validPositions = new HashSet<>();
         if (colour == Colour.WHITE) {
             // get the position directly in front
             Position inFront = new Position(position.x(), position.y() - 1);
@@ -49,7 +51,7 @@ public class Pawn extends Piece {
 
     }
 
-    private void addIfFrontPositionValid(List<Position> positions, Position pos) {
+    private void addIfFrontPositionValid(Collection<Position> positions, Position pos) {
         // white row
         if(position.y() == board.size() - 1){ // white pawns are in the second last row
 
@@ -68,7 +70,7 @@ public class Pawn extends Piece {
         }
     }
 
-    private void addIfDiagonalsValid(List<Position> validPositions, Position[] positions) {
+    private void addIfDiagonalsValid(Collection<Position> validPositions, Position[] positions) {
         for (Position pos : positions) {
             if (!board.isOnBoard(pos)) {
                 continue;//look at every position in the array

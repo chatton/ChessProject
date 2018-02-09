@@ -6,6 +6,7 @@ import ie.gmit.sw.chess.board.Move;
 import ie.gmit.sw.chess.board.Position;
 import org.junit.Test;
 
+import java.util.Collection;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -18,7 +19,7 @@ public class BishopTest {
         // create a populated board.
         ChessBoard board = ChessFactory.newStandardChessBoard();
         Bishop blackBishop = (Bishop) board.getAt("C8"); // grab the black bishop
-        List<Position> positions = blackBishop.getPossiblePositions();
+        Collection<Position> positions = blackBishop.getPossiblePositions();
         // should not have any possible moves
         assertTrue("Bishop had possible moves but was surrounded.", positions.size() == 0);
 

@@ -70,15 +70,16 @@ public class ChessBoardTest {
         Piece bPawn = board.getAt("C7");
 
         // make 4 normal moves
-        wPawn.moveTo("B3");
-        bPawn.moveTo("C6");
-        wPawn.moveTo("B4");
-        bPawn.moveTo("C5");
+        board.makeMove(new Move("B2", "B3"));
+        board.makeMove(new Move("C7", "C6"));
+        board.makeMove(new Move("B3", "B4"));
+        board.makeMove(new Move("C6", "C5"));
+
 
         Piece pieceToCapture = new Bishop(board, Colour.BLACK);
         board.setAt("A5", pieceToCapture);
         // make one more move that's a capture
-        wPawn.moveTo("A5");
+        board.makeMove(new Move("B4", "A5"));
 
         // undo all 5 moves
         for(int i = 0; i < 5; i++){

@@ -3,6 +3,7 @@ package ie.gmit.sw.chess.board.pieces;
 import ie.gmit.sw.chess.board.ChessBoard;
 import ie.gmit.sw.chess.board.Position;
 
+import java.util.Collection;
 import java.util.List;
 
 public class Queen extends Piece {
@@ -22,11 +23,11 @@ public class Queen extends Piece {
     }
 
     @Override
-    public List<Position> getPossiblePositions() {
+    public Collection<Position> getPossiblePositions() {
         // reset the position each time so the moves generated are correct.
         rook.setPosition(position);
         bishop.setPosition(position);
-        List<Position> possiblePositions = rook.getPossiblePositions();
+        Collection<Position> possiblePositions = rook.getPossiblePositions();
         possiblePositions.addAll(bishop.getPossiblePositions());
         return possiblePositions;
     }

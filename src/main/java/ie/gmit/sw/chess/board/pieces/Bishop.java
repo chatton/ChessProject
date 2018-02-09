@@ -4,6 +4,8 @@ import ie.gmit.sw.chess.board.ChessBoard;
 import ie.gmit.sw.chess.board.Position;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 public class Bishop extends Piece {
@@ -19,8 +21,8 @@ public class Bishop extends Piece {
     }
 
     @Override
-    public List<Position> getPossiblePositions() {
-        List<Position> validPositions = new ArrayList<>();
+    public Collection<Position> getPossiblePositions() {
+        Collection<Position> validPositions = new HashSet<>();
 
         //loop to traverse every possible position diagonally
         int x = position.x();
@@ -70,7 +72,7 @@ public class Bishop extends Piece {
     }
 
 
-    private boolean checkPositions(List<Position> validPositions, int x, int y) {
+    private boolean checkPositions(Collection<Position> validPositions, int x, int y) {
         Position next = new Position(x, y); // get the position at x,y
         if(!board.isOnBoard(next)){
             return false;
@@ -90,4 +92,3 @@ public class Bishop extends Piece {
     }
 
 }
-//loop to traverse every possible position diagonally

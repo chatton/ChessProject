@@ -7,6 +7,7 @@ import ie.gmit.sw.chess.board.Position;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Collection;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -24,7 +25,7 @@ public class RookTest {
     public void testRookMovement() {
         Rook rook = new Rook(board, Colour.WHITE);
         board.setAt("A6", rook);
-        List<Position> positions = rook.getPossiblePositions();
+        Collection<Position> positions = rook.getPossiblePositions();
         assertEquals(11, positions.size());
 
         board.makeMove(new Move("A6", "E6"));

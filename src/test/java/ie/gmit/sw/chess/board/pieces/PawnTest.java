@@ -4,6 +4,7 @@ import ie.gmit.sw.chess.board.ChessBoard;
 import ie.gmit.sw.chess.board.Position;
 import org.junit.Test;
 
+import java.util.Collection;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -17,7 +18,7 @@ public class PawnTest {
         Pawn pawn = new Pawn(board, Colour.WHITE);
         board.setAt(new Position(3, 3), pawn);
 
-        List<Position> possibleMoves = pawn.getPossiblePositions();
+        Collection<Position> possibleMoves = pawn.getPossiblePositions();
         assertEquals("Pawn had 3 empty spaces in front of it and didn't have just 1 position.", possibleMoves.size(), 1);
         assertTrue(possibleMoves.contains(new Position(3, 2)));
 

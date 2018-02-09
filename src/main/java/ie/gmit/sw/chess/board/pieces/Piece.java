@@ -1,11 +1,9 @@
 package ie.gmit.sw.chess.board.pieces;
 
 import ie.gmit.sw.chess.board.ChessBoard;
-import ie.gmit.sw.chess.board.Move;
 import ie.gmit.sw.chess.board.Position;
-import ie.gmit.sw.utilities.Util;
 
-import java.util.List;
+import java.util.Collection;
 
 public abstract class Piece {
 
@@ -37,33 +35,6 @@ public abstract class Piece {
         return position;
     }
 
-    public void moveTo(String chessNotation, boolean force) {
-        String chess = Util.positionToString(position, board.size());
-        Move move = new Move(chess, chessNotation);
-        if (force) {
-            board.forceMove(move);
-        } else {
-            board.makeMove(move);
-        }
-    }
-
-    public void moveTo(Position position, boolean force) {
-        Move move = new Move(this.position, position);
-        if (force) {
-            board.forceMove(move);
-        } else {
-            board.makeMove(move);
-        }
-    }
-
-    public void moveTo(String chessNotation) {
-        moveTo(chessNotation, false);
-    }
-
-    public void moveTo(Position position) {
-        moveTo(position, false);
-    }
-
-    public abstract List<Position> getPossiblePositions();
+    public abstract Collection<Position> getPossiblePositions();
 
 }
