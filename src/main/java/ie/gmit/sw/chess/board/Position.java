@@ -3,6 +3,7 @@ package ie.gmit.sw.chess.board;
 import ie.gmit.sw.utilities.Util;
 
 public class Position {
+
     private final int x;
     private final int y;
 
@@ -38,5 +39,10 @@ public class Position {
     @Override
     public int hashCode() {
         return x | y;
+    }
+
+    @Override
+    public String toString(){
+        return Util.positionToString(this, 8);
     }
 }

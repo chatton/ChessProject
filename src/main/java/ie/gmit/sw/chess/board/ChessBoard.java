@@ -1,12 +1,15 @@
 package ie.gmit.sw.chess.board;
 
 import ie.gmit.sw.chess.board.pieces.Colour;
+import ie.gmit.sw.chess.board.pieces.King;
 import ie.gmit.sw.chess.board.pieces.Piece;
 import ie.gmit.sw.utilities.Util;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ChessBoard {
 
@@ -144,8 +147,16 @@ public class ChessBoard {
      * @return all the non-null pieces of that colour.
      */
     public List<Piece> getPieces(Colour colour) {
-        // same but only of the colour provided! if piece.getColour() == colour
-        throw new NotImplementedException(); // TODO implement
+        List<Piece> allPieces = new ArrayList<>();
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                Piece piece = board[i][j];
+                if (piece != null && piece.getColour() == colour) {
+                    allPieces.add(piece);
+                }
+            }
+        }
+        return allPieces;
     }
 
     public boolean isOnBoard(Position pos) {
@@ -159,4 +170,57 @@ public class ChessBoard {
     public int size() {
         return size;
     }
+
+
+    /**
+     * @param colour
+     * @return the King of the given colour. Assumes only one king of each colour on the board.
+     */
+    public King getKing(Colour colour){
+        for(Piece piece : getPieces(colour)){
+            if(piece instanceof King){
+                return (King) piece;
+            }
+        }
+        return null;
+    }
+
+    public void emptyPosition(String chessNotion){
+        setAt(chessNotion, null);
+    }
+
+    public void emptyPosition(Position position){
+        setAt(position, null);
+    }
+
+    /**
+     * @param colour
+     * @return true/false for if the board is in check for a given colour.
+     */
+    public boolean isCheck(Colour colour){
+
+        King king = getKing(colour);
+
+        Colour otherColour;
+        if(colour == Colour.WHITE){
+            otherColour = Colour.BLACK;
+        } else{
+            otherColour = Colour.WHITE;
+        }
+
+        List<Piece> opponentPieces = getPieces(otherColour);
+
+        // get all possible other team moves
+        Set<Position> positionsOtherColourCanMoveTo = new HashSet<>();
+        for(Piece piece : opponentPieces){
+            positionsOtherColourCanMoveTo.addAll(piece.getPossiblePositions());
+        }
+        // if the king's position is in any of them he's in check
+        return positionsOtherColourCanMoveTo.contains(king.getPosition());
+    }
+
+    public boolean isCheckMate(Colour colour){
+        throw new NotImplementedException();
+    }
+
 }
