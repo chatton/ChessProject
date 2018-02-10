@@ -72,6 +72,10 @@ public class ChessService {
     }
 
     public void makeMove(Move move, int gameId, int playerId) {
-        games.get(gameId).makeMove(move, playerId);
+        try {
+            games.get(gameId).makeMove(move, playerId);
+        } catch (IllegalArgumentException e) {
+            System.out.println(move.from() + " -> " + move.to() + " was an illegal move.");
+        }
     }
 }

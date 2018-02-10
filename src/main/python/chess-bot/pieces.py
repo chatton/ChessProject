@@ -1,14 +1,29 @@
 from enum import Enum
 from util import new_pos, pos_to_str
+import doctest
 
-class Colour(Enum):
-    WHITE = "white"
-    BLACK = "black"
+class Colour:
+    WHITE = "WHITE"
+    BLACK = "BLACK"
 
 class Move:
     def __init__(self, origin, dest):
-        self.origin = pos_to_str(origin)
-        self.dest = pos_to_str(dest)
+        if not isinstance(origin, str):
+            origin = pos_to_str(origin)
+
+        if not isinstance(dest, str):
+            dest = pos_to_str(dest)
+
+        self.origin = origin
+        self.dest = dest
+        self.origin_piece = None
+        self.dest_piece = None
+
+    def __str__(self):
+        return self.origin + " -> " + self.dest
+
+    def __repr__(self):
+        return str(self)
 
 class Piece:
 
@@ -37,10 +52,11 @@ class Piece:
 
     def __str__(self):
         return (
-            str(self.colour).split(".")[1].capitalize() + " "  + 
-            self.name + " at " + pos_to_str(self.pos) + " - legal moves: " +
-            str( self.moves)
+            self.colour.capitalize() + " " + self.name + " at " + pos_to_str(self.pos)
         )
+
+    def __repr__(self):
+        return str(self)
 
 class Pawn(Piece):
     def __init__(self, board, colour):
@@ -248,71 +264,61 @@ class Bishop(Piece):
         self.value = 320
         self.name = "Bishop"
 
+    def _validate_position(self, moves, row, col):
+        pos = (row, col)
+        if not self.board.pos_on_board(pos):
+            return False
+
+        if self.board.pos_is_empty(pos):
+            moves.append(Move(self.pos, pos))
+            return True
+
+        piece = self.board.get_piece(pos)
+        if piece.colour != self.colour:
+            moves.append(Move(self.pos, pos))
+        return False
+
+
     @property
     def moves(self):
         valid_positions = []
         row, col = self.pos
-
+        
         # down and right
-        while row < 7 and col < 7:
+        while row < 8 and col < 8:
             row += 1
             col += 1
-            pos = (row, col)
-            if self.board.pos_is_empty(pos):
-                valid_positions.append(Move(self.pos, pos))
+            if self._validate_position(valid_positions, row, col):
                 continue
-
-            piece = self.board.get_piece(pos)
-            if piece.colour != self.colour:
-                valid_positions.append(Move(self.pos, pos))
-            break
-
-        row, col = self.pos
-        # down and left
-        while row > 0 and col < 7:
-            row -= 1
-            col += 1
-            pos = (row, col)
-            if self.board.pos_is_empty(pos):
-                valid_positions.append(Move(self.pos, pos))
-                continue
-
-            piece = self.board.get_piece(pos)
-            if piece.colour != self.colour:
-                valid_positions.append(Move(self.pos, pos))
-
-            break
-
-        row, col = self.pos
-        # up and left
-        while row > 0 and col >= 0:
-            row -= 1
-            col -= 1
-            pos = (row, col)
-            if self.board.pos_is_empty(pos):
-                valid_positions.append(Move(self.pos, pos))
-                continue
-
-            piece = self.board.get_piece(pos)
-            if piece.colour != self.colour:
-                valid_positions.append(Move(self.pos, pos))
-
             break
 
         row, col = self.pos
         # up and right
-        while row < 7 and col > 0:
+        while row >= 0 and col < 8:
+            row -= 1
+            col += 1
+            if self._validate_position(valid_positions, row, col):
+                continue
+            break
+
+        row, col = self.pos
+        # up and left
+        
+        while row >= 0 and col >= 0:
+            row -= 1
+            col -= 1
+            if self._validate_position(valid_positions, row, col):
+                continue
+            break
+
+        row, col = self.pos
+        # up and right
+
+        while row < 8 and col >= 0:
             row += 1
             col -= 1
-            pos = (row, col)
-            if self.board.pos_is_empty(pos):
-                valid_positions.append(Move(self.pos, pos))
+            if self._validate_position(valid_positions, row, col):
                 continue
-
-            piece = self.board.get_piece(pos)
-            if piece.colour != self.colour:
-                valid_positions.append(Move(self.pos, pos))
-
             break
 
         return valid_positions

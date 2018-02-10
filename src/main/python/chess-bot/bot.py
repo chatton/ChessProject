@@ -14,7 +14,7 @@ class ChessBot:
         self.game_state = {}
         self.player_id = None
         self.game_id = None
-        self.colour = str(Colour.WHITE).split(".")[1]
+    
 
     def request_game(self):
         """connect to a game and set the player and game ids as well as what colour the bot
@@ -27,8 +27,7 @@ class ChessBot:
         result = resp.json()
         self.player_id = result["playerId"]
         self.game_id = result["gameId"]
-
-        self._colour_enum = Colour.WHITE if self.colour == "WHITE" else Colour.BLACK
+        self.colour = result["colour"]
 
     def update_game_state(self):
         """this method makes a get request to the server and updates
@@ -49,30 +48,36 @@ class ChessBot:
         print("Making move: " + str(move))
         query = "http://" + self.config["host"] + ":" + str(self.config["port"]) + "/chess/v1/makemove"
         # sends the move as a post request to the server.
-        rep = requests.post(query, data={
+
+        rep = requests.post(query, json={
             "from" : move.origin,
             "to" : move.dest,
-            "gameId" : self.game_id
+            "gameId" : self.game_id,
+            "playerId" : self.player_id
         })
-
-
+    
     @property
     def is_turn(self):
         """determines if it's currently the bot's turn or not based on the current server status."""
         return False if "currentTurn" not in self.game_state else self.game_state["currentTurn"] == self.colour
 
     def _get_next_move(self):
-        optimal_move = None
-        highest_value = -1
-        moves = self.moves
-        random.shuffle(moves)
-        for move in moves:
-            val = self._get_move_value(move)
-            if val > highest_value:
-                optimal_move = move
-                highest_value = val
-        return optimal_move
-     
+        moves_and_values = []
+        for move in self.moves:
+            moves_and_values.append((move, self._get_move_value(move)))
+
+        moves_and_values.sort(key=lambda move_val : move_val[1], reverse=True)
+   
+        for move_val in moves_and_values:
+            move = move_val[0]
+            self.board.make_move(move)
+            if not self.board.is_check(self.colour):
+                self.board.undo_move()
+                return move
+
+            self.board.undo_move()
+            
+
     def _get_move_value(self, move):
         piece = self.board.get_piece(move.dest)
         return piece.value if piece else 0
@@ -82,14 +87,14 @@ class ChessBot:
     def pieces(self):
         return [
             piece for piece in self.board.pieces 
-            if piece and piece.colour == self._colour_enum
+            if piece and piece.colour == self.colour
         ]
 
     @property
     def opponent_pieces(self):
         return [
             piece for piece in self.board.pieces 
-            if piece and piece.colour != self._colour_enum
+            if piece and piece.colour != self.colour
         ]
 
     @property
