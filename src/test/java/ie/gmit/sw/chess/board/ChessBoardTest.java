@@ -6,7 +6,10 @@ import ie.gmit.sw.chess.board.pieces.King;
 import ie.gmit.sw.chess.board.pieces.Knight;
 import ie.gmit.sw.chess.board.pieces.Pawn;
 import ie.gmit.sw.chess.board.pieces.Piece;
+import ie.gmit.sw.chess.board.pieces.Queen;
 import org.junit.Test;
+
+import java.util.Collection;
 
 import static org.junit.Assert.*;
 
@@ -40,12 +43,12 @@ public class ChessBoardTest {
     }
 
     @Test
-    public void testUndoSingleMove(){
+    public void testUndoSingleMove() {
         ChessBoard board = new ChessBoard(8);
         Piece pawn = new Pawn(board, Colour.WHITE);
         board.setAt("A2", pawn);
         board.makeMove(new Move("A2", "A3"));
-        assertEquals(pawn,  board.getAt("A3"));
+        assertEquals(pawn, board.getAt("A3"));
         assertEquals(null, board.getAt("A2"));
         board.undoLastMove();
         assertTrue(board.getAt("A2").equals(pawn));
@@ -54,7 +57,7 @@ public class ChessBoardTest {
 
         board.setAt("B3", knight);
         board.makeMove(new Move("A2", "B3"));
-        assertTrue("Pawn moved to capture knight but was not occupying the position the knight was at.",board.getAt("B3").equals(pawn));
+        assertTrue("Pawn moved to capture knight but was not occupying the position the knight was at.", board.getAt("B3").equals(pawn));
 
         board.undoLastMove();
 
@@ -63,7 +66,7 @@ public class ChessBoardTest {
     }
 
     @Test
-    public void testUndoMultipleMoves(){
+    public void testUndoMultipleMoves() {
         ChessBoard board = ChessFactory.newStandardChessBoard();
 
         Piece wPawn = board.getAt("B2");
@@ -82,7 +85,7 @@ public class ChessBoardTest {
         board.makeMove(new Move("B4", "A5"));
 
         // undo all 5 moves
-        for(int i = 0; i < 5; i++){
+        for (int i = 0; i < 5; i++) {
             board.undoLastMove();
         }
 
@@ -90,6 +93,29 @@ public class ChessBoardTest {
         assertEquals(wPawn, board.getAt("B2"));
         assertEquals(bPawn, board.getAt("C7"));
         assertEquals(pieceToCapture, board.getAt("A5"));
+
+    }
+
+    @Test
+    public void testGettingPossiblePositionsDoesntGivePositionsThatWouldResultInCheck() {
+        ChessBoard board = new ChessBoard(8);
+
+        Queen bQueen = new Queen(board, Colour.BLACK);
+        Knight wKnight = new Knight(board, Colour.WHITE);
+        King wKing = new King(board, Colour.WHITE);
+
+        board.setAt("C8", bQueen);
+        board.setAt("C4", wKnight);
+        board.setAt("C2", wKing);
+
+        assertFalse(board.moveIsValid(new Move("C4", "E5"))); // would result in check
+
+        Knight wKnight2 = new Knight(board, Colour.WHITE);
+        board.setAt("E7", wKnight2);
+        board.makeMove(new Move("E7", "C8"));// captures the queen
+
+//        board.emptyPosition("C8"); // remove the queen.
+        assertTrue(board.moveIsValid(new Move("C4", "E5"))); // won't result in check anymore
 
     }
 

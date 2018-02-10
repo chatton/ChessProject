@@ -1,17 +1,14 @@
 package ie.gmit.sw.services;
 
-import com.fasterxml.jackson.annotation.JsonValue;
 import ie.gmit.sw.chess.board.ChessBoard;
 import ie.gmit.sw.chess.board.ChessFactory;
 import ie.gmit.sw.chess.board.Move;
-import ie.gmit.sw.chess.board.pieces.Colour;
-import ie.gmit.sw.chess.board.pieces.Knight;
-import ie.gmit.sw.chess.board.pieces.Pawn;
-import ie.gmit.sw.chess.board.pieces.Rook;
 import ie.gmit.sw.chess.game.Game;
 import ie.gmit.sw.chess.game.Player;
 import ie.gmit.sw.model.GameState;
 import ie.gmit.sw.model.NewGameResponse;
+import ie.gmit.sw.repositories.ChessRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -23,7 +20,10 @@ public class ChessService {
 
     private Map<Integer, Game> games;
 
-    public ChessService() {
+    private ChessRepository repository;
+
+    @Autowired
+    public ChessService(ChessRepository repository) {
         games = new HashMap<>();
         // TODO populate from DB
     }
@@ -71,7 +71,7 @@ public class ChessService {
         return new NewGameResponse(game.getId(), player.getId(), game.getColourFor(player.getId()));
     }
 
-    public void makeMove(Move move, int gameId) {
-        games.get(gameId).makeMove(move);
+    public void makeMove(Move move, int gameId, int playerId) {
+        games.get(gameId).makeMove(move, playerId);
     }
 }

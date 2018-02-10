@@ -35,7 +35,7 @@ public class ChessController {
 
     @PostMapping("makemove")
     public void makeMove(@RequestBody MoveRequest moveRequest) {
-        chessService.makeMove(moveRequest.getMove(), moveRequest.getGameId());
+        chessService.makeMove(moveRequest.getMove(), moveRequest.getGameId(), moveRequest.getPlayerId());
     }
 }
 

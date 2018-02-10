@@ -11,6 +11,7 @@ public class MoveRequest {
 
     private String from;
     private String to;
+    private int playerId;
     private int gameId;
 
     public Move getMove() {
@@ -31,5 +32,13 @@ public class MoveRequest {
 
     public void setGameId(int gameId) {
         this.gameId = gameId;
+    }
+
+    public int getPlayerId() {
+        return playerId;
+    }
+
+    public void setPlayerId(int playerId) {
+        this.playerId = playerId;
     }
 }

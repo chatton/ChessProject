@@ -9,11 +9,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ The GameState class holds all the information
+ that clients need to keep track of an individual
+ game.
+ */
 public class GameState {
 
     private Map<String, String> positions;
-
-    private Colour currentTurn;
+    private String gameStatus; // "FINISHED", "ONGOING", "STARTING"
+    private Colour currentTurn; // "WHITE" / "BLACK"
 
     public GameState(ChessBoard board, Colour colour) {
         positions = new HashMap<>();
@@ -33,5 +38,9 @@ public class GameState {
 
     public Colour getCurrentTurn() {
         return currentTurn;
+    }
+
+    public String getGameStatus() {
+        return gameStatus;
     }
 }

@@ -14,13 +14,13 @@ public class Game {
 
     private Player player1;
     private Player player2;
-    private Colour currentTurn;
+    private Colour currentTurnColour;
 
     private final ChessBoard chessBoard;
     private final int id;
 
     public Game(ChessBoard chessBoard, int id) {
-        currentTurn = Colour.WHITE; // all games start on the white player's turn.
+        currentTurnColour = Colour.WHITE; // all games start on the white player's turn.
         this.chessBoard = chessBoard;
         this.id = id;
     }
@@ -72,30 +72,45 @@ public class Game {
     }
 
     public GameState getGameState() {
-        return new GameState(chessBoard, currentTurn);
+        // TODO determine what the game status is "READY", "ONGOING", "FINISHED"
+        return new GameState(chessBoard, currentTurnColour);
     }
 
     // true/false for if the given move is for the current player.
     private boolean moveIsForCurrentColour(Move move) {
+
         if (chessBoard.posIsEmpty(move.from())) { // looking at where the move is starting.
             return false;
         }
 
         Piece piece = chessBoard.getAt(move.from());
-        return piece.getColour() == currentTurn;
+        return piece.getColour() == currentTurnColour;
     }
 
     // swap the current player's turn.
     private void swapTurn() {
-        if (currentTurn == Colour.WHITE) {
-            currentTurn = Colour.BLACK;
+        if (currentTurnColour == Colour.WHITE) {
+            currentTurnColour = Colour.BLACK;
         } else {
-            currentTurn = Colour.WHITE;
+            currentTurnColour = Colour.WHITE;
         }
     }
 
     // TODO make sure each player can only move their pieces.
-    public void makeMove(Move move) {
+    public void makeMove(Move move, int playerId) {
+
+        if(isFree()){ // nobody should be able to play until 2 players are in the game.
+            return;
+        }
+
+        // both player are in the game from here on.
+
+        // make sure the player making the move is the player of that colour.
+        Colour playerColour = getColourFor(playerId);
+        if(playerColour != currentTurnColour){
+            return;
+        }
+
         // the the colour of the move (black/white)
         if (!moveIsForCurrentColour(move)) {
             // TODO return error of some kind

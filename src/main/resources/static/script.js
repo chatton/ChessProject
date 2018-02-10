@@ -27,7 +27,7 @@ function getMousePos(canvas, evt) {
 }
 
 let numClicks = 0;
-let move = {"from": "", "to": ""};
+let move = {"from": "", "to": "", "playerId" : ""};
 
 function sendMove(data) {
     $.ajax({
@@ -124,7 +124,7 @@ function drawButton() {
     button.addEventListener("click", function () {
         $.get("/chess/v1/newgame", function (data) {
             gameId = data.gameId;
-
+            move.playerId = data.playerId;
             poll();
         })
     });

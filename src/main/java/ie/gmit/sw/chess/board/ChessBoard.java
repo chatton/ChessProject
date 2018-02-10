@@ -100,8 +100,34 @@ public class ChessBoard {
         // it is a piece we want to move.
         Collection<Position> possibleMoves = targetPiece.getPossiblePositions(); // depends on the piece type what these are.
         // the move is valid if and only if the piece can actually move there. Otherwise it's invalid.
-        return possibleMoves.contains(move.to()); // true if the destination is in the piece's list of valid positions.
+        boolean inPossibleMoves = possibleMoves.contains(move.to()); // true if the destination is in the piece's list of valid positions.
 
+
+        if(!inPossibleMoves){
+            return false;
+        }
+
+        // then look for Check
+        Colour allyTeam = targetPiece.getColour();
+
+        // actually make the move.
+        move.setFromPiece(targetPiece);
+        move.setToPiece(getAt(move.to()));
+
+        // 4. reposition it and the new position
+        setAt(move.to(), targetPiece);
+
+        // 5, ned to empty the original position so it's now free for other pieces.
+        setAt(move.from(), null); // null means an empty spot
+        moveHistory.push(move);
+
+        if(isCheck(allyTeam)){
+            undoLastMove();
+            return false;
+        }
+
+        undoLastMove();
+        return true;
     }
 
 
@@ -129,7 +155,6 @@ public class ChessBoard {
         // 5, ned to empty the original position so it's now free for other pieces.
         setAt(move.from(), null); // null means an empty spot
         moveHistory.push(move);
-
     }
 
     public void undoLastMove() {
