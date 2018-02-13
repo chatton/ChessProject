@@ -241,6 +241,10 @@ public class ChessBoard {
     public boolean isCheck(Colour colour) {
 
         King king = getKing(colour);
+        // can't be in check if there's no king.
+        if(king == null){
+            return false;
+        }
 
         Colour otherColour;
         if (colour == Colour.WHITE) {
