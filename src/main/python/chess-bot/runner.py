@@ -12,7 +12,7 @@ def main():
        
         # keep updating the game state until it's the bot's turn.
     
-        if bot.is_turn:
+        if bot.is_turn():
             # it's the bot's turn so it needs to make a move.
             bot.make_move() # sends it's move to the server via a POST request.
 

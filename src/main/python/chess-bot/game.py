@@ -1,8 +1,16 @@
 from pieces import *
 from util import *
+import copy
+
+
+def copy_of(board):
+    internals = copy.deepcopy(board._grid)
+    new_board = Board({})
+    new_board._grid = internals
+    return new_board
 
 class Board:
-    def __init__(self, positions=None):
+    def __init__(self, positions):
         self._grid = self._init_grid(positions)
         self._move_history = []
 
@@ -52,6 +60,8 @@ class Board:
             if piece.colour == colour and isinstance(piece, King):
                 return piece
 
+        raise ValueError("No [{}] king was found.".format(colour))
+
     def get_piece(self, pos):
         if isinstance(pos, str):
             pos = str_to_pos(pos)
@@ -80,3 +90,35 @@ class Board:
     @property
     def pieces(self):
         return [piece for piece in self._grid.values() if piece]
+
+
+    def all_possible_moves(self, colour):
+        all_pieces = [piece for piece in self.pieces if piece.colour == colour]
+        all_moves = []
+        for piece in all_pieces:
+            all_moves.extend(piece.moves)
+        return all_moves
+
+    def all_board_states(self, current_turn_colour):
+        all_moves = self.all_possible_moves(current_turn_colour)
+        board_states = []
+        for move in all_moves:
+            target = self.get_piece(move.dest)
+            value = 0
+            if target:
+                value += target.value
+            board_states.append(BoardState(self, move, value))
+        return board_states
+
+class BoardState:
+    def __init__(self, board, move, value):
+        self.move = move
+        self.value = value
+        self.board = copy_of(board) # copy the board so as not to mutate it
+        self.board.make_move(move)  # apply the desired move so only the new board is altered.
+        
+    def is_check(self, colour):
+        return self.board.is_check(colour)
+
+    def all_board_states(self, colour):
+        return self.board.all_board_states(colour)
