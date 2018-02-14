@@ -103,7 +103,7 @@ public class ChessBoard {
         boolean inPossibleMoves = possibleMoves.contains(move.to()); // true if the destination is in the piece's list of valid positions.
 
 
-        if(!inPossibleMoves){
+        if (!inPossibleMoves) {
             return false;
         }
 
@@ -121,8 +121,11 @@ public class ChessBoard {
         setAt(move.from(), null); // null means an empty spot
         moveHistory.push(move);
 
-        if(isCheck(allyTeam)){
+        if (isCheck(allyTeam)) {
             undoLastMove();
+            if (isCheckMate(allyTeam)) {
+                return false;
+            }
             return false;
         }
 
@@ -138,7 +141,7 @@ public class ChessBoard {
      *
      * @param move the move that will update the board state.
      */
-    public void makeMove(Move move){
+    public void makeMove(Move move) {
         // 1. check if the move is valid
         if (!moveIsValid(move)) {
             // 2. if not, throw exception, otherwise, perform movement.
@@ -163,7 +166,6 @@ public class ChessBoard {
         setAt(undoMove.to(), undoMove.getToPiece());
         setAt(undoMove.from(), undoMove.getFromPiece());
     }
-
 
 
     /**
@@ -242,7 +244,7 @@ public class ChessBoard {
 
         King king = getKing(colour);
         // can't be in check if there's no king.
-        if(king == null){
+        if (king == null) {
             return false;
         }
 
@@ -264,8 +266,40 @@ public class ChessBoard {
         return positionsOtherColourCanMoveTo.contains(king.getPosition());
     }
 
+    private Collection<Move> getAllPossibleMoves(Colour colour) {
+        Collection<Piece> allAllyPieces = getPieces(colour);
+        Collection<Move> allPossibleMoves = new ArrayList<>();
+        for (Piece piece : allAllyPieces) {
+            allPossibleMoves.addAll(piece.getPossibleMoves());
+        }
+        return allPossibleMoves;
+    }
+
+
     public boolean isCheckMate(Colour colour) {
-        throw new NotImplementedException();
+        Collection<Move> allAllyMoves = getAllPossibleMoves(colour);
+
+        for (Move move : allAllyMoves) {
+
+            Piece piece = getAt(move.from());
+            move.setFromPiece(piece);
+            move.setToPiece(getAt(move.to()));
+
+            // 4. reposition it and the new position
+            setAt(move.to(), piece);
+
+            // 5, ned to empty the original position so it's now free for other pieces.
+            setAt(move.from(), null); // null means an empty spot
+            moveHistory.push(move);
+
+
+            boolean isCheck = isCheck(colour);
+            undoLastMove();
+            if (!isCheck) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }

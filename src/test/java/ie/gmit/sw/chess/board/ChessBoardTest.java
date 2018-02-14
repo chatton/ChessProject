@@ -7,11 +7,12 @@ import ie.gmit.sw.chess.board.pieces.Knight;
 import ie.gmit.sw.chess.board.pieces.Pawn;
 import ie.gmit.sw.chess.board.pieces.Piece;
 import ie.gmit.sw.chess.board.pieces.Queen;
+import ie.gmit.sw.chess.board.pieces.Rook;
 import org.junit.Test;
 
-import java.util.Collection;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class ChessBoardTest {
 
@@ -116,7 +117,27 @@ public class ChessBoardTest {
 
 //        board.emptyPosition("C8"); // remove the queen.
         assertTrue(board.moveIsValid(new Move("C4", "E5"))); // won't result in check anymore
-
     }
 
+    @Test
+    public void testCheckMate(){
+        ChessBoard board = new ChessBoard(8);
+        board.setAt("A8", new King(board, Colour.BLACK));
+        board.setAt("B7", new Queen(board, Colour.WHITE));
+        board.setAt("C6", new Bishop(board, Colour.WHITE));
+        board.setAt("D1", new King(board, Colour.WHITE));
+        board.setAt("F7", new Rook(board, Colour.BLACK));
+
+        assertFalse(board.isCheckMate(Colour.BLACK));
+
+        board = new ChessBoard(8);
+        board.setAt("A8", new King(board, Colour.BLACK));
+        board.setAt("B7", new Queen(board, Colour.WHITE));
+        board.setAt("C6", new Bishop(board, Colour.WHITE));
+        board.setAt("D1", new King(board, Colour.WHITE));
+        board.setAt("F5", new Rook(board, Colour.BLACK));
+
+        assertTrue(board.isCheckMate(Colour.BLACK));
+        assertFalse(board.isCheckMate(Colour.WHITE));
+    }
 }

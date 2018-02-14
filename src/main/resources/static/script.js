@@ -12,9 +12,9 @@ let board = {"positions": {}};// create empty object to start with so the draw m
 
 // Map an x/y co-ordinate to the chess location.
 function mapToChess(x, y) {
-    const AasciiCode = 65;
+    const asciiCode = 65;
     const mappedInt = BOARD_SIZE - y;
-    return String.fromCharCode(AasciiCode + x) + "" + mappedInt;
+    return String.fromCharCode(asciiCode + x) + "" + mappedInt;
 }
 
 
@@ -27,7 +27,7 @@ function getMousePos(canvas, evt) {
 }
 
 let numClicks = 0;
-let move = {"from": "", "to": "", "playerId" : ""};
+let move = {"from": "", "to": "", "playerId": ""};
 
 function sendMove(data) {
     $.ajax({
@@ -44,6 +44,10 @@ function sendMove(data) {
     });
 }
 
+function tileIsEmpty(chessNotation){
+    return board.positions[chessNotation] === undefined;
+}
+
 canvas.addEventListener("click", function (e) {
     const pos = getMousePos(canvas, e);
     const boardPos = {
@@ -54,6 +58,10 @@ canvas.addEventListener("click", function (e) {
 
     numClicks++;
     if (numClicks === 1) {
+        if(tileIsEmpty(chessNotation)){
+            numClicks--;
+            return;
+        }
         move.from = chessNotation;
     } else if (numClicks === 2) {
         move.to = chessNotation;
@@ -139,5 +147,3 @@ function start() {
 
 draw(); // draw the initial board before the first GET request finishes
 start();
-
-
