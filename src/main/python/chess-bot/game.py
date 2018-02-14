@@ -9,6 +9,7 @@ def copy_of(board):
     new_board._grid = internals
     return new_board
 
+
 class Board:
     def __init__(self, positions):
         self._grid = self._init_grid(positions)
@@ -23,21 +24,20 @@ class Board:
             piece = piece_cls(self, colour)
             grid[pos] = piece
             piece.pos = pos
-            
-        return grid
 
+        return grid
 
     def is_check(self, colour):
         all_enemy_pieces = [piece for piece in self.pieces if piece.colour != colour]
         danger_zone = []
-        
+
         for piece in all_enemy_pieces:
             danger_zone.extend([move.dest for move in piece.moves])
 
         king = self.get_king(colour)
 
         return pos_to_str(king.pos) in danger_zone
-        
+
     def make_move(self, move):
         piece = self.get_piece(move.origin)
         move.dest_piece = self.get_piece(move.dest)
@@ -45,7 +45,6 @@ class Board:
         self.set_at(move.dest, piece)
         self.set_at(move.origin, None)
         self._move_history.append(move)
-       
 
     def undo_move(self):
         move = self._move_history.pop()
@@ -82,7 +81,7 @@ class Board:
     def set_at(self, pos, piece):
         if isinstance(pos, str):
             pos = str_to_pos(pos)
-            
+
         self._grid[pos] = piece
         if piece:
             piece.pos = pos
@@ -91,7 +90,6 @@ class Board:
     def pieces(self):
         return [piece for piece in self._grid.values() if piece]
 
-
     def all_possible_moves(self, colour):
         all_pieces = [piece for piece in self.pieces if piece.colour == colour]
         all_moves = []
@@ -99,24 +97,24 @@ class Board:
             all_moves.extend(piece.moves)
         return all_moves
 
-    def all_board_states(self, current_turn_colour):
+    def all_board_states(self, current_turn_colour, value=0):
         all_moves = self.all_possible_moves(current_turn_colour)
         board_states = []
         for move in all_moves:
             target = self.get_piece(move.dest)
-            value = 0
             if target:
                 value += target.value
             board_states.append(BoardState(self, move, value))
         return board_states
 
+
 class BoardState:
     def __init__(self, board, move, value):
         self.move = move
         self.value = value
-        self.board = copy_of(board) # copy the board so as not to mutate it
+        self.board = copy_of(board)  # copy the board so as not to mutate it
         self.board.make_move(move)  # apply the desired move so only the new board is altered.
-        
+
     def is_check(self, colour):
         return self.board.is_check(colour)
 
