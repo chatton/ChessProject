@@ -26,8 +26,10 @@ public class ChessBoardTest {
 
         board.emptyPosition("D1");
 
+        board.emptyPosition("E1"); // remove original white king
+
         King king = new King(board, Colour.WHITE);
-        board.setAt("F6", king);
+        board.setAt("F6", king); // place new king in check
         assertTrue(board.isCheck(Colour.WHITE));
 
         // take the king off the board

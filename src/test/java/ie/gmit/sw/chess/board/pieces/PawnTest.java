@@ -38,7 +38,7 @@ public class PawnTest {
     @Test
     public void testBlackPawnGetPossiblePositions() {
 
-        ChessBoard board = new ChessBoard(8);
+        ChessBoard board = new ChessBoard();
         Pawn pawn = new Pawn(board, Colour.BLACK);
         board.setAt(new Position(3, 3), pawn);
 
