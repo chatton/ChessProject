@@ -7,7 +7,7 @@ const GRID_SIZE = 63;
 const BOARD_SIZE = 8;
 
 let shouldDraw = false;
-let board = {"positions": {}, "check" :{"WHITE" : "", "BLACK" : ""}};// create empty object to start with so the draw method knows to draw an empty tile.
+let board = {"positions": {}, "check": {"WHITE": "", "BLACK": ""}};// create empty object to start with so the draw method knows to draw an empty tile.
 
 
 // Map an x/y co-ordinate to the chess location.
@@ -44,7 +44,7 @@ function sendMove(data) {
     });
 }
 
-function tileIsEmpty(chessNotation){
+function tileIsEmpty(chessNotation) {
     return board.positions[chessNotation] === undefined;
 }
 
@@ -59,7 +59,7 @@ canvas.addEventListener("click", function (e) {
 
     numClicks++;
     if (numClicks === 1) {
-        if(tileIsEmpty(chessNotation)){
+        if (tileIsEmpty(chessNotation)) {
             numClicks--;
             return;
         }
@@ -82,10 +82,10 @@ function draw() {
     for (let x = 0; x < BOARD_SIZE; x++) {
         for (let y = 0; y < BOARD_SIZE; y++) {
             if (isWhiteSquare(x, y)) {
-                drawSquare("#ffff66", x, y);
+                drawSquare("#fff796", x, y);
             }
             else {
-                drawSquare("#333300", x, y)
+                drawSquare("#474931", x, y)
             }
         }
     }
@@ -100,31 +100,27 @@ function drawSquare(colour, x, y) {
     image.onload = () => {
         ctx.fillStyle = colour;
         // if the tile being drawn is the selected tile, draw it yellow instead.
-        if(mapToChess(x,y) === selectedTile){
+        if (mapToChess(x, y) === selectedTile) {
             ctx.fillStyle = "yellow";
         }
 
         // draw a rectangle
         ctx.fillRect(GRID_SIZE * x, GRID_SIZE * y, GRID_SIZE, GRID_SIZE);
 
+        // if a king is in check, draw a circle around them.
+        const check = board.check;
+
+        if (mapToChess(x, y) === check.WHITE.location || mapToChess(x, y) === check.BLACK.location) {
+
+            if (check.WHITE.inCheck || check.BLACK.inCheck) {
+                ctx.strokeStyle = "red";
+                ctx.fillRect(GRID_SIZE * x, GRID_SIZE * y, GRID_SIZE, GRID_SIZE);
+            }
+        }
+
         // and then an image on top of it.
         ctx.drawImage(image, GRID_SIZE * x, GRID_SIZE * y, GRID_SIZE, GRID_SIZE);
 
-        // if a king is in check, draw a circle around them.
-        const check = board.check;
-        // {
-        //     "WHITE" : "false",
-        //     "BLACK" : {
-        //                  "inCheck": "true",
-        //                   "location" : "A6"
-        //                 }
-        // }
-
-        if(check.WHITE){
-
-        } else if(check.BLACK){
-
-        }
     };
 }
 
@@ -172,8 +168,6 @@ function start() {
     }
     window.requestAnimationFrame(start);
 }
-
-
 
 
 draw(); // draw the initial board before the first GET request finishes

@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <title>CHESS</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb"
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"
+          integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb"
           crossorigin="anonymous">
 
     <style type="text/css">
@@ -15,38 +16,87 @@
     </style>
 
 </head>
+<body>
+<!-- This is where react will insert html to display. -->
+<div id="root"></div>
 
-<body onload = "draw()" bgcolor ="lightblue">
-<div style="text-align: center;">
-    <h1>Chess</h1>
-</div>
-<div id="textbox">
-    <textarea rows="4" cols="50">
-This is just a placeholder for messages in our chess game.
-</textarea>
-</div>
-<!--<div id ="dropdownMenu">
-<form id="dropdown">
-    <select name="SELECT FROM HERE">
-        <option value="new game">New Game</option>
-        <option value="return to a game">Return to a game</option>
-        <option value="play the computer">Play The Computer</option>
-        <option value="watch computer">Watch the computer</option>
-    </select>
-    <br><br>
-    <input type="submit">
-</form>
-</div>-->
 
-<div style="text-align: center;">
-    <canvas id="Chess" height="504" width="504"></canvas>
-</div>
+<!-- These scripts allow us to use React.js-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react-dom.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.21.1/babel.min.js"></script>
+<script type="text/babel">
 
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-<script src = "script.js"></script>
-<div style="background-size: auto"></div>
-<button type="button" id="myBtn" onclick="drawButton()">New Game</button>
+    const BOARD_SIZE = 8;
 
+    function isWhiteSquare(x, y) {
+        return x % 2 === y % 2;
+    }
+
+    function mapToChess(x, y) {
+        const asciiCode = 65;
+        const mappedInt = BOARD_SIZE - y;
+        return String.fromCharCode(asciiCode + x) + "" + mappedInt;
+    }
+
+    class Button extends React.Component {
+
+    }
+
+    class ChessWindow extends React.Component {
+
+        componentDidMount() {
+            this.drawCanvas();
+        }
+
+        constructor(props) {
+            super(props);
+            this.state = {
+                "numClicks": 0
+            }
+        }
+
+
+        drawCanvas() {
+            for (let y = 0; y < this.props.size; y++) {
+                if (this.isWhiteSquare(x, y)) {
+                    this.drawSquare("#ffff66", x, y);
+                }
+                else {
+                    this.drawSquare("#333300", x, y)
+                }
+            }
+        }
+
+
+        drawSquare(colour, x, y) {
+            const image = new Image();
+            const currentChessPosition = mapToChess(x, y); // ex. 0,0 -> A8
+            // the name of the image from the response matches the name of the image files.
+            image.src = "images/" + board["positions"][currentChessPosition] + ".png";
+            image.onload = () => {
+                ctx.fillStyle = colour;
+                // draw a rectangle
+                ctx.fillRect(GRID_SIZE * x, GRID_SIZE * y, GRID_SIZE, GRID_SIZE);
+                // and then an image on top of it.
+                ctx.drawImage(image, GRID_SIZE * x, GRID_SIZE * y, GRID_SIZE, GRID_SIZE);
+            };
+        }
+
+        clicked() {
+
+        }
+
+        render() {
+            return (
+                    <canvas ref="canvas" onClick={this.clicked} width={500} height={500}/>
+            )
+        }
+    }
+
+    ReactDOM.render(<ChessWindow size="8"/>,
+        document.getElementById('root'));
+</script>
 
 </body>
 
