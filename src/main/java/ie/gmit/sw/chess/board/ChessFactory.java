@@ -18,9 +18,9 @@ public class ChessFactory {
         board.setAt("B2", new Pawn(board, Colour.WHITE));
         board.setAt("C1", new Bishop(board, Colour.WHITE));
         board.setAt("C2", new Pawn(board, Colour.WHITE));
-        board.setAt("D1", new King(board, Colour.WHITE));
+        board.setAt("D1", new Queen(board, Colour.WHITE));
         board.setAt("D2", new Pawn(board, Colour.WHITE));
-        board.setAt("E1", new Queen(board, Colour.WHITE));
+        board.setAt("E1", new King(board, Colour.WHITE));
         board.setAt("E2", new Pawn(board, Colour.WHITE));
         board.setAt("F1", new Bishop(board, Colour.WHITE));
         board.setAt("F2", new Pawn(board, Colour.WHITE));
@@ -35,9 +35,9 @@ public class ChessFactory {
         board.setAt("B7", new Pawn(board, Colour.BLACK));
         board.setAt("C8", new Bishop(board, Colour.BLACK));
         board.setAt("C7", new Pawn(board, Colour.BLACK));
-        board.setAt("D8", new King(board, Colour.BLACK));
+        board.setAt("D8", new Queen(board, Colour.BLACK));
         board.setAt("D7", new Pawn(board, Colour.BLACK));
-        board.setAt("E8", new Queen(board, Colour.BLACK));
+        board.setAt("E8", new King(board, Colour.BLACK));
         board.setAt("E7", new Pawn(board, Colour.BLACK));
         board.setAt("F8", new Bishop(board, Colour.BLACK));
         board.setAt("F7", new Pawn(board, Colour.BLACK));
