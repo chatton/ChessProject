@@ -78,10 +78,10 @@ function draw() {
     for (let x = 0; x < BOARD_SIZE; x++) {
         for (let y = 0; y < BOARD_SIZE; y++) {
             if (isWhiteSquare(x, y)) {
-                drawSquare("blue", x, y);
+                drawSquare("#ffff66", x, y);
             }
             else {
-                drawSquare("red", x, y)
+                drawSquare("#333300", x, y)
             }
         }
     }
