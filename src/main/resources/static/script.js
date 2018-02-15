@@ -7,7 +7,7 @@ const GRID_SIZE = 63;
 const BOARD_SIZE = 8;
 
 let shouldDraw = false;
-let board = {"positions": {}};// create empty object to start with so the draw method knows to draw an empty tile.
+let board = {"positions": {}, "check" :{"WHITE" : "", "BLACK" : ""}};// create empty object to start with so the draw method knows to draw an empty tile.
 
 
 // Map an x/y co-ordinate to the chess location.
@@ -48,6 +48,7 @@ function tileIsEmpty(chessNotation){
     return board.positions[chessNotation] === undefined;
 }
 
+let selectedTile;
 canvas.addEventListener("click", function (e) {
     const pos = getMousePos(canvas, e);
     const boardPos = {
@@ -62,10 +63,13 @@ canvas.addEventListener("click", function (e) {
             numClicks--;
             return;
         }
+
+        selectedTile = chessNotation;
         move.from = chessNotation;
     } else if (numClicks === 2) {
         move.to = chessNotation;
         numClicks = 0;
+        selectedTile = undefined;
         sendMove(move);
     }
 });
@@ -95,10 +99,32 @@ function drawSquare(colour, x, y) {
     image.src = "images/" + board["positions"][currentChessPosition] + ".png";
     image.onload = () => {
         ctx.fillStyle = colour;
+        // if the tile being drawn is the selected tile, draw it yellow instead.
+        if(mapToChess(x,y) === selectedTile){
+            ctx.fillStyle = "yellow";
+        }
+
         // draw a rectangle
         ctx.fillRect(GRID_SIZE * x, GRID_SIZE * y, GRID_SIZE, GRID_SIZE);
+
         // and then an image on top of it.
         ctx.drawImage(image, GRID_SIZE * x, GRID_SIZE * y, GRID_SIZE, GRID_SIZE);
+
+        // if a king is in check, draw a circle around them.
+        const check = board.check;
+        // {
+        //     "WHITE" : "false",
+        //     "BLACK" : {
+        //                  "inCheck": "true",
+        //                   "location" : "A6"
+        //                 }
+        // }
+
+        if(check.WHITE){
+
+        } else if(check.BLACK){
+
+        }
     };
 }
 
@@ -110,12 +136,14 @@ function poll() {
     /*
      get will be used to get a new board
      */
-    $.get("/chess/v1/gamestate?gameId=" + gameId, function (data) {
+    $.get("/chess/v1/gamestate?gameId=" + gameId + "&playerId=" + move.playerId, function (data) {
         board = data;
         move["gameId"] = gameId;
         shouldDraw = true;
+        // TODO display in a label/image/another canvas
+        $("textarea").val("You are playing as the " + board["yourColour"] + " player!");
     });
-    $("textarea").val(JSON.stringify(board.positions)); // TODO display messages from server in this text area
+
     setTimeout(poll, 5000)
 }
 
@@ -144,6 +172,9 @@ function start() {
     }
     window.requestAnimationFrame(start);
 }
+
+
+
 
 draw(); // draw the initial board before the first GET request finishes
 start();

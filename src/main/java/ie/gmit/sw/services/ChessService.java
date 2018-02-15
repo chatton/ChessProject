@@ -33,10 +33,10 @@ public class ChessService {
         // TODO populate from DB
     }
 
-    public GameState getGameState(int gameId) {
+    public GameState getGameState(int gameId, int playerId) {
         // make sure gameId exists
         // TODO handle errors and don't hard code
-        return games.get(gameId).getGameState();
+        return games.get(gameId).getGameState(playerId);
     }
 
     // TODO handle duplicate ids generated.

@@ -39,11 +39,11 @@ public class KnightTest{
         assertTrue(positions.contains(new Position("C6")));
 
         board.makeMove(new Move("D4", "E6"));
-        board.makeMove(new Move("E6", "D1"));//capture bQueen
+        board.makeMove(new Move("E6", "C5"));
 
         positions = whiteKnight.getPossiblePositions();
         // check possible positions from the new location(D1), can capture 2 and move to 2
-        assertEquals(4, positions.size());
+        assertEquals(8, positions.size());
 
         // use an empty board.
         board = new ChessBoard();

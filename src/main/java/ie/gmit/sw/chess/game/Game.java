@@ -70,9 +70,28 @@ public class Game {
         return players.size() < 2;
     }
 
-    public GameState getGameState() {
+    public GameState getGameState(int playerId) {
         // TODO determine what the game status is "READY", "ONGOING", "FINISHED"
-        return new GameState(chessBoard, currentTurnColour);
+
+        Colour playerColour = getColourFor(playerId);
+        GameState state = new GameState();
+
+        state.setPositions(chessBoard);
+        state.setCurrentTurn(currentTurnColour);
+        state.setYourColour(playerColour);
+
+        boolean whiteInCheck = chessBoard.isCheck(Colour.WHITE);
+        boolean blackInCheck = chessBoard.isCheck(Colour.BLACK);
+        Map<String, Map<String, String>> check = new HashMap<>();
+        check.put("BLACK", new HashMap<>());
+        check.put("WHITE", new HashMap<>());
+        check.get("BLACK").put("inCheck", "" + blackInCheck);
+        check.get("BLACK").put("location", chessBoard.getKing(Colour.BLACK).getPosition().toString());
+        check.get("WHITE").put("inCheck", "" + whiteInCheck);
+        check.get("WHITE").put("location", chessBoard.getKing(Colour.WHITE).getPosition().toString());
+        state.setCheck(check);
+
+        return state;
     }
 
     // true/false for if the given move is for the current player.
