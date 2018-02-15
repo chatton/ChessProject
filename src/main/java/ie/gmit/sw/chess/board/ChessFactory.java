@@ -11,7 +11,7 @@ public class ChessFactory {
      * a brand new chess board is required.
      */
     public static ChessBoard newStandardChessBoard() {
-        ChessBoard board = new ChessBoard(8);
+        ChessBoard board = new ChessBoard();
         board.setAt("A1", new Rook(board, Colour.WHITE));
         board.setAt("A2", new Pawn(board, Colour.WHITE));
         board.setAt("B1", new Knight(board, Colour.WHITE));

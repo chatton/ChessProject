@@ -7,7 +7,6 @@ import ie.gmit.sw.chess.board.Position;
 import org.junit.Test;
 
 import java.util.Collection;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -47,7 +46,7 @@ public class KnightTest{
         assertEquals(4, positions.size());
 
         // use an empty board.
-        board = new ChessBoard(8);
+        board = new ChessBoard();
         whiteKnight = new Knight(board, Colour.WHITE);
         // placing the bishop on C6
         board.setAt("C6", whiteKnight);

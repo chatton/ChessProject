@@ -45,7 +45,7 @@ public class ChessBoardTest {
 
     @Test
     public void testUndoSingleMove() {
-        ChessBoard board = new ChessBoard(8);
+        ChessBoard board = new ChessBoard();
         Piece pawn = new Pawn(board, Colour.WHITE);
         board.setAt("A2", pawn);
         board.makeMove(new Move("A2", "A3"));
@@ -99,7 +99,7 @@ public class ChessBoardTest {
 
     @Test
     public void testGettingPossiblePositionsDoesntGivePositionsThatWouldResultInCheck() {
-        ChessBoard board = new ChessBoard(8);
+        ChessBoard board = new ChessBoard();
 
         Queen bQueen = new Queen(board, Colour.BLACK);
         Knight wKnight = new Knight(board, Colour.WHITE);
@@ -121,7 +121,7 @@ public class ChessBoardTest {
 
     @Test
     public void testCheckMate(){
-        ChessBoard board = new ChessBoard(8);
+        ChessBoard board = new ChessBoard();
         board.setAt("A8", new King(board, Colour.BLACK));
         board.setAt("B7", new Queen(board, Colour.WHITE));
         board.setAt("C6", new Bishop(board, Colour.WHITE));
@@ -130,7 +130,7 @@ public class ChessBoardTest {
 
         assertFalse(board.isCheckMate(Colour.BLACK));
 
-        board = new ChessBoard(8);
+        board = new ChessBoard();
         board.setAt("A8", new King(board, Colour.BLACK));
         board.setAt("B7", new Queen(board, Colour.WHITE));
         board.setAt("C6", new Bishop(board, Colour.WHITE));

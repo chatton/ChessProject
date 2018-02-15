@@ -27,7 +27,7 @@ public class GameState {
         List<Piece> allPieces = board.getPieces();
         for (Piece piece : allPieces) {
             // get the chess notation (A1, A2 etc) from the (7,7) (7,6) co-ordinates
-            String chessNotation = Util.positionToString(piece.getPosition(), board.size());
+            String chessNotation = Util.positionToString(piece.getPosition());
             positions.put(chessNotation, piece.getName());
         }
     }

@@ -4,7 +4,6 @@ import ie.gmit.sw.chess.board.pieces.Colour;
 import ie.gmit.sw.chess.board.pieces.King;
 import ie.gmit.sw.chess.board.pieces.Piece;
 import ie.gmit.sw.utilities.Util;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,15 +14,14 @@ import java.util.Stack;
 
 public class ChessBoard {
 
+    public final static int BOARD_SIZE = 8;
     private final Piece[][] board;
-    private final int size;
     private final Stack<Move> moveHistory;
 
     private int turnNo;
 
-    public ChessBoard(int size) {
-        this.size = size;
-        this.board = new Piece[size][size];
+    public ChessBoard() {
+        this.board = new Piece[BOARD_SIZE][BOARD_SIZE];
         moveHistory = new Stack<>();
         this.turnNo = 1;
     }
@@ -42,7 +40,7 @@ public class ChessBoard {
     }
 
     public Piece getAt(String chessNotation) {
-        return getAt(Util.stringToPosition(chessNotation, size));
+        return getAt(Util.stringToPosition(chessNotation));
     }
 
     /**
@@ -57,7 +55,7 @@ public class ChessBoard {
     }
 
     public void setAt(String chessNotation, Piece piece) {
-        setAt(Util.stringToPosition(chessNotation, size), piece);
+        setAt(Util.stringToPosition(chessNotation), piece);
     }
 
     /**
@@ -69,7 +67,7 @@ public class ChessBoard {
     }
 
     public boolean posIsEmpty(String chessNotation) {
-        return posIsEmpty(Util.stringToPosition(chessNotation, size));
+        return posIsEmpty(Util.stringToPosition(chessNotation));
     }
 
     /**
@@ -173,8 +171,8 @@ public class ChessBoard {
      */
     public List<Piece> getPieces() {
         List<Piece> allPieces = new ArrayList<>();
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
                 Piece piece = board[i][j];
                 if (piece != null) {
                     allPieces.add(piece);
@@ -191,8 +189,8 @@ public class ChessBoard {
      */
     public List<Piece> getPieces(Colour colour) {
         List<Piece> allPieces = new ArrayList<>();
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
                 Piece piece = board[i][j];
                 if (piece != null && piece.getColour() == colour) {
                     allPieces.add(piece);
@@ -211,7 +209,7 @@ public class ChessBoard {
     }
 
     public int size() {
-        return size;
+        return BOARD_SIZE;
     }
 
 

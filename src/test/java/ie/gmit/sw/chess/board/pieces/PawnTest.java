@@ -5,16 +5,16 @@ import ie.gmit.sw.chess.board.Position;
 import org.junit.Test;
 
 import java.util.Collection;
-import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class PawnTest {
 
     @Test
     public void testWhitePawnGetPossiblePositions() {
 
-        ChessBoard board = new ChessBoard(8);
+        ChessBoard board = new ChessBoard();
         Pawn pawn = new Pawn(board, Colour.WHITE);
         board.setAt(new Position(3, 3), pawn);
 

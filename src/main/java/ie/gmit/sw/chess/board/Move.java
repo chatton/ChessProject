@@ -19,7 +19,7 @@ public class Move {
     }
 
     public Move(String from, String to) {
-        this(Util.stringToPosition(from, 8), Util.stringToPosition(to, 8));
+        this(Util.stringToPosition(from), Util.stringToPosition(to));
     }
 
     public Position from() {

@@ -9,16 +9,16 @@ public class UtilTest {
 
     @Test
     public void testChessNotationToPositionConversion() {
-        assertEquals(new Position(0, 0), Util.stringToPosition("A8", 8));
-        assertEquals(new Position(7, 7), Util.stringToPosition("H1", 8));
-        assertEquals(new Position(1, 4), Util.stringToPosition("B4", 8));
+        assertEquals(new Position(0, 0), Util.stringToPosition("A8"));
+        assertEquals(new Position(7, 7), Util.stringToPosition("H1"));
+        assertEquals(new Position(1, 4), Util.stringToPosition("B4"));
     }
 
     @Test
     public void testConversionToChessNotation() {
-        assertEquals("A8", Util.positionToString(new Position(0, 0), 8));
-        assertEquals("H1", Util.positionToString(new Position(7, 7), 8));
-        assertEquals("B4", Util.positionToString(new Position(1, 4), 8));
+        assertEquals("A8", Util.positionToString(new Position(0, 0)));
+        assertEquals("H1", Util.positionToString(new Position(7, 7)));
+        assertEquals("B4", Util.positionToString(new Position(1, 4)));
     }
 }
 

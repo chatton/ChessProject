@@ -5,7 +5,6 @@ import ie.gmit.sw.chess.board.Position;
 import org.junit.Test;
 
 import java.util.Collection;
-import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -15,7 +14,7 @@ public class KingTest {
 
     @Test
     public void testKingPossiblePositions() {
-        ChessBoard board = new ChessBoard(8);
+        ChessBoard board = new ChessBoard();
         King king = new King(board, Colour.BLACK);
         Piece whiteRook = new Rook(board, Colour.WHITE);
         Piece blackRook = new Rook(board, Colour.BLACK);
@@ -37,7 +36,7 @@ public class KingTest {
 
     @Test
     public void testCornerCase() {
-        ChessBoard board = new ChessBoard(8);
+        ChessBoard board = new ChessBoard();
         King king = new King(board, Colour.BLACK);
         board.setAt(new Position(0, 0), king);
         Collection<Position> positions = king.getPossiblePositions();
