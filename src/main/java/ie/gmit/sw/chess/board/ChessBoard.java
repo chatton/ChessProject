@@ -145,17 +145,8 @@ public class ChessBoard {
             // 2. if not, throw exception, otherwise, perform movement.
             throw new IllegalArgumentException("Provided an invalid move.");
         }
-        // 3. get the piece we want to move.
-        Piece piece = getAt(move.from());
-        move.setFromPiece(piece);
-        move.setToPiece(getAt(move.to()));
 
-        // 4. reposition it and the new position
-        setAt(move.to(), piece);
-
-        // 5, ned to empty the original position so it's now free for other pieces.
-        setAt(move.from(), null); // null means an empty spot
-        moveHistory.push(move);
+        applyMove(move);
     }
 
     public void undoLastMove() {
@@ -279,17 +270,7 @@ public class ChessBoard {
 
         for (Move move : allAllyMoves) {
 
-            Piece piece = getAt(move.from());
-            move.setFromPiece(piece);
-            move.setToPiece(getAt(move.to()));
-
-            // 4. reposition it and the new position
-            setAt(move.to(), piece);
-
-            // 5, ned to empty the original position so it's now free for other pieces.
-            setAt(move.from(), null); // null means an empty spot
-            moveHistory.push(move);
-
+            applyMove(move);
 
             boolean isCheck = isCheck(colour);
             undoLastMove();
@@ -298,6 +279,19 @@ public class ChessBoard {
             }
         }
         return true;
+    }
+
+    private void applyMove(Move move) {
+        Piece piece = getAt(move.from());
+        move.setFromPiece(piece);
+        move.setToPiece(getAt(move.to()));
+
+        // 4. reposition it and the new position
+        setAt(move.to(), piece);
+
+        // 5, ned to empty the original position so it's now free for other pieces.
+        setAt(move.from(), null); // null means an empty spot
+        moveHistory.push(move);
     }
 
 }

@@ -29,8 +29,11 @@ public class ChessController {
     }
 
     @GetMapping("gamestate")
-    public GameState getGameState(@RequestParam("gameId") int gameId) {
-        return chessService.getGameState(gameId);
+    public GameState getGameState(
+            @RequestParam("gameId") int gameId,
+            @RequestParam("playerId") int playerId
+    ) {
+        return chessService.getGameState(gameId, playerId);
     }
 
     @PostMapping("makemove")

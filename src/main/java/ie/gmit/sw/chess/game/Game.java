@@ -70,9 +70,55 @@ public class Game {
         return players.size() < 2;
     }
 
-    public GameState getGameState() {
-        // TODO determine what the game status is "READY", "ONGOING", "FINISHED"
-        return new GameState(chessBoard, currentTurnColour);
+    public GameState getGameState(int playerId) {
+        Colour playerColour = getColourFor(playerId);
+        GameState state = new GameState();
+
+        state.setPositions(chessBoard);
+        state.setCurrentTurn(currentTurnColour);
+        state.setYourColour(playerColour);
+        state.setCheck(buildCheckInfo());
+        Colour checkMate = determineCheckMate(); // BLACK / WHITE / null
+        state.setWinner(checkMate);
+        boolean isCheckMate = checkMate != null;
+        state.setGameStatus(determineStatus(isCheckMate));
+        return state;
+    }
+
+    private GameStatus determineStatus(boolean isCheckMate) {
+        if (isFree()) {
+            return GameStatus.WAITING;
+        }
+        if (isCheckMate) {
+            return GameStatus.FINISHED;
+        }
+        return GameStatus.ONGOING;
+    }
+
+    private Colour determineCheckMate() {
+        boolean blackCheckMate = chessBoard.isCheckMate(Colour.BLACK);
+        if (blackCheckMate) {
+            return Colour.BLACK;
+        }
+
+        boolean whiteCheckMate = chessBoard.isCheckMate(Colour.WHITE);
+        if (whiteCheckMate) {
+            return Colour.WHITE;
+        }
+        return null; // means nobody in checkmate.
+    }
+
+    private Map<String, Map<String, String>> buildCheckInfo() {
+        boolean whiteInCheck = chessBoard.isCheck(Colour.WHITE);
+        boolean blackInCheck = chessBoard.isCheck(Colour.BLACK);
+        Map<String, Map<String, String>> check = new HashMap<>();
+        check.put("BLACK", new HashMap<>());
+        check.put("WHITE", new HashMap<>());
+        check.get("BLACK").put("inCheck", "" + blackInCheck);
+        check.get("BLACK").put("location", chessBoard.getKing(Colour.BLACK).getPosition().toString());
+        check.get("WHITE").put("inCheck", "" + whiteInCheck);
+        check.get("WHITE").put("location", chessBoard.getKing(Colour.WHITE).getPosition().toString());
+        return check;
     }
 
     // true/false for if the given move is for the current player.

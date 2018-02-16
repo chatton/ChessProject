@@ -1,6 +1,5 @@
 package ie.gmit.sw.services;
 
-import ie.gmit.sw.ChessProjectApplication;
 import ie.gmit.sw.chess.board.ChessBoard;
 import ie.gmit.sw.chess.board.ChessFactory;
 import ie.gmit.sw.chess.board.Move;
@@ -24,19 +23,19 @@ public class ChessService {
     private final static Logger LOG = LoggerFactory.getLogger(ChessService.class);
 
     private Map<Integer, Game> games;
-
     private ChessRepository repository;
 
     @Autowired
     public ChessService(ChessRepository repository) {
+        this.repository = repository;
         games = new HashMap<>();
         // TODO populate from DB
     }
 
-    public GameState getGameState(int gameId) {
+    public GameState getGameState(int gameId, int playerId) {
         // make sure gameId exists
         // TODO handle errors and don't hard code
-        return games.get(gameId).getGameState();
+        return games.get(gameId).getGameState(playerId);
     }
 
     // TODO handle duplicate ids generated.

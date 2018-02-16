@@ -46,6 +46,15 @@ public class ChessFactory {
         board.setAt("H8", new Rook(board, Colour.BLACK));
         board.setAt("H7", new Pawn(board, Colour.BLACK));
 
+
+        /*board.setAt("A2", new King(board, Colour.WHITE));
+        board.setAt("B7", new Rook(board, Colour.BLACK));
+        board.setAt("B8", new King(board, Colour.BLACK));
+        board.setAt("B6", new Queen(board, Colour.BLACK));
+        board.setAt("B5", new Queen(board, Colour.BLACK));
+*/
         return board;
     }
+
+
 }
