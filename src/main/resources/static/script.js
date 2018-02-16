@@ -7,7 +7,7 @@ const GRID_SIZE = 63;
 const BOARD_SIZE = 8;
 
 let shouldDraw = false;
-let board = {"gameStatus" : "", "positions": {}, "check": {"WHITE": "", "BLACK": ""}};// create empty object to start with so the draw method knows to draw an empty tile.
+let board = {"gameStatus": "", "positions": {}, "check": {"WHITE": "", "BLACK": ""}};// create empty object to start with so the draw method knows to draw an empty tile.
 
 
 // Map an x/y co-ordinate to the chess location.
@@ -90,38 +90,54 @@ function draw() {
         }
     }
 }
-
-// fills up athe square of the chess board with either black or white.
+let shouldDrawGrid = true;
+// fills up the square of the chess board with either black or white.
 function drawSquare(colour, x, y) {
-
-    if(board["gameStatus"] === "FINISHED"){
-        // TODO Display win/loss message.
-
-        ctx.fillStyle = "blue";
-        ctx.fillRect(GRID_SIZE * x, GRID_SIZE * y, GRID_SIZE, GRID_SIZE);
-        return;
-    }
-
 
     const image = new Image();
     const currentChessPosition = mapToChess(x, y); // ex. 0,0 -> A8
     // the name of the image from the response matches the name of the image files.
-    image.src = "images/" + board["positions"][currentChessPosition] + ".png";
-    image.onload = () => {
-        ctx.fillStyle = colour;
-        // if the tile being drawn is the selected tile, draw it yellow instead.
-        if (mapToChess(x, y) === selectedTile) {
-            ctx.fillStyle = "yellow";
+
+    const gameOver = board["gameStatus"] === "FINISHED";
+    if (!gameOver && shouldDrawGrid) { // only draw the board when the game is ongoing.
+        image.src = "images/" + board["positions"][currentChessPosition] + ".png";
+        image.onload = () => {
+            ctx.fillStyle = colour;
+            // if the tile being drawn is the selected tile, draw it yellow instead.
+            if (mapToChess(x, y) === selectedTile) {
+                ctx.fillStyle = "yellow";
+            }
+
+            // draw a rectangle
+            ctx.fillRect(GRID_SIZE * x, GRID_SIZE * y, GRID_SIZE, GRID_SIZE);
+
+
+            // and then an image on top of it.
+            ctx.drawImage(image, GRID_SIZE * x, GRID_SIZE * y, GRID_SIZE, GRID_SIZE);
+
+            drawCheck(x, y);
+
+            if (gameOver) {
+                shouldDrawGrid = false;
+            }
+        };
+    }
+
+    if (gameOver) { // display a message if the game is over.
+        ctx.fillStyle = "red";
+        ctx.font = "40px Arial";
+
+        const loser = board["currentTurn"];
+        const myColour = board["yourColour"];
+        let message;
+        if (loser === myColour) {
+            message = "You Lost!";
+        } else {
+            message = "You Won!";
         }
 
-        // draw a rectangle
-        ctx.fillRect(GRID_SIZE * x, GRID_SIZE * y, GRID_SIZE, GRID_SIZE);
-
-        // and then an image on top of it.
-        ctx.drawImage(image, GRID_SIZE * x, GRID_SIZE * y, GRID_SIZE, GRID_SIZE);
-
-        drawCheck(x, y);
-    };
+        ctx.fillText(message, GRID_SIZE * 3, GRID_SIZE * 4);
+    }
 }
 
 function drawCheck(x, y) {
@@ -136,7 +152,6 @@ function drawCheck(x, y) {
         if (blackInCheck) {
             ctx.beginPath();
             ctx.arc(GRID_SIZE / 2 + x * GRID_SIZE, GRID_SIZE / 2 + y * GRID_SIZE, GRID_SIZE / 2, 0, 2 * Math.PI);
-            //ctx.strokeRect(GRID_SIZE * x, GRID_SIZE * y, GRID_SIZE, GRID_SIZE);
             ctx.stroke();
         }
     } else if (mapToChess(x, y) === whiteKingLocation) {
@@ -144,7 +159,6 @@ function drawCheck(x, y) {
         if (whiteInCheck) {
             ctx.beginPath();
             ctx.arc(GRID_SIZE / 2 + x * GRID_SIZE, GRID_SIZE / 2 + y * GRID_SIZE, GRID_SIZE / 2, 0, 2 * Math.PI);
-            //ctx.strokeRect(GRID_SIZE * x, GRID_SIZE * y, GRID_SIZE, GRID_SIZE);
             ctx.stroke();
         }
     }
@@ -162,13 +176,12 @@ function poll() {
         board = data;
         move["gameId"] = gameId;
         shouldDraw = true;
-        // TODO display in a label/image/another canvas
-        $("textarea").val("You are playing as the " + board["yourColour"] + " player!");
     });
 
     setTimeout(poll, 5000)
 }
 
+// let myColour;
 function drawButton() {
     // 1. Create the button
     const button = document.getElementById("myBtn");
@@ -189,10 +202,31 @@ function drawButton() {
 }
 
 function start() {
+
     if (shouldDraw) {
         draw();
     }
+
+    updateUI();
+
     window.requestAnimationFrame(start);
+}
+
+function updateUI() {
+    if (board["gameStatus"] === "WAITING") {
+        $("textarea").val("Waiting for player to join.");
+        return;
+    } else if (board["gameStatus"] === "FINISHED") {
+        $("textarea").val("Game over!");
+        return;
+    }
+
+    const myTurn = board["yourColour"] === board["currentTurn"];
+    if (myTurn) {
+        $("textarea").val("It's your turn!");
+    } else {
+        $("textarea").val("It's not your turn!");
+    }
 }
 
 
