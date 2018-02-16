@@ -4,8 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <title>CHESS</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb"
-          crossorigin="anonymous">
 
     <style type="text/css">
         canvas {
@@ -15,15 +13,14 @@
     </style>
 
 </head>
-
-<body onload = "draw()" bgcolor ="lightblue">
+<body onload="draw()" bgcolor="lightblue">
 <div style="text-align: center;">
     <h1>Chess</h1>
 </div>
 <div id="textbox">
-    <textarea rows="4" cols="50">
-This is just a placeholder for messages in our chess game.
-</textarea>
+        <textarea rows="4" cols="50">
+    This is just a placeholder for messages in our chess game.
+    </textarea>
 </div>
 <!--<div id ="dropdownMenu">
 <form id="dropdown">
@@ -38,14 +35,20 @@ This is just a placeholder for messages in our chess game.
 </form>
 </div>-->
 
+<!--<div style="background-size: auto"></div>-->
+
 <div style="text-align: center;">
     <canvas id="Chess" height="504" width="504"></canvas>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-<script src = "script.js"></script>
-<div style="background-size: auto"></div>
 <button type="button" id="myBtn" onclick="drawButton()">New Game</button>
+<!-- include bootstrap and all the js we need. -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="script.js"></script>
+
+
 
 
 </body>

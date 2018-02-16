@@ -7,7 +7,7 @@ const GRID_SIZE = 63;
 const BOARD_SIZE = 8;
 
 let shouldDraw = false;
-let board = {"positions": {}};// create empty object to start with so the draw method knows to draw an empty tile.
+let board = {"gameStatus" : "", "positions": {}, "check": {"WHITE": "", "BLACK": ""}};// create empty object to start with so the draw method knows to draw an empty tile.
 
 
 // Map an x/y co-ordinate to the chess location.
@@ -44,10 +44,11 @@ function sendMove(data) {
     });
 }
 
-function tileIsEmpty(chessNotation){
+function tileIsEmpty(chessNotation) {
     return board.positions[chessNotation] === undefined;
 }
 
+let selectedTile;
 canvas.addEventListener("click", function (e) {
     const pos = getMousePos(canvas, e);
     const boardPos = {
@@ -58,14 +59,17 @@ canvas.addEventListener("click", function (e) {
 
     numClicks++;
     if (numClicks === 1) {
-        if(tileIsEmpty(chessNotation)){
+        if (tileIsEmpty(chessNotation)) {
             numClicks--;
             return;
         }
+
+        selectedTile = chessNotation;
         move.from = chessNotation;
     } else if (numClicks === 2) {
         move.to = chessNotation;
         numClicks = 0;
+        selectedTile = undefined;
         sendMove(move);
     }
 });
@@ -78,28 +82,72 @@ function draw() {
     for (let x = 0; x < BOARD_SIZE; x++) {
         for (let y = 0; y < BOARD_SIZE; y++) {
             if (isWhiteSquare(x, y)) {
-                drawSquare("#ffff66", x, y);
+                drawSquare("#ffec96", x, y);
             }
             else {
-                drawSquare("#333300", x, y)
+                drawSquare("#403f49", x, y)
             }
         }
     }
 }
 
-// fills up the square of the chess board with either black or white.
+// fills up athe square of the chess board with either black or white.
 function drawSquare(colour, x, y) {
+
+    if(board["gameStatus"] === "FINISHED"){
+        // TODO Display win/loss message.
+
+        ctx.fillStyle = "blue";
+        ctx.fillRect(GRID_SIZE * x, GRID_SIZE * y, GRID_SIZE, GRID_SIZE);
+        return;
+    }
+
+
     const image = new Image();
     const currentChessPosition = mapToChess(x, y); // ex. 0,0 -> A8
     // the name of the image from the response matches the name of the image files.
     image.src = "images/" + board["positions"][currentChessPosition] + ".png";
     image.onload = () => {
         ctx.fillStyle = colour;
+        // if the tile being drawn is the selected tile, draw it yellow instead.
+        if (mapToChess(x, y) === selectedTile) {
+            ctx.fillStyle = "yellow";
+        }
+
         // draw a rectangle
         ctx.fillRect(GRID_SIZE * x, GRID_SIZE * y, GRID_SIZE, GRID_SIZE);
+
         // and then an image on top of it.
         ctx.drawImage(image, GRID_SIZE * x, GRID_SIZE * y, GRID_SIZE, GRID_SIZE);
+
+        drawCheck(x, y);
     };
+}
+
+function drawCheck(x, y) {
+    // if a king is in check, draw a circle around them.
+    const check = board.check;
+    const blackKingLocation = check["BLACK"]["location"];
+    const whiteKingLocation = check["WHITE"]["location"];
+    ctx.strokeStyle = "red";
+    ctx.lineWidth = 3;
+    if (mapToChess(x, y) === blackKingLocation) {
+        const blackInCheck = check["BLACK"]["inCheck"] === "true";
+        if (blackInCheck) {
+            ctx.beginPath();
+            ctx.arc(GRID_SIZE / 2 + x * GRID_SIZE, GRID_SIZE / 2 + y * GRID_SIZE, GRID_SIZE / 2, 0, 2 * Math.PI);
+            //ctx.strokeRect(GRID_SIZE * x, GRID_SIZE * y, GRID_SIZE, GRID_SIZE);
+            ctx.stroke();
+        }
+    } else if (mapToChess(x, y) === whiteKingLocation) {
+        const whiteInCheck = check["WHITE"]["inCheck"] === "true";
+        if (whiteInCheck) {
+            ctx.beginPath();
+            ctx.arc(GRID_SIZE / 2 + x * GRID_SIZE, GRID_SIZE / 2 + y * GRID_SIZE, GRID_SIZE / 2, 0, 2 * Math.PI);
+            //ctx.strokeRect(GRID_SIZE * x, GRID_SIZE * y, GRID_SIZE, GRID_SIZE);
+            ctx.stroke();
+        }
+    }
 }
 
 let gameId;
@@ -110,12 +158,14 @@ function poll() {
     /*
      get will be used to get a new board
      */
-    $.get("/chess/v1/gamestate?gameId=" + gameId, function (data) {
+    $.get("/chess/v1/gamestate?gameId=" + gameId + "&playerId=" + move.playerId, function (data) {
         board = data;
         move["gameId"] = gameId;
         shouldDraw = true;
+        // TODO display in a label/image/another canvas
+        $("textarea").val("You are playing as the " + board["yourColour"] + " player!");
     });
-    $("textarea").val(JSON.stringify(board.positions)); // TODO display messages from server in this text area
+
     setTimeout(poll, 5000)
 }
 
@@ -144,6 +194,7 @@ function start() {
     }
     window.requestAnimationFrame(start);
 }
+
 
 draw(); // draw the initial board before the first GET request finishes
 start();

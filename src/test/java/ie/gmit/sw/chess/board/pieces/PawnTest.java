@@ -26,13 +26,13 @@ public class PawnTest {
         board.setAt("E7", enemyPawn);
 
         possibleMoves = pawn.getPossiblePositions();
-        assertEquals(possibleMoves.size(), 2);
+        assertEquals(possibleMoves.size(), 1);
 
         Piece allyKing = new King(board, Colour.WHITE);
         board.setAt(new Position(2, 2), allyKing);
 
         possibleMoves = pawn.getPossiblePositions();
-        assertEquals(possibleMoves.size(), 2);
+        assertEquals(possibleMoves.size(), 1);
     }
 
     @Test
