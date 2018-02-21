@@ -1,41 +1,77 @@
 package ie.gmit.sw.chess.game;
 
-import ie.gmit.sw.chess.board.pieces.Colour;
 
-/**
- * Represents a player of the game
- */
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+@Table(name = "PLAYERS")
 public class Player {
+
+    private final static String DEFAULT_NAME = "Player";
+
+    @Id
+    @GeneratedValue
     private int id;
-    private Colour colour;
+    private String name;
 
-
-    public Player(int id) {
-        this.id = id;
+    public Player() {
+        games = new ArrayList<>();
+        name = DEFAULT_NAME;
     }
 
-    public Colour getColour() {
-        return colour;
+    @ManyToMany(cascade = {
+            CascadeType.ALL,
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    })
+    @JoinTable(
+            name = "PLAYER_GAMES",
+            joinColumns = {@JoinColumn(name = "player_id")},
+            inverseJoinColumns = {@JoinColumn(name = "game_id")}
+    )
+    private List<Game> games;
+
+    public String getName() {
+        if (name.equals(DEFAULT_NAME)) {
+            name += "_" + id;
+        }
+        return name;
     }
 
-    public void setColour(Colour colour) {
-        this.colour = colour;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public int getId() {
         return id;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null || !(obj instanceof Player)) {
-            return false;
-        }
-        return id == ((Player) obj).id;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    @Override
-    public int hashCode() {
-        return id;
+    public void addGame(Game game) {
+        games.add(game);
+    }
+
+    public List<Game> getGames() {
+        return games;
+    }
+
+    public void setGames(List<Game> games) {
+        this.games = games;
+    }
+
+    public boolean inGame(Game game) {
+        return games.contains(game);
     }
 }

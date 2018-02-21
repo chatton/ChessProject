@@ -30,7 +30,7 @@ public class Move {
         return to;
     }
 
-    public Move reverse(){
+    public Move reverse() {
         Move reversed = new Move(to, from);
         reversed.setToPiece(fromPiece);
         reversed.setFromPiece(toPiece);
@@ -51,5 +51,11 @@ public class Move {
 
     public Piece getFromPiece() {
         return fromPiece;
+    }
+
+    @Override
+    public String toString() {
+        // displays "A2 -> A3" or "B6 -> C7"
+        return Util.positionToString(from) + " -> " + Util.positionToString(to);
     }
 }

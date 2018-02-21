@@ -1,6 +1,7 @@
 package ie.gmit.sw.chess.game;
 
 import ie.gmit.sw.chess.board.ChessBoard;
+import ie.gmit.sw.chess.board.ChessBoardConverter;
 import ie.gmit.sw.chess.board.Move;
 import ie.gmit.sw.chess.board.pieces.Colour;
 import ie.gmit.sw.chess.board.pieces.Piece;
@@ -8,29 +9,71 @@ import ie.gmit.sw.model.GameState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
  * Game class will be used for keeping track of a
  * single game between two players.
  */
+
+@Entity
+@Table(name = "GAMES")
 public class Game {
 
+    @Id
+    @GeneratedValue
+    private int id;
+
+    @ElementCollection
+    private Map<Integer, Colour> playerColourMap;
+
+    @Column(name = "white_id")
+    private Integer whitePlayerId = -1;
+
+    @Column(name = "black_id")
+    private Integer blackPlayerId = -1;
+
+    @ManyToMany(mappedBy = "games")
+    private List<Player> players;
+
+    @Transient
     private final static Logger LOG = LoggerFactory.getLogger(Game.class);
 
+    @Enumerated(EnumType.STRING)
     private Colour currentTurnColour;
 
-    private final ChessBoard chessBoard;
-    private final int id;
+    @Convert(converter = ChessBoardConverter.class)
+    private ChessBoard chessBoard;
 
-    private final Map<Integer, Player> players;
 
-    public Game(ChessBoard chessBoard, int id) {
+    public Game() {
+        playerColourMap = new HashMap<>();
+        players = new ArrayList<>();
         currentTurnColour = Colour.WHITE; // all games start on the white player's turn.
+    }
+
+    public Game(ChessBoard chessBoard) {
+        this();
         this.chessBoard = chessBoard;
-        this.id = id;
-        players = new HashMap<>();
+    }
+
+
+    private Player getById(int id) {
+        return players.stream().filter(player -> player.getId() == id).findFirst().orElse(null);
     }
 
     /**
@@ -38,11 +81,11 @@ public class Game {
      * @return returns the Colour for the player with the provided ID.
      */
     public Colour getColourFor(int playerId) {
-        Player player = players.get(playerId);
+        Player player = getById(playerId);
         if (player == null) {
             throw new IllegalArgumentException("Player with id: [" + playerId + "] does not exist in this game.");
         }
-        return player.getColour();
+        return playerColourMap.get(player.getId());
     }
 
 
@@ -53,13 +96,16 @@ public class Game {
      * @param player the player to add to the game.
      */
     public void addPlayer(Player player) {
-        if (!isFree() || players.containsValue(player)) {
-            throw new IllegalArgumentException("Game is already full!");
+        players.add(player);
+        playerColourMap.put(player.getId(), players.size() == 1 ? Colour.WHITE : Colour.BLACK);
+
+        if (playerColourMap.get(player.getId()) == Colour.WHITE) {
+            whitePlayerId = player.getId();
+        } else {
+            blackPlayerId = player.getId();
         }
 
-        players.put(player.getId(), player);
-        player.setColour(players.size() == 1 ? Colour.WHITE : Colour.BLACK);
-        LOG.info("Player [{}] joining game [{}] as the [{}] player.", player.getId(), id, player.getColour());
+        LOG.info("Player [{}] joining game [{}] as the [{}] player.", player.getId(), id, playerColourMap.get(player.getId()));
     }
 
 
@@ -139,6 +185,7 @@ public class Game {
         } else {
             currentTurnColour = Colour.WHITE;
         }
+        LOG.info("It is now the [{}] player's turn.", currentTurnColour);
     }
 
     // TODO make sure each player can only move their pieces.
@@ -175,11 +222,24 @@ public class Game {
 
         // if the move was made successfully, swap turn.
         swapTurn();
+
     }
 
 
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public List<Player> getPlayers() {
+        return players;
+    }
+
+    public void setPlayers(List<Player> players) {
+        this.players = players;
     }
 
     @Override

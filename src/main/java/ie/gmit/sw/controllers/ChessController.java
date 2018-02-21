@@ -24,8 +24,8 @@ public class ChessController {
     }
 
     @GetMapping("newgame")
-    public NewGameResponse newGameResponse() {
-        return chessService.newGame();
+    public NewGameResponse newGameResponse(/*@RequestParam("playerId") int playerId*/) {
+        return chessService.newGame(0);
     }
 
     @GetMapping("gamestate")

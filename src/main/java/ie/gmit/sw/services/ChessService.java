@@ -1,83 +1,86 @@
 package ie.gmit.sw.services;
 
-import ie.gmit.sw.chess.board.ChessBoard;
 import ie.gmit.sw.chess.board.ChessFactory;
 import ie.gmit.sw.chess.board.Move;
 import ie.gmit.sw.chess.game.Game;
 import ie.gmit.sw.chess.game.Player;
 import ie.gmit.sw.model.GameState;
 import ie.gmit.sw.model.NewGameResponse;
-import ie.gmit.sw.repositories.ChessRepository;
+import ie.gmit.sw.repositories.GameRepository;
+import ie.gmit.sw.repositories.PlayerRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
 
 @Service
 public class ChessService {
 
     private final static Logger LOG = LoggerFactory.getLogger(ChessService.class);
 
-    private Map<Integer, Game> games;
-    private ChessRepository repository;
+    private PlayerRepository playerRepository;
+    private GameRepository gameRepository;
 
     @Autowired
-    public ChessService(ChessRepository repository) {
-        this.repository = repository;
-        games = new HashMap<>();
-        // TODO populate from DB
+    public ChessService(PlayerRepository playerRepository, GameRepository gameRepository) {
+        this.playerRepository = playerRepository;
+        this.gameRepository = gameRepository;
     }
 
     public GameState getGameState(int gameId, int playerId) {
-        // make sure gameId exists
-        // TODO handle errors and don't hard code
-        return games.get(gameId).getGameState(playerId);
+
+        Game game = gameRepository.findOne(gameId);
+        // TODO handle game not found
+        return game.getGameState(playerId);
     }
 
-    // TODO handle duplicate ids generated.
-    private Player generatePlayer() {
-        Random rnd = new Random();
-        int playerId = rnd.nextInt();
-        LOG.info("Generating Player with player id [{}]", playerId);
-        return new Player(playerId);
-    }
 
-    private Game generateGame() {
-        Random rnd = new Random();
-        ChessBoard board = ChessFactory.newStandardChessBoard();
-        int gameId = rnd.nextInt();
-        LOG.info("Generating Game with game id [{}]", gameId);
-        return new Game(board, gameId);
-    }
+    public NewGameResponse newGame(int playerId) { // TODO implement player game list and add this game to it.
+        Iterable<Game> allGames = gameRepository.findAll();
 
-    public NewGameResponse newGame() {
-        // there are existing games to join.
-        for (Game game : games.values()) { // look at all existing games
-            // determine if there is a free game to join
+        // TODO don't make a new player each time. Save these.
+        Player player = new Player();
+
+
+        for (Game game : allGames) {
             if (game.isFree()) {
                 LOG.info("Game was free. Adding player to game: [{}]", game.getId());
-                Player player = generatePlayer();
+                playerRepository.save(player); // updates player id
+                player.addGame(game);
+
+
                 game.addPlayer(player); // put player in that game.
+                gameRepository.save(game); // updates game id
+
+                LOG.info("Adding Player - id [{}] to game [{}] as the [{}] player.",
+                        player.getId(), game.getId(), game.getColourFor(player.getId()));
                 return new NewGameResponse(game.getId(), player.getId(), game.getColourFor(player.getId()));
             }
         }
 
         LOG.info("Found no free games. Making new game.");
-        Game game = generateGame();
-        Player player = generatePlayer();
+        Game game = new Game(ChessFactory.newStandardChessBoard());
+
+
+        player.addGame(game);
+        playerRepository.save(player);
         game.addPlayer(player);
-        games.put(game.getId(), game);
-        LOG.info("Saving game: [{}]", game.getId());
+        gameRepository.save(game);
+
+        LOG.info("Generating Player with player id [{}] and adding to game [{}]", player.getId(), game.getId());
         return new NewGameResponse(game.getId(), player.getId(), game.getColourFor(player.getId()));
     }
 
     public void makeMove(Move move, int gameId, int playerId) {
         try {
-            games.get(gameId).makeMove(move, playerId);
+            Game game = gameRepository.findOne(gameId);
+            Player player = playerRepository.findOne(playerId);
+            if (player.inGame(game)) {
+                game.makeMove(move, playerId);
+                gameRepository.save(game); // save the game state to the database so it will persist.
+            } else {
+                LOG.warn("Player tried to make a move in a game they weren't in!");
+            }
         } catch (IllegalArgumentException e) {
             LOG.warn("{} -> {} was an illegal move.", move.from(), move.to());
         }

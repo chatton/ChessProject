@@ -16,7 +16,6 @@ public class Position {
         Position converted = Util.stringToPosition(chessNotation);
         this.x = converted.x();
         this.y = converted.y();
-
     }
 
     public int x() {
@@ -25,6 +24,10 @@ public class Position {
 
     public int y() {
         return y;
+    }
+
+    public String toChess() {
+        return Util.positionToString(this);
     }
 
     @Override
@@ -42,7 +45,8 @@ public class Position {
     }
 
     @Override
-    public String toString(){
-        return Util.positionToString(this);
+    public String toString() {
+        // "(0,0) : A8"
+        return x + "," + y + " : " + Util.positionToString(this);
     }
 }
