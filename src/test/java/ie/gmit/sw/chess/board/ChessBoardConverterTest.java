@@ -22,9 +22,9 @@ public class ChessBoardConverterTest {
 
         String result = converter.convertToDatabaseColumn(board);
 
-        assertTrue(result.contains("A5_K"));
-        assertTrue(result.contains("B7_p"));
-        assertTrue(result.contains("D4_B"));
+        assertTrue(result.contains("K_A5"));
+        assertTrue(result.contains("p_B7"));
+        assertTrue(result.contains("B_D4"));
     }
 
     @Test
