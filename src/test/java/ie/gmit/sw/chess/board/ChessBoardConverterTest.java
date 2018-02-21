@@ -31,14 +31,14 @@ public class ChessBoardConverterTest {
     public void convertToEntityAttribute() throws Exception {
 
         ChessBoardConverter converter = new ChessBoardConverter();
-        ChessBoard board = converter.convertToEntityAttribute("A5_K,B7_p,D4_B");
+        ChessBoard board = converter.convertToEntityAttribute("K_A5,p_B7,B_D4");
 
         assertEquals(board.getPieces().size(), 3);
         Piece piece = board.getAt("A5");
         assertTrue(piece instanceof King);
         assertTrue(piece.getColour() == Colour.WHITE);
 
-        piece = board.getAt("B5");
+        piece = board.getAt("B7");
         assertTrue(piece instanceof Pawn);
         assertTrue(piece.getColour() == Colour.BLACK);
 
