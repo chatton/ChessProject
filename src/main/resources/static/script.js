@@ -3,7 +3,7 @@ const canvas = document.getElementById("Chess");
 // Set the canvas up for drawing in 2D.
 const ctx = canvas.getContext("2d");
 
-const GRID_SIZE = 63;
+const GRID_SIZE = 64;
 const BOARD_SIZE = 8;
 
 let shouldDraw = false;
@@ -27,9 +27,12 @@ function getMousePos(canvas, evt) {
 }
 
 let numClicks = 0;
-let move = {"from": "", "to": "", "playerId": ""};
+let move = {"from": "", "to": "", "playerId": "", "gameId":""};
 
 function sendMove(data) {
+    data["gameId"] = gameId;
+    data["playerId"] = playerId;
+
     $.ajax({
         type: "POST",
         contentType: "application/json", // this is required by spring boot. Otherwise get a 415 error.
@@ -69,7 +72,7 @@ canvas.addEventListener("click", function (e) {
     } else if (numClicks === 2) {
         move.to = chessNotation;
         numClicks = 0;
-        selectedTile = undefined;
+        selectedTile = undefined; // deselect the current tile when you make a move.
         sendMove(move);
     }
 });
@@ -172,34 +175,29 @@ function poll() {
     /*
      get will be used to get a new board
      */
-    $.get("/chess/v1/gamestate?gameId=" + gameId + "&playerId=" + move.playerId, function (data) {
+    console.log("polling game " + gameId + " as player " + playerId);
+    $.get("/chess/v1/gamestate?gameId=" + gameId + "&playerId=" + playerId, function (data) {
         board = data;
-        move["gameId"] = gameId;
         shouldDraw = true;
     });
 
     setTimeout(poll, 5000)
 }
 
-// let myColour;
-function drawButton() {
-    // 1. Create the button
-    const button = document.getElementById("myBtn");
-    button.innerHTML = "Do Something";
-
-    // 2. Append somewhere
-    const body = document.getElementsByTagName("body")[0];
-    body.appendChild(button);
-
-    // 3. Add event handler
-    button.addEventListener("click", function () {
-        $.get("/chess/v1/newgame", function (data) {
+function addEventHandlers() {
+    const button = $("#myBtn");
+    button.click( function () {
+        console.log("sending " + playerId + " as player id when requesting a new game.") ;
+        $.get("/chess/v1/newgame?playerId=" + playerId, function (data) {
+            console.log("Response from new game");
+            console.log(data);
             gameId = data.gameId;
-            move.playerId = data.playerId;
+            // move.playerId = data.playerId;
             poll();
         })
     });
 }
+addEventHandlers();
 
 function start() {
 
@@ -232,3 +230,45 @@ function updateUI() {
 
 draw(); // draw the initial board before the first GET request finishes
 start();
+
+// player id to be sent to the server.
+let playerId;
+
+
+// Registration form.
+
+// supress default behaviour
+$("#registration_form").submit(function (e) {
+    e.preventDefault(); // prevent new page load
+
+    const userNameElement = $("#reg_user_name");
+    const passwordElement = $("#reg_password");
+    const userName = userNameElement.val();
+    const password = passwordElement.val();
+    userNameElement.val("");
+    passwordElement.val("");
+
+    $.ajax({
+        type: "POST",
+        contentType: "application/json", // this is required by spring boot. Otherwise get a 415 error.
+        data: JSON.stringify({"userName": userName, "password": password}), // send object as string to server
+        dataType: "json",
+        url: window.location + "chess/v1/register",
+        complete: function(response){
+             const responseObject = response.responseJSON;
+             console.log(responseObject.id);
+             console.log(responseObject.status);
+             if(responseObject.status === "OK"){
+                 // save the id and user it any time we talk to the server.
+                 playerId = responseObject.id; // get the game id given to us by the server.
+                 console.log("Saving player id of : " + playerId + " when registering.");
+             } else { // === "BAD"
+                 // TODO
+                 // bad username/password
+                 // update UI to indicate error.
+             }
+         }
+        }
+    );
+
+});

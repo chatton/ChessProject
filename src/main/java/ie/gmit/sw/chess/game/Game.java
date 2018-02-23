@@ -6,6 +6,8 @@ import ie.gmit.sw.chess.board.Move;
 import ie.gmit.sw.chess.board.pieces.Colour;
 import ie.gmit.sw.chess.board.pieces.Piece;
 import ie.gmit.sw.model.GameState;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,15 +17,14 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Game class will be used for keeping track of a
@@ -35,7 +36,6 @@ import java.util.Map;
 public class Game {
 
     @Id
-    @GeneratedValue
     private int id;
 
     @ElementCollection
@@ -47,8 +47,10 @@ public class Game {
     @Column(name = "black_id")
     private Integer blackPlayerId = -1;
 
-    @ManyToMany(mappedBy = "games")
-    private List<Player> players;
+
+    @ManyToMany(mappedBy = "games"/*, fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE}*/)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private Set<Player> players;
 
     @Transient
     private final static Logger LOG = LoggerFactory.getLogger(Game.class);
@@ -62,12 +64,13 @@ public class Game {
 
     public Game() {
         playerColourMap = new HashMap<>();
-        players = new ArrayList<>();
+        players = new HashSet<>();
         currentTurnColour = Colour.WHITE; // all games start on the white player's turn.
     }
 
-    public Game(ChessBoard chessBoard) {
+    public Game(ChessBoard chessBoard, int id) {
         this();
+        this.id = id;
         this.chessBoard = chessBoard;
     }
 
@@ -234,11 +237,11 @@ public class Game {
         this.id = id;
     }
 
-    public List<Player> getPlayers() {
+    public Set<Player> getPlayers() {
         return players;
     }
 
-    public void setPlayers(List<Player> players) {
+    public void setPlayers(Set<Player> players) {
         this.players = players;
     }
 
@@ -253,5 +256,9 @@ public class Game {
     @Override
     public int hashCode() {
         return id;
+    }
+
+    public boolean contains(Player player) {
+        return players.contains(player);
     }
 }

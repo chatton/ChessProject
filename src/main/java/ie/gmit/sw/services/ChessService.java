@@ -6,6 +6,8 @@ import ie.gmit.sw.chess.game.Game;
 import ie.gmit.sw.chess.game.Player;
 import ie.gmit.sw.model.GameState;
 import ie.gmit.sw.model.NewGameResponse;
+import ie.gmit.sw.model.RegisterRequest;
+import ie.gmit.sw.model.RegistrationResponse;
 import ie.gmit.sw.repositories.GameRepository;
 import ie.gmit.sw.repositories.PlayerRepository;
 import org.slf4j.Logger;
@@ -13,16 +15,20 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Random;
+
 @Service
 public class ChessService {
 
     private final static Logger LOG = LoggerFactory.getLogger(ChessService.class);
 
+    private Random rnd;
     private PlayerRepository playerRepository;
     private GameRepository gameRepository;
 
     @Autowired
     public ChessService(PlayerRepository playerRepository, GameRepository gameRepository) {
+        rnd = new Random();
         this.playerRepository = playerRepository;
         this.gameRepository = gameRepository;
     }
@@ -34,23 +40,25 @@ public class ChessService {
         return game.getGameState(playerId);
     }
 
+    private Game generateGame(){
+        return new Game(ChessFactory.newStandardChessBoard(), Math.abs(rnd.nextInt()));
+    }
 
     public NewGameResponse newGame(int playerId) { // TODO implement player game list and add this game to it.
+
+        // Find the player with the given id.
+        Player player = playerRepository.findOne(playerId);
+
+        // TODO handle invalid player
+
         Iterable<Game> allGames = gameRepository.findAll();
 
-        // TODO don't make a new player each time. Save these.
-        Player player = new Player();
-
-
         for (Game game : allGames) {
-            if (game.isFree()) {
+            if (game.isFree() && !game.contains(player)) {
                 LOG.info("Game was free. Adding player to game: [{}]", game.getId());
-                playerRepository.save(player); // updates player id
                 player.addGame(game);
-
-
                 game.addPlayer(player); // put player in that game.
-                gameRepository.save(game); // updates game id
+                playerRepository.save(player); // updates player id
 
                 LOG.info("Adding Player - id [{}] to game [{}] as the [{}] player.",
                         player.getId(), game.getId(), game.getColourFor(player.getId()));
@@ -59,15 +67,12 @@ public class ChessService {
         }
 
         LOG.info("Found no free games. Making new game.");
-        Game game = new Game(ChessFactory.newStandardChessBoard());
-
-
+        Game game = generateGame();
         player.addGame(game);
-        playerRepository.save(player);
         game.addPlayer(player);
-        gameRepository.save(game);
+        playerRepository.save(player);
 
-        LOG.info("Generating Player with player id [{}] and adding to game [{}]", player.getId(), game.getId());
+        LOG.info("adding player with id [{}] and adding to game [{}]", player.getId(), game.getId());
         return new NewGameResponse(game.getId(), player.getId(), game.getColourFor(player.getId()));
     }
 
@@ -84,5 +89,26 @@ public class ChessService {
         } catch (IllegalArgumentException e) {
             LOG.warn("{} -> {} was an illegal move.", move.from(), move.to());
         }
+    }
+
+    public RegistrationResponse register(RegisterRequest request) {
+        // validate the entered values.
+        boolean badUserName = request.getUserName().trim().isEmpty();
+        boolean badPassword = request.getPassword().trim().isEmpty();
+        if(badPassword || badUserName){
+            return new RegistrationResponse(null, "BAD");
+        }
+
+        // create the player to add.
+        Player playerToRegister = new Player(request.getUserName(), request.getPassword());
+        Player playerWithName = playerRepository.findByName(playerToRegister.getName());
+        boolean nameInUse = playerWithName != null;
+
+        if(nameInUse){
+            return new RegistrationResponse(null, "BAD");
+        }
+
+        playerRepository.save(playerToRegister); // register the player in the database.
+        return new RegistrationResponse(playerToRegister.getId(), "OK");
     }
 }

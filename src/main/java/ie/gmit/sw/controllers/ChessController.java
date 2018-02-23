@@ -3,6 +3,8 @@ package ie.gmit.sw.controllers;
 import ie.gmit.sw.model.GameState;
 import ie.gmit.sw.model.MoveRequest;
 import ie.gmit.sw.model.NewGameResponse;
+import ie.gmit.sw.model.RegisterRequest;
+import ie.gmit.sw.model.RegistrationResponse;
 import ie.gmit.sw.services.ChessService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,8 +26,8 @@ public class ChessController {
     }
 
     @GetMapping("newgame")
-    public NewGameResponse newGameResponse(/*@RequestParam("playerId") int playerId*/) {
-        return chessService.newGame(0);
+    public NewGameResponse newGameResponse(@RequestParam("playerId") int playerId) {
+        return chessService.newGame(playerId);
     }
 
     @GetMapping("gamestate")
@@ -39,6 +41,11 @@ public class ChessController {
     @PostMapping("makemove")
     public void makeMove(@RequestBody MoveRequest moveRequest) {
         chessService.makeMove(moveRequest.getMove(), moveRequest.getGameId(), moveRequest.getPlayerId());
+    }
+
+    @PostMapping("register")
+    public RegistrationResponse registerUser(@RequestBody RegisterRequest request) {
+        return chessService.register(request);
     }
 }
 

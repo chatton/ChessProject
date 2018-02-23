@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>CHESS</title>
+    <title>CHESS ONLINE</title>
 
     <style type="text/css">
         canvas {
@@ -37,14 +37,25 @@
 
 <!--<div style="background-size: auto"></div>-->
 
+<form id="registration_form">
+    <p>Register</p>
+    Username:<br>
+    <input id="reg_user_name" type="text" name="username">
+    <br>
+    Password:<br>
+    <input id="reg_password" type="text" name="password">
+    <br><br>
+    <input type="submit" value="Submit">
+</form>
+
 <div style="text-align: center;">
     <canvas id="Chess" height="504" width="504"></canvas>
 </div>
 
-<button type="button" id="myBtn" onclick="drawButton()">New Game</button>
+<button type="button" id="myBtn" >New Game</button>
 <!-- include bootstrap and all the js we need. -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script src="script.js"></script>
 
