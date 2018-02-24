@@ -1,68 +1,13 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="UTF-8">
-    <title>CHESS ONLINE</title>
-
-    <style type="text/css">
-        canvas {
-            background: pink;
-            border: 5px solid black;
-        }
-    </style>
-
+    <title>Indecision App</title>
 </head>
-<body onload="draw()" bgcolor="lightblue">
-<div style="text-align: center;">
-    <h1>Chess</h1>
-</div>
-<div id="textbox">
-        <textarea rows="4" cols="50">
-    This is just a placeholder for messages in our chess game.
-    </textarea>
-</div>
-<!--<div id ="dropdownMenu">
-<form id="dropdown">
-    <select name="SELECT FROM HERE">
-        <option value="new game">New Game</option>
-        <option value="return to a game">Return to a game</option>
-        <option value="play the computer">Play The Computer</option>
-        <option value="watch computer">Watch the computer</option>
-    </select>
-    <br><br>
-    <input type="submit">
-</form>
-</div>-->
-
-<!--<div style="background-size: auto"></div>-->
-
-<form id="registration_form">
-    <p>Register</p>
-    Username:<br>
-    <input id="reg_user_name" type="text" name="username">
-    <br>
-    Password:<br>
-    <input id="reg_password" type="text" name="password">
-    <br><br>
-    <input type="submit" value="Submit">
-</form>
-
-<div style="text-align: center;">
-    <canvas id="Chess" height="504" width="504"></canvas>
-</div>
-
-<button type="button" id="myBtn" >New Game</button>
-<!-- include bootstrap and all the js we need. -->
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<script src="script.js"></script>
-
-
-
-
+<body>
+<div id="app"></div>
+<script src="https://unpkg.com/react@16.0.0/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@16.0.0/umd/react-dom.development.js"></script>
+<script src="app.js"></script>
 </body>
-
-
 </html>
