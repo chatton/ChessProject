@@ -57,7 +57,7 @@ var Form = function (_React$Component) {
                         };
                     });
 
-                    // updates the playerId in the App component.
+                    // updates the playerId in the ChessApp component.
                     console.log(_this2.props);
                     console.log(data.id);
                     _this2.props.updateId(data.id);

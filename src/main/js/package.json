@@ -1,12 +1,17 @@
 {
-  "scripts" : {
-    "build" : "babel src/app.js --out-file=../resources/static/app.js --presets=env,react --watch"
+  "scripts": {
+    "build": "babel src/app.js --out-file=../resources/static/app.js --presets=env,react --watch"
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "babel-cli": "6.24.1",
+    "babel-core": "6.25.0",
+    "babel-loader": "7.1.1",
     "babel-preset-env": "1.5.2",
     "babel-preset-react": "6.24.1",
-    "babel-cli": "6.24.1"
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "webpack": "3.1.0"
   },
   "name": "js",
   "version": "1.0.0",
