@@ -61,6 +61,7 @@ var Form = function (_React$Component) {
                     console.log(_this2.props);
                     console.log(data.id);
                     _this2.props.updateId(data.id);
+                    _this2.props.setLoggedIn(true);
                     // save the user id
                 } else if (data.status === "BAD") {
                     _this2.setState(function () {
@@ -101,6 +102,7 @@ var Form = function (_React$Component) {
                     loggedIn: false
                 };
             });
+            this.props.setLoggedIn(false);
         }
     }, {
         key: "renderForm",
@@ -115,9 +117,9 @@ var Form = function (_React$Component) {
                         React.createElement(
                             "label",
                             { htmlFor: "name" },
-                            "Email address"
+                            "Username"
                         ),
-                        React.createElement("input", { type: "email", className: "form-control", name: "name", id: "name", placeholder: "User Name" })
+                        React.createElement("input", { type: "email", className: "form-control", name: "name", id: "name", placeholder: "Username" })
                     ),
                     React.createElement(
                         "div",
@@ -127,7 +129,8 @@ var Form = function (_React$Component) {
                             { htmlFor: "exampleInputPassword1" },
                             "Password"
                         ),
-                        React.createElement("input", { type: "password", className: "form-control", name: "password", id: "password", placeholder: "Password" })
+                        React.createElement("input", { type: "password", className: "form-control", name: "password", id: "password",
+                            placeholder: "Password" })
                     ),
                     React.createElement(
                         "button",
@@ -172,9 +175,15 @@ var NewGameButton = function (_React$Component2) {
     _createClass(NewGameButton, [{
         key: "requestNewGame",
         value: function requestNewGame() {
+            var _this4 = this;
+
             var id = this.props.playerId;
             axios.get("/chess/v1/newgame?playerId=" + id).then(function (response) {
-                return console.log(response);
+                var data = response.data;
+                console.log(data);
+                _this4.props.setPlayerColour(data.colour);
+                console.log("setting game id as: " + data.gameId);
+                _this4.props.setCurrentGameId(data.gameId);
             });
         }
     }, {
@@ -195,20 +204,62 @@ var NewGameButton = function (_React$Component2) {
     return NewGameButton;
 }(React.Component);
 
-var App = function (_React$Component3) {
-    _inherits(App, _React$Component3);
+var PlayerColour = function (_React$Component3) {
+    _inherits(PlayerColour, _React$Component3);
+
+    function PlayerColour(props) {
+        _classCallCheck(this, PlayerColour);
+
+        return _possibleConstructorReturn(this, (PlayerColour.__proto__ || Object.getPrototypeOf(PlayerColour)).call(this, props));
+    }
+
+    _createClass(PlayerColour, [{
+        key: "render",
+        value: function render() {
+            return React.createElement(
+                "div",
+                null,
+                this.props.loggedIn && this.props.playerColour && React.createElement(
+                    "h1",
+                    null,
+                    "You are the ",
+                    this.props.playerColour,
+                    " Player"
+                )
+            );
+        }
+    }]);
+
+    return PlayerColour;
+}(React.Component);
+
+var App = function (_React$Component4) {
+    _inherits(App, _React$Component4);
 
     function App(props) {
         _classCallCheck(this, App);
 
-        var _this4 = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
+        var _this6 = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
 
-        _this4.setPlayerId = _this4.setPlayerId.bind(_this4);
-        _this4.state = {
-            playerId: undefined
+        _this6.setPlayerId = _this6.setPlayerId.bind(_this6);
+        _this6.setPlayerColour = _this6.setPlayerColour.bind(_this6);
+        _this6.setLoggedIn = _this6.setLoggedIn.bind(_this6);
+        _this6.setCurrentGameId = _this6.setCurrentGameId.bind(_this6);
+
+        _this6.state = {
+            playerId: undefined,
+            playerColour: undefined,
+            loggedIn: false,
+            currentGameId: undefined
         };
-        return _this4;
+        return _this6;
     }
+
+    /*
+     updates the player id, this is called by the FormComponent
+     in order to pass it down as props to the NewGameButtonComponent
+     */
+
 
     _createClass(App, [{
         key: "setPlayerId",
@@ -218,13 +269,46 @@ var App = function (_React$Component3) {
             });
         }
     }, {
+        key: "setPlayerColour",
+        value: function setPlayerColour(colour) {
+            this.setState(function () {
+                return { playerColour: colour };
+            });
+        }
+    }, {
+        key: "setLoggedIn",
+        value: function setLoggedIn(value) {
+            this.setState(function () {
+                return { loggedIn: value };
+            });
+        }
+    }, {
+        key: "setCurrentGameId",
+        value: function setCurrentGameId(id) {
+            this.setState(function () {
+                return { currentGameId: id };
+            });
+        }
+    }, {
         key: "render",
         value: function render() {
             return React.createElement(
                 "div",
                 null,
-                React.createElement(Form, { updateId: this.setPlayerId }),
-                React.createElement(NewGameButton, { playerId: this.state.playerId })
+                React.createElement(Form, { updateId: this.setPlayerId, setLoggedIn: this.setLoggedIn }),
+                React.createElement(NewGameButton, {
+                    playerId: this.state.playerId,
+                    setPlayerColour: this.setPlayerColour,
+                    setCurrentGameId: this.setCurrentGameId
+                }),
+                React.createElement(PlayerColour, { playerColour: this.state.playerColour, loggedIn: this.state.loggedIn }),
+                React.createElement(CanvasWindow, {
+                    size: 8,
+                    squareSize: 64,
+                    currentGameId: this.state.currentGameId,
+                    loggedIn: this.state.loggedIn,
+                    playerId: this.state.playerId
+                })
             );
         }
     }]);
@@ -236,22 +320,28 @@ function isWhiteSquare(x, y) {
     return x % 2 === y % 2;
 }
 
-var CanvasWindow = function (_React$Component4) {
-    _inherits(CanvasWindow, _React$Component4);
+var CanvasWindow = function (_React$Component5) {
+    _inherits(CanvasWindow, _React$Component5);
 
     function CanvasWindow(props) {
         _classCallCheck(this, CanvasWindow);
 
-        var _this5 = _possibleConstructorReturn(this, (CanvasWindow.__proto__ || Object.getPrototypeOf(CanvasWindow)).call(this, props));
+        var _this7 = _possibleConstructorReturn(this, (CanvasWindow.__proto__ || Object.getPrototypeOf(CanvasWindow)).call(this, props));
 
-        _this5.state = {
+        _this7.poll = _this7.poll.bind(_this7);
+        _this7.state = {
             gameState: {},
             shouldDraw: false
         };
-        return _this5;
+        return _this7;
     }
 
     _createClass(CanvasWindow, [{
+        key: "shouldPoll",
+        value: function shouldPoll() {
+            return this.props.currentGameId !== undefined;
+        }
+    }, {
         key: "mapToChess",
         value: function mapToChess(x, y) {
             var asciiCode = 65;
@@ -272,14 +362,14 @@ var CanvasWindow = function (_React$Component4) {
                 var blackInCheck = check["BLACK"]["inCheck"] === "true";
                 if (blackInCheck) {
                     ctx.beginPath();
-                    ctx.arc(GRID_SIZE / 2 + x * GRID_SIZE, GRID_SIZE / 2 + y * GRID_SIZE, GRID_SIZE / 2, 0, 2 * Math.PI);
+                    ctx.arc(this.props.squareSize / 2 + x * this.props.squareSize, this.props.squareSize / 2 + y * this.props.squareSize, this.props.squareSize / 2, 0, 2 * Math.PI);
                     ctx.stroke();
                 }
             } else if (this.mapToChess(x, y) === whiteKingLocation) {
                 var whiteInCheck = check["WHITE"]["inCheck"] === "true";
                 if (whiteInCheck) {
                     ctx.beginPath();
-                    ctx.arc(GRID_SIZE / 2 + x * GRID_SIZE, GRID_SIZE / 2 + y * GRID_SIZE, GRID_SIZE / 2, 0, 2 * Math.PI);
+                    ctx.arc(this.props.squareSize / 2 + x * this.props.squareSize, this.props.squareSize / 2 + y * this.props.squareSize, this.props.squareSize / 2, 0, 2 * Math.PI);
                     ctx.stroke();
                 }
             }
@@ -287,8 +377,13 @@ var CanvasWindow = function (_React$Component4) {
     }, {
         key: "poll",
         value: function poll() {
-            axios.get("/chess/v1/gamestate?gameId=" + this.props.gameId + "&playerId=" + this.props.playerId).then(function (response) {
-                this.setState(function () {
+            var _this8 = this;
+
+            console.log("polling...");
+            axios.get("/chess/v1/gamestate?gameId=" + this.props.currentGameId + "&playerId=" + this.props.playerId).then(function (response) {
+                console.log("From server: ");
+                console.log(response.data);
+                _this8.setState(function () {
                     return {
                         gameState: response.data,
                         shouldDraw: true,
@@ -297,17 +392,20 @@ var CanvasWindow = function (_React$Component4) {
                     };
                 });
             });
-            // setTimeout(poll, 5000)
+
+            setTimeout(this.poll, 2000);
         }
     }, {
         key: "componentDidMount",
         value: function componentDidMount() {
             this.updateCanvas();
-            this.poll();
         }
     }, {
         key: "componentDidUpdate",
         value: function componentDidUpdate() {
+            if (this.shouldPoll()) {
+                this.poll();
+            }
             this.updateCanvas();
         }
     }, {
@@ -319,7 +417,7 @@ var CanvasWindow = function (_React$Component4) {
     }, {
         key: "drawSquare",
         value: function drawSquare(colour, x, y) {
-            var _this6 = this;
+            var _this9 = this;
 
             var image = new Image();
             var currentChessPosition = this.mapToChess(x, y); // ex. 0,0 -> A8
@@ -330,23 +428,23 @@ var CanvasWindow = function (_React$Component4) {
                 // only draw the board when the game is ongoing.
                 image.src = "images/" + this.state.gameState.positions[currentChessPosition] + ".png";
                 image.onload = function () {
-                    var ctx = _this6.getCtx();
+                    var ctx = _this9.getCtx();
                     ctx.fillStyle = colour;
                     // if the tile being drawn is the selected tile, draw it yellow instead.
-                    if (_this6.mapToChess(x, y) === _this6.state.selectedTile) {
+                    if (_this9.mapToChess(x, y) === _this9.state.selectedTile) {
                         ctx.fillStyle = "yellow";
                     }
 
                     // draw a rectangle
-                    ctx.fillRect(GRID_SIZE * x, GRID_SIZE * y, GRID_SIZE, GRID_SIZE);
+                    ctx.fillRect(_this9.props.squareSize * x, _this9.props.squareSize * y, _this9.props.squareSize, _this9.props.squareSize);
 
                     // and then an image on top of it.
-                    ctx.drawImage(image, GRID_SIZE * x, GRID_SIZE * y, GRID_SIZE, GRID_SIZE);
+                    ctx.drawImage(image, _this9.props.squareSize * x, _this9.props.squareSize * y, _this9.props.squareSize, _this9.props.squareSize);
 
-                    drawCheck(x, y);
+                    _this9.drawCheck(x, y);
 
                     if (gameOver) {
-                        _this6.setState(function () {
+                        _this9.setState(function () {
                             return { shouldDrawGrid: false };
                         });
                     }
@@ -371,16 +469,26 @@ var CanvasWindow = function (_React$Component4) {
     }, {
         key: "render",
         value: function render() {
-            return React.createElement("canvas", { ref: "canvas", width: 300, height: 300 });
+            if (!this.props.loggedIn) {
+                return React.createElement("div", null);
+            }
+            return React.createElement(
+                "div",
+                { className: "container" },
+                React.createElement(
+                    "div",
+                    { className: "row" },
+                    React.createElement(
+                        "div",
+                        { className: "col" },
+                        React.createElement("canvas", { ref: "canvas", width: 512, height: 512 })
+                    )
+                )
+            );
         }
     }]);
 
     return CanvasWindow;
 }(React.Component);
-
-CanvasWindow.defaultProps = {
-    gameId: 1,
-    playerId: 1
-};
 
 ReactDOM.render(React.createElement(App, null), document.getElementById("app"));

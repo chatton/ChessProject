@@ -42,6 +42,7 @@ class Form extends React.Component {
                 console.log(this.props);
                 console.log(data.id);
                 this.props.updateId(data.id);
+                this.props.setLoggedIn(true);
                 // save the user id
             } else if (data.status === "BAD") {
                 this.setState(() => {
@@ -50,6 +51,7 @@ class Form extends React.Component {
                         badRequest: true
                     }
                 });
+
             }
 
         }).catch(error => {
@@ -74,6 +76,7 @@ class Form extends React.Component {
                 loggedIn: false
             }
         });
+        this.props.setLoggedIn(false);
     }
 
 
@@ -82,12 +85,13 @@ class Form extends React.Component {
             return (
                 <form ref="form">
                     <div className="form-group">
-                        <label htmlFor="name">Email address</label>
-                        <input type="email" className="form-control" name="name" id="name" placeholder="User Name" />
+                        <label htmlFor="name">Username</label>
+                        <input type="email" className="form-control" name="name" id="name" placeholder="Username"/>
                     </div>
                     <div className="form-group">
                         <label htmlFor="exampleInputPassword1">Password</label>
-                        <input type="password" className="form-control" name="password" id="password" placeholder="Password" />
+                        <input type="password" className="form-control" name="password" id="password"
+                               placeholder="Password"/>
                     </div>
                     <button className="btn btn-normal" onClick={this.register}>Register</button>
                 </form>
@@ -108,25 +112,47 @@ class Form extends React.Component {
 }
 
 
-
 class NewGameButton extends React.Component {
 
-    constructor(props){
+    constructor(props) {
         super(props);
         this.requestNewGame = this.requestNewGame.bind(this);
     }
 
-    requestNewGame(){
+    requestNewGame() {
         const id = this.props.playerId;
         axios.get("/chess/v1/newgame?playerId=" + id)
-            .then(response => console.log(response))
+            .then(response => {
+                const data = response.data;
+                console.log(data);
+                this.props.setPlayerColour(data.colour);
+                console.log("setting game id as: " + data.gameId);
+                this.props.setCurrentGameId(data.gameId);
+            });
 
     }
 
-    render(){
+    render() {
         return (
             <div>
-                {this.props.playerId !== undefined  && <button className="btn-success" onClick={this.requestNewGame}>New Game</button>}
+                {this.props.playerId !== undefined &&
+                <button className="btn-success" onClick={this.requestNewGame}>New Game</button>}
+            </div>
+        );
+    }
+}
+
+
+class PlayerColour extends React.Component {
+
+    constructor(props){
+        super(props);
+    }
+
+    render() {
+        return (
+            <div>
+                {this.props.loggedIn && this.props.playerColour && <h1>You are the {this.props.playerColour} Player</h1>}
             </div>
         );
     }
@@ -134,31 +160,66 @@ class NewGameButton extends React.Component {
 
 class App extends React.Component {
 
-    constructor(props){
+    constructor(props) {
         super(props);
         this.setPlayerId = this.setPlayerId.bind(this);
+        this.setPlayerColour = this.setPlayerColour.bind(this);
+        this.setLoggedIn = this.setLoggedIn.bind(this);
+        this.setCurrentGameId = this.setCurrentGameId.bind(this);
+
         this.state = {
-            playerId : undefined
+            playerId: undefined,
+            playerColour: undefined,
+            loggedIn : false,
+            currentGameId : undefined
         }
     }
 
-    setPlayerId(id){
-        this.setState(() => ({playerId:id}));
+    /*
+     updates the player id, this is called by the FormComponent
+     in order to pass it down as props to the NewGameButtonComponent
+     */
+    setPlayerId(id) {
+        this.setState(() => ({playerId: id}));
     }
 
-    render(){
+    setPlayerColour(colour) {
+        this.setState(() => ({playerColour: colour}));
+    }
+
+    setLoggedIn(value) {
+        this.setState(() => ({loggedIn: value}));
+    }
+
+    setCurrentGameId(id) {
+        this.setState(() => ({currentGameId: id}));
+    }
+
+
+
+    render() {
         return (
             <div>
-                <Form updateId={this.setPlayerId}/>
-                <NewGameButton playerId={this.state.playerId}/>
-                {/*<CanvasWindow size={8}/>*/}
+                <Form updateId={this.setPlayerId} setLoggedIn={this.setLoggedIn}/>
+                <NewGameButton
+                    playerId={this.state.playerId}
+                    setPlayerColour={this.setPlayerColour}
+                    setCurrentGameId={this.setCurrentGameId}
+                />
+
+                <PlayerColour playerColour={this.state.playerColour} loggedIn={this.state.loggedIn}/>
+
+                <CanvasWindow
+                    size={8}
+                    squareSize={64}
+                    currentGameId={this.state.currentGameId}
+                    loggedIn={this.state.loggedIn}
+                    playerId={this.state.playerId}
+                />
             </div>
         );
     }
 }
-
-
-
 
 
 function isWhiteSquare(x, y) {
@@ -166,15 +227,19 @@ function isWhiteSquare(x, y) {
 }
 
 
-
 class CanvasWindow extends React.Component {
 
-    constructor(props){
+    constructor(props) {
         super(props);
+        this.poll = this.poll.bind(this);
         this.state = {
-            gameState : {},
-            shouldDraw : false
+            gameState: {},
+            shouldDraw: false
         }
+    }
+
+    shouldPoll(){
+        return this.props.currentGameId !== undefined;
     }
 
     mapToChess(x, y) {
@@ -195,42 +260,48 @@ class CanvasWindow extends React.Component {
             const blackInCheck = check["BLACK"]["inCheck"] === "true";
             if (blackInCheck) {
                 ctx.beginPath();
-                ctx.arc(GRID_SIZE / 2 + x * GRID_SIZE, GRID_SIZE / 2 + y * GRID_SIZE, GRID_SIZE / 2, 0, 2 * Math.PI);
+                ctx.arc(this.props.squareSize / 2 + x * this.props.squareSize, this.props.squareSize / 2 + y * this.props.squareSize, this.props.squareSize / 2, 0, 2 * Math.PI);
                 ctx.stroke();
             }
         } else if (this.mapToChess(x, y) === whiteKingLocation) {
             const whiteInCheck = check["WHITE"]["inCheck"] === "true";
             if (whiteInCheck) {
                 ctx.beginPath();
-                ctx.arc(GRID_SIZE / 2 + x * GRID_SIZE, GRID_SIZE / 2 + y * GRID_SIZE, GRID_SIZE / 2, 0, 2 * Math.PI);
+                ctx.arc(this.props.squareSize / 2 + x * this.props.squareSize, this.props.squareSize / 2 + y * this.props.squareSize, this.props.squareSize / 2, 0, 2 * Math.PI);
                 ctx.stroke();
             }
         }
     }
 
-    poll(){
-        axios.get("/chess/v1/gamestate?gameId=" + this.props.gameId + "&playerId=" + this.props.playerId)
-            .then(function(response){
+    poll() {
+        console.log("polling...");
+        axios.get("/chess/v1/gamestate?gameId=" + this.props.currentGameId + "&playerId=" + this.props.playerId)
+            .then(response => {
+                console.log("From server: ");
+                console.log(response.data);
                 this.setState(() => ({
-                    gameState : response.data,
-                    shouldDraw : true,
-                    selectedTile : undefined,
-                    shouldDrawGrid : true
+                    gameState: response.data,
+                    shouldDraw: true,
+                    selectedTile: undefined,
+                    shouldDrawGrid: true
                 }));
             });
-        // setTimeout(poll, 5000)
+
+        setTimeout(this.poll, 2000)
     }
 
     componentDidMount() {
         this.updateCanvas();
-        this.poll();
     }
 
     componentDidUpdate() {
+        if(this.shouldPoll()){
+            this.poll();
+        }
         this.updateCanvas();
     }
 
-    getCtx(){
+    getCtx() {
         const canvas = this.refs.canvas;
         return canvas.getContext("2d");
     }
@@ -253,15 +324,15 @@ class CanvasWindow extends React.Component {
                 }
 
                 // draw a rectangle
-                ctx.fillRect(GRID_SIZE * x, GRID_SIZE * y, GRID_SIZE, GRID_SIZE);
+                ctx.fillRect(this.props.squareSize * x, this.props.squareSize * y, this.props.squareSize, this.props.squareSize);
 
                 // and then an image on top of it.
-                ctx.drawImage(image, GRID_SIZE * x, GRID_SIZE * y, GRID_SIZE, GRID_SIZE);
+                ctx.drawImage(image, this.props.squareSize * x, this.props.squareSize * y, this.props.squareSize, this.props.squareSize);
 
-                drawCheck(x, y);
+                this.drawCheck(x, y);
 
                 if (gameOver) {
-                    this.setState(() => ({shouldDrawGrid:false}));
+                    this.setState(() => ({shouldDrawGrid: false}));
                 }
             };
         }
@@ -282,17 +353,21 @@ class CanvasWindow extends React.Component {
         }
     }
 
-    render(){
+    render() {
+        if(!this.props.loggedIn){
+            return <div/>;
+        }
         return (
-            <canvas ref="canvas" width={300} height={300}/>
+            <div className="container">
+                <div className="row">
+                    <div className="col">
+                        <canvas ref="canvas" width={512} height={512}/>
+                    </div>
+                </div>
+
+            </div>
         )
     }
 }
-
-CanvasWindow.defaultProps = {
-    gameId : 1,
-    playerId : 1
-};
-
 
 ReactDOM.render(<App/>, document.getElementById("app"));
