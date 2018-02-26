@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "build": "babel src/app.js --out-file=../resources/static/app.js --presets=env,react --watch"
+    "build": "webpack --watch"
   },
   "dependencies": {
     "axios": "^0.18.0",
