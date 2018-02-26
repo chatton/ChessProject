@@ -1,5 +1,4 @@
 const path = require("path");
-console.log(path.join(__dirname, "..", "resources", "static"));
 module.exports = {
     entry : "./src/app.js",
     output : {

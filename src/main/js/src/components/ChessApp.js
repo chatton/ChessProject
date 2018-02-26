@@ -1,7 +1,7 @@
 import React from "react";
 import Form from "./Form";
 import NewGameButton from "./NewGameButton";
-import PlayerColour from "./PlayerColour";
+import InfoComponent from "./InfoComponent";
 import CanvasWindow from "./CanvasWindow";
 
 export default class ChessApp extends React.Component {
@@ -12,12 +12,16 @@ export default class ChessApp extends React.Component {
         this.setPlayerColour = this.setPlayerColour.bind(this);
         this.setLoggedIn = this.setLoggedIn.bind(this);
         this.setCurrentGameId = this.setCurrentGameId.bind(this);
+        this.setGameStatus = this.setGameStatus.bind(this);
+        this.setYourTurn = this.setYourTurn.bind(this);
 
         this.state = {
             playerId: undefined,
             playerColour: undefined,
             loggedIn: false,
-            currentGameId: undefined
+            currentGameId: undefined,
+            gameStatus : undefined,
+            yourTurn : undefined
         }
     }
 
@@ -41,18 +45,34 @@ export default class ChessApp extends React.Component {
         this.setState(() => ({currentGameId: id}));
     }
 
+    setGameStatus(status){
+        this.setState(()=>({gameStatus : status}));
+    }
+
+    setYourTurn(value){
+        this.setState(()=>({yourTurn : value}));
+    }
 
     render() {
         return (
             <div>
-                <Form updateId={this.setPlayerId} setLoggedIn={this.setLoggedIn}/>
+                <Form 
+                    updateId={this.setPlayerId} 
+                    setLoggedIn={this.setLoggedIn} 
+                    loggedIn={this.loggedIn}
+                />
                 <NewGameButton
                     playerId={this.state.playerId}
                     setPlayerColour={this.setPlayerColour}
                     setCurrentGameId={this.setCurrentGameId}
                 />
 
-                <PlayerColour playerColour={this.state.playerColour} loggedIn={this.state.loggedIn}/>
+                <InfoComponent 
+                    gameStatus={this.state.gameStatus}
+                    playerColour={this.state.playerColour} 
+                    loggedIn={this.state.loggedIn}
+                    yourTurn={this.state.yourTurn}
+                />
 
                 <CanvasWindow
                     size={8}
@@ -60,6 +80,8 @@ export default class ChessApp extends React.Component {
                     currentGameId={this.state.currentGameId}
                     loggedIn={this.state.loggedIn}
                     playerId={this.state.playerId}
+                    setGameStatus={this.setGameStatus}
+                    setYourTurn={this.setYourTurn}
                 />
             </div>
         );

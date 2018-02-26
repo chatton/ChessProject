@@ -7,10 +7,18 @@ export default class Form extends React.Component {
         super(props);
         this.register = this.register.bind(this);
         this.logout = this.logout.bind(this);
+        this.setName = this.setName.bind(this);
         this.state = {
-            loggedIn: false,
             badRequest: false
         }
+    }
+
+    setName(name){
+        this.setState(() => ({name}));
+    }
+
+    setBadRequest(badRequest){
+        this.setState(() => ({badRequest}));
     }
 
     register(e) {
@@ -36,8 +44,8 @@ export default class Form extends React.Component {
                 this.setState(() => {
                     return {
                         userName: name,
-                        loggedIn: true,
-                        badRequest: false
+                        badRequest: false,
+                        loggedIn : true
                     }
                 });
 
@@ -96,7 +104,7 @@ export default class Form extends React.Component {
                         <input type="password" className="form-control" name="password" id="password"
                                placeholder="Password"/>
                     </div>
-                    <button className="btn btn-normal" onClick={this.register}>Register</button>
+                     <button className="btn btn-normal" onClick={this.register}>Register</button>
                 </form>
             );
         }

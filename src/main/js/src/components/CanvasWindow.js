@@ -5,15 +5,55 @@ function isWhiteSquare(x, y) {
     return x % 2 === y % 2;
 }
 
+function getMousePos(canvas, evt) {
+    const rect = canvas.getBoundingClientRect();
+    return {
+        x: evt.clientX - rect.left,
+        y: evt.clientY - rect.top
+    };
+}
+
+let numClicks = 0;
 export default class CanvasWindow extends React.Component {
 
     constructor(props) {
         super(props);
+        this.canvasClicked = this.canvasClicked.bind(this);
+        this.makeMove = this.makeMove.bind(this);
         this.poll = this.poll.bind(this);
+        this.drawCheck = this.drawCheck.bind(this);
+        this.tick = this.tick.bind(this);
+        this.isTileEmpty = this.isTileEmpty.bind(this);
+
         this.state = {
+            moveFrom : undefined,
+            moveTo : undefined,
             gameState: {},
+            selectedTile : undefined,
             shouldDraw: false
         }
+    }
+
+    tick() {
+        if(this.shouldPoll()){
+            this.poll();
+            this.updateCanvas();
+        }
+        // setInterval(this.tick, 5000);
+    }
+      
+    componentWillUnmount() {
+        clearInterval(this.interval);
+    }
+    
+    componentDidMount() {
+        this.updateCanvas();
+        this.tick();
+        this.interval = setInterval(this.tick, 5000);
+    }
+
+    componentDidUpdate() {
+        this.updateCanvas();
     }
 
     shouldPoll(){
@@ -52,33 +92,21 @@ export default class CanvasWindow extends React.Component {
     }
 
     poll() {
-        console.log("polling...");
         axios.get("/chess/v1/gamestate?gameId=" + this.props.currentGameId + "&playerId=" + this.props.playerId)
             .then(response => {
-                console.log("From server: ");
-                console.log(response.data);
                 this.setState(() => ({
                     gameState: response.data,
                     shouldDraw: true,
-                    selectedTile: undefined,
                     shouldDrawGrid: true
                 }));
+                console.log(response.data);
+                this.props.setGameStatus(response.data.gameStatus);
+                this.props.setYourTurn(response.data.currentTurn === response.data.yourColour);
             });
 
-        setTimeout(this.poll, 2000)
     }
 
-    componentDidMount() {
-        this.updateCanvas();
-    }
-
-    componentDidUpdate() {
-        if(this.shouldPoll()){
-            this.poll();
-        }
-        this.updateCanvas();
-    }
-
+ 
     getCtx() {
         const canvas = this.refs.canvas;
         return canvas.getContext("2d");
@@ -117,10 +145,9 @@ export default class CanvasWindow extends React.Component {
     }
 
     updateCanvas() {
-        console.log("Updating canvas");
+        // console.log("Drawing canvas.");
         for (let x = 0; x < this.props.size; x++) {
             for (let y = 0; y < this.props.size; y++) {
-                console.log("drawing square");
                 if (isWhiteSquare(x, y)) {
                     this.drawSquare("#ffec96", x, y);
                 }
@@ -131,6 +158,58 @@ export default class CanvasWindow extends React.Component {
         }
     }
 
+    isTileEmpty(chessNotation){
+        return this.state.gameState.positions[chessNotation] === undefined;
+    }
+
+
+    canvasClicked(e){
+        const pos = getMousePos(this.refs.canvas, e);
+        const boardPos = {
+            x: Math.floor(pos.x / this.props.squareSize),
+            y: Math.floor(pos.y / this.props.squareSize)
+        };
+        const chessPos = this.mapToChess(boardPos.x, boardPos.y);
+
+        
+        numClicks++;
+        if(numClicks === 1) { // first click
+            if(this.isTileEmpty(chessPos)){
+                numClicks--;
+                return; // don't do anything if the tile is empty.
+            }
+
+            this.setState(() => ({
+                selectedTile : chessPos,
+                moveFrom : chessPos
+            }));
+
+        } else if (numClicks === 2){ // second click
+            this.setState(() => ({
+                moveTo : chessPos,
+                selectedTile : undefined
+            }));
+            numClicks = 0;
+            this.makeMove(this.state.moveFrom, chessPos);
+        }
+    }
+
+    makeMove(moveFrom, moveTo){
+        console.log("Making move. From: " + moveFrom + " to " + moveTo);
+        axios.post("/chess/v1/makemove", {
+            from : moveFrom,
+            to : moveTo,
+            playerId :this.props.playerId,
+            gameId : this.props.currentGameId
+        }).then(()=>{
+            this.poll();
+            this.updateCanvas();
+        }).catch((err)=>{
+            console.log(err);
+        });
+        
+    }
+
     render() {
         if(!this.props.loggedIn){
             return <div/>;
@@ -139,7 +218,7 @@ export default class CanvasWindow extends React.Component {
             <div className="container">
                 <div className="row">
                     <div className="col">
-                        <canvas ref="canvas" width={512} height={512}/>
+                        <canvas onClick={this.canvasClicked} ref="canvas" width={512} height={512}/>
                     </div>
                 </div>
 

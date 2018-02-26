@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "build": "webpack --watch"
+    "build": "webpack --watch",
+    "serve" : "live-server --port=9090 ../resources/static"
   },
   "dependencies": {
     "axios": "^0.18.0",
