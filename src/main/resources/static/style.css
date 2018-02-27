@@ -1,0 +1,28 @@
+.large-h1 {
+    font-size : 75px;
+}
+
+.medium-p {
+    font-size : 20px;
+}
+
+.outline {
+    -webkit-text-stroke-width: 2px;
+    -webkit-text-stroke-color: black;
+}
+
+.white {
+    color : white;
+}
+
+.padded-top {
+    height : 30px;
+}
+
+.padded-bot {
+    height : 15px;
+}
+
+.chess-background {
+    background-image: url(https://images.chesscomfiles.com/uploads/v1/user/16756554.64899e7a.1200x1200o.ea35b1a87a98.jpeg);
+}

@@ -39,26 +39,19 @@ export default class Form extends React.Component {
             password: password
         }).then(response => {
             const data = response.data;
-            console.log(data);
             if (data.status === "OK") { // means the user has logged in.
                 this.setState(() => {
                     return {
                         userName: name,
                         badRequest: false,
-                        loggedIn : true
                     }
                 });
-
-                // updates the playerId in the ChessApp component.
-                console.log(this.props);
-                console.log(data.id);
                 this.props.updateId(data.id);
                 this.props.setLoggedIn(true);
                 // save the user id
             } else if (data.status === "BAD") {
                 this.setState(() => {
                     return {
-                        loggedIn: false,
                         badRequest: true
                     }
                 });
@@ -74,38 +67,42 @@ export default class Form extends React.Component {
 
     displayLoggedInMessage() {
         if (this.state.badRequest) {
-            return <h2 className="bg-danger">User already exists! Pick a new user name.</h2>
+            return (
+                <div className="alert alert-danger" role="alert">
+                    <strong>User already exists!</strong> Pick a different user name.
+                </div>
+            );
+
         }
-        if (this.state.loggedIn) {
-            return <h2 className="bg-success">Logged in as {this.state.userName}</h2>
+        if (this.props.loggedIn) {
+            return(
+                <div className="alert alert-success" role="alert">
+                    <strong>Success!</strong> You are Logged in as {this.state.userName}.
+                </div>
+            );
         }
     }
 
     logout() {
-        this.setState(() => {
-            return {
-                loggedIn: false
-            }
-        });
         this.props.setLoggedIn(false);
     }
 
 
     renderForm() {
-        if (!this.state.loggedIn) {
-            return (
-                <form ref="form">
-                    <div className="form-group">
-                        <label htmlFor="name">Username</label>
-                        <input type="email" className="form-control" name="name" id="name" placeholder="Username"/>
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="exampleInputPassword1">Password</label>
-                        <input type="password" className="form-control" name="password" id="password"
-                               placeholder="Password"/>
-                    </div>
-                     <button className="btn btn-normal" onClick={this.register}>Register</button>
-                </form>
+        if (!this.props.loggedIn) {
+            return (    
+                    <form ref="form">
+                        <div className="form-group">
+                            <label htmlFor="name">Username</label>
+                            <input type="email" className="form-control" name="name" id="name" placeholder="Username"/>
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="exampleInputPassword1">Password</label>
+                            <input type="password" className="form-control" name="password" id="password"
+                                placeholder="Password"/>
+                        </div>
+                        <button className="btn btn-normal" onClick={this.register}>Register</button>
+                    </form>
             );
         }
     }
@@ -116,7 +113,7 @@ export default class Form extends React.Component {
             <div>
                 {this.displayLoggedInMessage()}
                 {this.renderForm()}
-                {this.state.loggedIn && <button className="btn btn-default" onClick={this.logout}>Logout</button>}
+                {this.props.loggedIn && <button className="btn btn-default" onClick={this.logout}>Logout</button>}
             </div>
         );
     }

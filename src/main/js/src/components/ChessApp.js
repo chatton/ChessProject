@@ -3,6 +3,7 @@ import Form from "./Form";
 import NewGameButton from "./NewGameButton";
 import InfoComponent from "./InfoComponent";
 import CanvasWindow from "./CanvasWindow";
+import HeaderComponent from "./HeaderComponent";
 
 export default class ChessApp extends React.Component {
 
@@ -55,16 +56,18 @@ export default class ChessApp extends React.Component {
 
     render() {
         return (
-            <div>
+            <div className="container">
+                <HeaderComponent title="Chess Online"/>
                 <Form 
                     updateId={this.setPlayerId} 
                     setLoggedIn={this.setLoggedIn} 
-                    loggedIn={this.loggedIn}
+                    loggedIn={this.state.loggedIn}
                 />
                 <NewGameButton
                     playerId={this.state.playerId}
                     setPlayerColour={this.setPlayerColour}
                     setCurrentGameId={this.setCurrentGameId}
+                    loggedIn={this.state.loggedIn}
                 />
 
                 <InfoComponent 

@@ -39,7 +39,6 @@ export default class CanvasWindow extends React.Component {
             this.poll();
             this.updateCanvas();
         }
-        // setInterval(this.tick, 5000);
     }
       
     componentWillUnmount() {
@@ -221,7 +220,6 @@ export default class CanvasWindow extends React.Component {
                         <canvas onClick={this.canvasClicked} ref="canvas" width={512} height={512}/>
                     </div>
                 </div>
-
             </div>
         )
     }

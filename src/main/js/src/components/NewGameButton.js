@@ -22,10 +22,12 @@ export default class NewGameButton extends React.Component {
     }
 
     render() {
+        if(!this.props.loggedIn){
+            return <div/>
+        }
         return (
             <div>
-                {this.props.playerId !== undefined &&
-                <button className="btn-success" onClick={this.requestNewGame}>New Game</button>}
+                {this.props.playerId !== undefined && <button type="button" className="btn btn-sucess btn-lg btn-block" onClick={this.requestNewGame}>New Game</button>}
             </div>
         );
     }
