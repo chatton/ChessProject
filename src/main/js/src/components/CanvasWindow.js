@@ -217,7 +217,11 @@ export default class CanvasWindow extends React.Component {
             <div className="container">
                 <div className="row">
                     <div className="col">
-                        <canvas onClick={this.canvasClicked} ref="canvas" width={512} height={512}/>
+                        <canvas onClick={this.canvasClicked} 
+                            ref="canvas" 
+                            width={this.props.squareSize * this.props.size} 
+                            height={this.props.squareSize * this.props.size}
+                        />
                     </div>
                 </div>
             </div>

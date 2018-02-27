@@ -4,6 +4,7 @@ import NewGameButton from "./NewGameButton";
 import InfoComponent from "./InfoComponent";
 import CanvasWindow from "./CanvasWindow";
 import HeaderComponent from "./HeaderComponent";
+import GameListComponent from "./GameListComponent";
 
 export default class ChessApp extends React.Component {
 
@@ -70,21 +71,29 @@ export default class ChessApp extends React.Component {
                     loggedIn={this.state.loggedIn}
                 />
 
+             
+                <div className="row">
+                    <div className="col-md-9 col-lg-9 col-sm-9">
+                    <CanvasWindow
+                        size={8}
+                        squareSize={88}
+                        currentGameId={this.state.currentGameId}
+                        loggedIn={this.state.loggedIn}
+                        playerId={this.state.playerId}
+                        setGameStatus={this.setGameStatus}
+                        setYourTurn={this.setYourTurn}
+                    />
+                    </div>
+                    <div className="col-md-3 col-lg-3 col-sm-3">
+                        <GameListComponent loggedIn={this.state.loggedIn}/>
+                    </div>
+                </div>
+
                 <InfoComponent 
                     gameStatus={this.state.gameStatus}
                     playerColour={this.state.playerColour} 
                     loggedIn={this.state.loggedIn}
                     yourTurn={this.state.yourTurn}
-                />
-
-                <CanvasWindow
-                    size={8}
-                    squareSize={64}
-                    currentGameId={this.state.currentGameId}
-                    loggedIn={this.state.loggedIn}
-                    playerId={this.state.playerId}
-                    setGameStatus={this.setGameStatus}
-                    setYourTurn={this.setYourTurn}
                 />
             </div>
         );

@@ -40,22 +40,14 @@ export default class Form extends React.Component {
         }).then(response => {
             const data = response.data;
             if (data.status === "OK") { // means the user has logged in.
-                this.setState(() => {
-                    return {
+                this.setState(() => ({             
                         userName: name,
                         badRequest: false,
-                    }
-                });
+                }));
                 this.props.updateId(data.id);
                 this.props.setLoggedIn(true);
-                // save the user id
             } else if (data.status === "BAD") {
-                this.setState(() => {
-                    return {
-                        badRequest: true
-                    }
-                });
-
+                this.setState(() => ({badRequest: true}));
             }
 
         }).catch(error => {
@@ -64,11 +56,10 @@ export default class Form extends React.Component {
 
     }
 
-
     displayLoggedInMessage() {
         if (this.state.badRequest) {
             return (
-                <div className="alert alert-danger" role="alert">
+                <div className="alert alert-danger">
                     <strong>User already exists!</strong> Pick a different user name.
                 </div>
             );
@@ -76,8 +67,8 @@ export default class Form extends React.Component {
         }
         if (this.props.loggedIn) {
             return(
-                <div className="alert alert-success" role="alert">
-                    <strong>Success!</strong> You are Logged in as {this.state.userName}.
+                <div className="alert alert-success">
+                    <strong>Success!</strong> You are Logged in as <strong>{this.state.userName}</strong>.
                 </div>
             );
         }
