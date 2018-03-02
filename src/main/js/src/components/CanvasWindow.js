@@ -15,26 +15,15 @@ function getMousePos(canvas, evt) {
 
 let numClicks = 0;
 export default class CanvasWindow extends React.Component {
-
-    constructor(props) {
-        super(props);
-        this.canvasClicked = this.canvasClicked.bind(this);
-        this.makeMove = this.makeMove.bind(this);
-        this.poll = this.poll.bind(this);
-        this.drawCheck = this.drawCheck.bind(this);
-        this.tick = this.tick.bind(this);
-        this.isTileEmpty = this.isTileEmpty.bind(this);
-
-        this.state = {
-            moveFrom : undefined,
-            moveTo : undefined,
-            gameState: {},
-            selectedTile : undefined,
-            shouldDraw: false
-        }
+    state = {
+        moveFrom : undefined,
+        moveTo : undefined,
+        gameState: {},
+        selectedTile : undefined,
+        shouldDraw: false
     }
-
-    tick() {
+   
+    tick = () => {
         if(this.shouldPoll()){
             this.poll();
             this.updateCanvas();
@@ -55,17 +44,17 @@ export default class CanvasWindow extends React.Component {
         this.updateCanvas();
     }
 
-    shouldPoll(){
+    shouldPoll = () => {
         return this.props.currentGameId !== undefined;
     }
 
-    mapToChess(x, y) {
+    mapToChess = (x, y) => {
         const asciiCode = 65;
         const mappedInt = this.props.size - y;
         return String.fromCharCode(asciiCode + x) + "" + mappedInt;
     }
 
-    drawCheck(x, y) {
+    drawCheck = (x, y) => {
         // if a king is in check, draw a circle around them.
         const check = this.state.gameState.check;
         const blackKingLocation = check["BLACK"]["location"];
@@ -90,7 +79,7 @@ export default class CanvasWindow extends React.Component {
         }
     }
 
-    poll() {
+    poll = () => {
         axios.get("/chess/v1/gamestate?gameId=" + this.props.currentGameId + "&playerId=" + this.props.playerId)
             .then(response => {
                 this.setState(() => ({
@@ -106,12 +95,12 @@ export default class CanvasWindow extends React.Component {
     }
 
  
-    getCtx() {
+    getCtx = () => {
         const canvas = this.refs.canvas;
         return canvas.getContext("2d");
     }
 
-    drawSquare(colour, x, y) {
+    drawSquare = (colour, x, y) => {
 
         const image = new Image();
         const currentChessPosition = this.mapToChess(x, y); // ex. 0,0 -> A8
@@ -143,7 +132,7 @@ export default class CanvasWindow extends React.Component {
         }
     }
 
-    updateCanvas() {
+    updateCanvas = () => {
         // console.log("Drawing canvas.");
         for (let x = 0; x < this.props.size; x++) {
             for (let y = 0; y < this.props.size; y++) {
@@ -157,12 +146,12 @@ export default class CanvasWindow extends React.Component {
         }
     }
 
-    isTileEmpty(chessNotation){
+    isTileEmpty = chessNotation => {
         return this.state.gameState.positions[chessNotation] === undefined;
     }
 
 
-    canvasClicked(e){
+    canvasClicked = e => {
         const pos = getMousePos(this.refs.canvas, e);
         const boardPos = {
             x: Math.floor(pos.x / this.props.squareSize),
@@ -193,7 +182,7 @@ export default class CanvasWindow extends React.Component {
         }
     }
 
-    makeMove(moveFrom, moveTo){
+    makeMove = (moveFrom, moveTo) => {
         console.log("Making move. From: " + moveFrom + " to " + moveTo);
         axios.post("/chess/v1/makemove", {
             from : moveFrom,

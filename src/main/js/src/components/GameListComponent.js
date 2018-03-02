@@ -2,16 +2,13 @@ import React from "react";
 import GameComponent from "./GameComponent";
 
 export default class GameListComponent extends React.Component {
-
-    constructor(props){
-        super(props);
-        this.drawButton = this.drawButton.bind(this);
-        this.state = {
-            list : [Math.random(), Math.random(), Math.random(),Math.random(),Math.random()]
-        }
+    
+    state = {
+        list : [Math.random(), Math.random(), Math.random(),Math.random(),Math.random()]
     }
 
-    drawButton(num){
+
+    drawButton = num => {
         let cls;
         let text;
         if(num >= 0.5){

@@ -1,14 +1,9 @@
 import React from "react";
-import axios from "axios";
+import axios from "axios"; // for http requests
 
 export default class NewGameButton extends React.Component {
 
-    constructor(props) {
-        super(props);
-        this.requestNewGame = this.requestNewGame.bind(this);
-    }
-
-    requestNewGame() {
+    requestNewGame = () => {
         const id = this.props.playerId;
         axios.get("/chess/v1/newgame?playerId=" + id)
             .then(response => {

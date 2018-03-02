@@ -2,13 +2,7 @@ import React from "react";
 
 export default class GameComponent extends React.Component {
 
-
-    constructor(props){
-        super(props);
-        // this.drawButton = this.drawButton.bind(this);
-    }
-
-    drawButton(){
+    drawButton = () => {
         let cls;
         let text;
         if(Math.random() >= 0.5){

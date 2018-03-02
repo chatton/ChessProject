@@ -3,25 +3,19 @@ import axios from 'axios';
 
 export default class Form extends React.Component {
 
-    constructor(props) {
-        super(props);
-        this.register = this.register.bind(this);
-        this.logout = this.logout.bind(this);
-        this.setName = this.setName.bind(this);
-        this.state = {
-            badRequest: false
-        }
+    state = {
+        badRequest: false
     }
 
-    setName(name){
+    setName = name => {
         this.setState(() => ({name}));
     }
 
-    setBadRequest(badRequest){
+    setBadRequest = badRequest => {
         this.setState(() => ({badRequest}));
     }
 
-    register(e) {
+    register = e => {
         e.preventDefault();
         const nameField = this.refs.form.elements.name;
         const name = nameField.value;
@@ -56,7 +50,7 @@ export default class Form extends React.Component {
 
     }
 
-    displayLoggedInMessage() {
+    displayLoggedInMessage = () => {
         if (this.state.badRequest) {
             return (
                 <div className="alert alert-danger">
@@ -74,12 +68,12 @@ export default class Form extends React.Component {
         }
     }
 
-    logout() {
+    logout = () => {
         this.props.setLoggedIn(false);
     }
 
 
-    renderForm() {
+    renderForm = () => {
         if (!this.props.loggedIn) {
             return (    
                     <form ref="form">

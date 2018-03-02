@@ -2,13 +2,8 @@ import React from "react";
 
 export default class InfoComponent extends React.Component {
 
-    constructor(props){
-        super(props);
-        this.renderGameStatus = this.renderGameStatus.bind(this);
-        this.renderPlayerInfo = this.renderPlayerInfo.bind(this);
-    }
 
-    renderPlayerInfo(){
+    renderPlayerInfo = () => {
         if(!this.props.loggedIn || !this.props.playerColour){
             return <div/>
         }
@@ -21,7 +16,7 @@ export default class InfoComponent extends React.Component {
         );
     }
 
-    renderGameStatus(){
+    renderGameStatus = () => {
         if(!this.props.gameStatus){
             return <div/>
         }
