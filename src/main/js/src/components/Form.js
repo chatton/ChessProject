@@ -5,18 +5,9 @@ export default class Form extends React.Component {
 
     state = {
         badRequest: false
-    }
+    };
 
-    setName = name => {
-        this.setState(() => ({name}));
-    }
-
-    setBadRequest = badRequest => {
-        this.setState(() => ({badRequest}));
-    }
-
-    register = e => {
-        e.preventDefault();
+    makePostRequest = endpoint => {
         const nameField = this.refs.form.elements.name;
         const name = nameField.value;
         nameField.value = "";
@@ -26,17 +17,15 @@ export default class Form extends React.Component {
         if (!name || !password) {
             return;
         }
-
-
-        axios.post("/chess/v1/register", {
+        axios.post("/chess/v1/" + endpoint, {
             userName: name,
             password: password
         }).then(response => {
             const data = response.data;
             if (data.status === "OK") { // means the user has logged in.
-                this.setState(() => ({             
-                        userName: name,
-                        badRequest: false,
+                this.setState(() => ({
+                    userName: name,
+                    badRequest: false,
                 }));
                 this.props.updateId(data.id);
                 this.props.setLoggedIn(true);
@@ -47,8 +36,19 @@ export default class Form extends React.Component {
         }).catch(error => {
             console.log(error);
         })
+    };
 
-    }
+    login = e => {
+
+        e.preventDefault();
+        this.makePostRequest("login");
+    };
+
+    register = e => {
+
+        e.preventDefault();
+        this.makePostRequest("register");
+    };
 
     displayLoggedInMessage = () => {
         if (this.state.badRequest) {
@@ -75,19 +75,20 @@ export default class Form extends React.Component {
 
     renderForm = () => {
         if (!this.props.loggedIn) {
-            return (    
-                    <form ref="form">
-                        <div className="form-group">
-                            <label htmlFor="name">Username</label>
-                            <input type="email" className="form-control" name="name" id="name" placeholder="Username"/>
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="exampleInputPassword1">Password</label>
-                            <input type="password" className="form-control" name="password" id="password"
-                                placeholder="Password"/>
-                        </div>
-                        <button className="btn btn-normal" onClick={this.register}>Register</button>
-                    </form>
+            return (
+                <form ref="form">
+                    <div className="form-group">
+                        <label htmlFor="name">Username</label>
+                        <input type="email" className="form-control" name="name" id="name" placeholder="Username"/>
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="exampleInputPassword1">Password</label>
+                        <input type="password" className="form-control" name="password" id="password"
+                               placeholder="Password"/>
+                    </div>
+                    <button className="btn btn-normal" onClick={this.register}>Register</button>
+                    <button className="btn btn-normal" onClick={this.login}>Login</button>
+                </form>
             );
         }
     }

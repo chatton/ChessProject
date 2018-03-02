@@ -1,10 +1,6 @@
 package ie.gmit.sw.controllers;
 
-import ie.gmit.sw.model.GameState;
-import ie.gmit.sw.model.MoveRequest;
-import ie.gmit.sw.model.NewGameResponse;
-import ie.gmit.sw.model.RegisterRequest;
-import ie.gmit.sw.model.RegistrationResponse;
+import ie.gmit.sw.model.*;
 import ie.gmit.sw.services.ChessService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,6 +42,10 @@ public class ChessController {
     @PostMapping("register")
     public RegistrationResponse registerUser(@RequestBody RegisterRequest request) {
         return chessService.register(request);
+    }
+    @PostMapping("login")
+    public LoginResponse loginUser(@RequestBody LoginRequest request){
+        return chessService.login(request);
     }
 }
 

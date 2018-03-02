@@ -4,10 +4,7 @@ import ie.gmit.sw.chess.board.ChessFactory;
 import ie.gmit.sw.chess.board.Move;
 import ie.gmit.sw.chess.game.Game;
 import ie.gmit.sw.chess.game.Player;
-import ie.gmit.sw.model.GameState;
-import ie.gmit.sw.model.NewGameResponse;
-import ie.gmit.sw.model.RegisterRequest;
-import ie.gmit.sw.model.RegistrationResponse;
+import ie.gmit.sw.model.*;
 import ie.gmit.sw.repositories.GameRepository;
 import ie.gmit.sw.repositories.PlayerRepository;
 import org.slf4j.Logger;
@@ -110,5 +107,26 @@ public class ChessService {
 
         playerRepository.save(playerToRegister); // register the player in the database.
         return new RegistrationResponse(playerToRegister.getId(), "OK");
+    }
+
+    public LoginResponse login(LoginRequest request) {
+        // request has user name and password
+
+        // check to see if a user exists with the user name
+        Player player = playerRepository.findByName(request.getUserName());
+        if(player == null){ // player doesn't exist!
+            // return error
+            return new LoginResponse(null, "BAD");
+        }
+
+        // check if they have the right password
+        if(request.getPassword().hashCode() == player.getPasswordHash()){
+            // the user exists, and they have the right password
+            // return the info for that user.
+            return new LoginResponse(player.getId(), "OK");
+        } else {
+            // user exists, they have the wrong password
+            return new LoginResponse(null, "BAD");
+        }
     }
 }
