@@ -2,6 +2,7 @@ package ie.gmit.sw.services;
 
 import ie.gmit.sw.chess.board.ChessFactory;
 import ie.gmit.sw.chess.board.Move;
+import ie.gmit.sw.chess.board.pieces.Colour;
 import ie.gmit.sw.chess.game.Game;
 import ie.gmit.sw.chess.game.Player;
 import ie.gmit.sw.model.*;
@@ -12,6 +13,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Random;
 
 @Service
@@ -128,5 +132,33 @@ public class ChessService {
             // user exists, they have the wrong password
             return new LoginResponse(null, "BAD");
         }
+    }
+
+    public List<GameInfo> getAllGames(int playerId) {
+        Player player = playerRepository.findOne(playerId);
+
+        if(player == null){
+            // TODO handle player not in db
+        }
+
+        Collection<Game> games = player.getGames();
+
+        List<GameInfo> allGameInfo = new ArrayList<>();
+
+        for(Game game : games){
+            GameInfo info = new GameInfo();
+            info.setGameId(game.getId());
+
+            Player whitePlayer = game.getPlayerByColour(Colour.WHITE);
+            info.setWhitePlayerName(whitePlayer == null ? null : whitePlayer.getName());
+
+            Player blackPlayer = game.getPlayerByColour(Colour.BLACK);
+            info.setBlackPlayerName(blackPlayer == null ? null : blackPlayer.getName());
+
+            info.setCurrentTurn(game.getCurrentTurnColour());
+            allGameInfo.add(info);
+        }
+
+        return allGameInfo;
     }
 }

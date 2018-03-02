@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("chess/v1/")
 public class ChessController {
@@ -46,6 +48,10 @@ public class ChessController {
     @PostMapping("login")
     public LoginResponse loginUser(@RequestBody LoginRequest request){
         return chessService.login(request);
+    }
+    @GetMapping("allgames")
+    public List<GameInfo> allGames(@RequestParam("playerId") int playerId){
+        return chessService.getAllGames(playerId);
     }
 }
 
