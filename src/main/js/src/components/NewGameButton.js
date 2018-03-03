@@ -10,6 +10,16 @@ export default class NewGameButton extends React.Component {
                 const data = response.data;
                 this.props.setPlayerColour(data.colour);
                 this.props.setCurrentGameId(data.gameId);
+                
+                axios.get("/chess/v1/allgames/?playerId=" + id)
+                .then(resp => {
+                    // save the ongoing games to be visible in the GameListComponent
+                    this.props.setOngoingGames(resp.data);
+                }).catch(err => {
+                    console.log(err);
+                })
+
+
             }).catch(err => {
                 console.log(err);
             });

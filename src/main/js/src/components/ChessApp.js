@@ -7,15 +7,26 @@ import HeaderComponent from "./HeaderComponent";
 import GameListComponent from "./GameListComponent";
 
 export default class ChessApp extends React.Component {
+
     state = {
         playerId: undefined,
         playerColour: undefined,
         loggedIn: false,
         currentGameId: undefined,
         gameStatus : undefined,
-        yourTurn : undefined
+        yourTurn : undefined,
+        ongoingGames : [],
+        playerName : undefined
     }
     
+    setPlayerName = name => {
+        this.setState(() => ({playerName:name}));
+    }
+
+    setOngoingGames = games => {
+        this.setState(() => ({ongoingGames: games}));
+    }
+
     /*
      updates the player id, this is called by the FormComponent
      in order to pass it down as props to the NewGameButtonComponent
@@ -52,12 +63,15 @@ export default class ChessApp extends React.Component {
                     updateId={this.setPlayerId} 
                     setLoggedIn={this.setLoggedIn} 
                     loggedIn={this.state.loggedIn}
+                    setOngoingGames={this.setOngoingGames}
+                    setPlayerName={this.setPlayerName}
                 />
                 <NewGameButton
                     playerId={this.state.playerId}
                     setPlayerColour={this.setPlayerColour}
                     setCurrentGameId={this.setCurrentGameId}
                     loggedIn={this.state.loggedIn}
+                    setOngoingGames={this.setOngoingGames}
                 />
 
                 <InfoComponent 
@@ -68,7 +82,7 @@ export default class ChessApp extends React.Component {
                 />
 
                 <div className="row">
-                    <div className="col-md-9 col-lg-9 col-sm-9">
+                    <div className="col-md-8 col-lg-8 col-sm-8">
                         <CanvasWindow
                             size={8}
                             squareSize={88}
@@ -79,8 +93,15 @@ export default class ChessApp extends React.Component {
                             setYourTurn={this.setYourTurn}
                         />
                     </div>
-                    <div className="col-md-3 col-lg-3 col-sm-3">
-                        <GameListComponent loggedIn={this.state.loggedIn}/>
+                    <div className="col-md-4 col-lg-4 col-sm-4">
+                        <GameListComponent 
+                            loggedIn={this.state.loggedIn}
+                            onGoingGames={this.state.ongoingGames}
+                            setCurrentGameId={this.setCurrentGameId}
+                            playerName={this.state.playerName}
+                            playerId={this.state.playerId}
+                            setOngoingGames={this.setOngoingGames}
+                        />
                     </div>
                 </div>
             </div>

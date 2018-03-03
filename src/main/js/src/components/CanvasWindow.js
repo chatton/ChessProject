@@ -87,9 +87,11 @@ export default class CanvasWindow extends React.Component {
                     shouldDraw: true,
                     shouldDrawGrid: true
                 }));
-                console.log(response.data);
+    
                 this.props.setGameStatus(response.data.gameStatus);
                 this.props.setYourTurn(response.data.currentTurn === response.data.yourColour);
+            }).catch(err => {
+                console.log(err);
             });
 
     }

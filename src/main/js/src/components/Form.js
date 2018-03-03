@@ -17,18 +17,23 @@ export default class Form extends React.Component {
         if (!name || !password) {
             return;
         }
+
+    
         axios.post("/chess/v1/" + endpoint, {
             userName: name,
             password: password
         }).then(response => {
             const data = response.data;
-            if (data.status === "OK") { // means the user has logged in.
+            if (data.status === "OK") { // means the user has logged in ok.
                 this.setState(() => ({
                     userName: name,
                     badRequest: false,
                 }));
+
+                this.props.setPlayerName(name)
                 this.props.updateId(data.id);
                 this.props.setLoggedIn(true);
+                
             } else if (data.status === "BAD") {
                 this.setState(() => ({badRequest: true}));
             }
@@ -39,13 +44,11 @@ export default class Form extends React.Component {
     };
 
     login = e => {
-
         e.preventDefault();
         this.makePostRequest("login");
     };
 
     register = e => {
-
         e.preventDefault();
         this.makePostRequest("register");
     };
