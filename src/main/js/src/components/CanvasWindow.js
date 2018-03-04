@@ -5,6 +5,15 @@ function isWhiteSquare(x, y) {
     return x % 2 === y % 2;
 }
 
+function toBool(str){
+    if(str === "true"){
+        return true;
+    } else if(str === "false"){
+        return false;
+    }
+    return undefined;
+}
+
 function getMousePos(canvas, evt) {
     const rect = canvas.getBoundingClientRect();
     return {
@@ -15,6 +24,7 @@ function getMousePos(canvas, evt) {
 
 let numClicks = 0;
 export default class CanvasWindow extends React.Component {
+
     state = {
         moveFrom : undefined,
         moveTo : undefined,
@@ -57,20 +67,21 @@ export default class CanvasWindow extends React.Component {
     drawCheck = (x, y) => {
         // if a king is in check, draw a circle around them.
         const check = this.state.gameState.check;
+        
         const blackKingLocation = check["BLACK"]["location"];
         const whiteKingLocation = check["WHITE"]["location"];
         const ctx = this.getCtx();
         ctx.strokeStyle = "red";
         ctx.lineWidth = 3;
         if (this.mapToChess(x, y) === blackKingLocation) {
-            const blackInCheck = check["BLACK"]["inCheck"] === "true";
+            const blackInCheck = toBool(check["BLACK"]["inCheck"]);
             if (blackInCheck) {
                 ctx.beginPath();
                 ctx.arc(this.props.squareSize / 2 + x * this.props.squareSize, this.props.squareSize / 2 + y * this.props.squareSize, this.props.squareSize / 2, 0, 2 * Math.PI);
                 ctx.stroke();
             }
         } else if (this.mapToChess(x, y) === whiteKingLocation) {
-            const whiteInCheck = check["WHITE"]["inCheck"] === "true";
+            const whiteInCheck = toBool(check["WHITE"]["inCheck"]);
             if (whiteInCheck) {
                 ctx.beginPath();
                 ctx.arc(this.props.squareSize / 2 + x * this.props.squareSize, this.props.squareSize / 2 + y * this.props.squareSize, this.props.squareSize / 2, 0, 2 * Math.PI);
@@ -84,8 +95,8 @@ export default class CanvasWindow extends React.Component {
             .then(response => {
                 this.setState(() => ({
                     gameState: response.data,
-                    shouldDraw: true,
-                    shouldDrawGrid: true
+                    shouldDraw: true
+                    // shouldDrawGrid: true
                 }));
     
                 this.props.setGameStatus(response.data.gameStatus);
@@ -109,7 +120,7 @@ export default class CanvasWindow extends React.Component {
         // the name of the image from the response matches the name of the image files.
 
         const gameOver = this.state.gameState.gameStatus === "FINISHED";
-        if (!gameOver && this.state.shouldDrawGrid) { // only draw the board when the game is ongoing.
+        if (/*!gameOver && */this.state.shouldDraw) { // only draw the board when the game is ongoing.
             image.src = "images/" + this.state.gameState.positions[currentChessPosition] + ".png";
             image.onload = () => {
                 const ctx = this.getCtx();
@@ -127,9 +138,9 @@ export default class CanvasWindow extends React.Component {
 
                 this.drawCheck(x, y);
 
-                if (gameOver) {
-                    this.setState(() => ({shouldDrawGrid: false}));
-                }
+                // if (gameOver) {
+                //     this.setState(() => ({shouldDrawGrid: false}));
+                // }
             };
         }
     }
@@ -185,13 +196,12 @@ export default class CanvasWindow extends React.Component {
     }
 
     makeMove = (moveFrom, moveTo) => {
-        console.log("Making move. From: " + moveFrom + " to " + moveTo);
         axios.post("/chess/v1/makemove", {
             from : moveFrom,
             to : moveTo,
             playerId :this.props.playerId,
             gameId : this.props.currentGameId
-        }).then(()=>{
+        }).then(() => {
             this.poll();
             this.updateCanvas();
         }).catch((err)=>{

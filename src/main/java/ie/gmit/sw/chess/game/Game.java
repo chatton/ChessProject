@@ -182,9 +182,9 @@ public class Game {
         check.put("BLACK", new HashMap<>());
         check.put("WHITE", new HashMap<>());
         check.get("BLACK").put("inCheck", "" + blackInCheck);
-        check.get("BLACK").put("location", chessBoard.getKing(Colour.BLACK).getPosition().toString());
+        check.get("BLACK").put("location", chessBoard.getKing(Colour.BLACK).getPosition().toChess());
         check.get("WHITE").put("inCheck", "" + whiteInCheck);
-        check.get("WHITE").put("location", chessBoard.getKing(Colour.WHITE).getPosition().toString());
+        check.get("WHITE").put("location", chessBoard.getKing(Colour.WHITE).getPosition().toChess());
         return check;
     }
 
