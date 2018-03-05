@@ -8,6 +8,7 @@ def main():
     parser.add_argument("-hn", "--host", help="The hostname you want to connect to", action="store", default="localhost")
     parser.add_argument("-pt", "--port", help="The port", action="store", type=int, default="8080")
     parser.add_argument("-p", "--password", help="the password", action="store", default="PyBotPass")
+    parser.add_argument("-nng", "--num_new_games", help="the number of new games pybot should start", action="store", type=int, default=0)
 
     # you must either register or login
     log_or_reg = parser.add_mutually_exclusive_group(required=True)
@@ -29,17 +30,21 @@ def main():
     if args.login:
         bot.login()
 
-    bot.request_game()
+    for _ in range(args.num_new_games):
+        bot.request_game()
+
+    all_game_ids = bot.game_ids
+
+    print("[{0}] is currently in [{1}] games.".format(args.name, len(all_game_ids)))
 
     while True:
         time.sleep(5) # wait 5 seconds between GET requests.
-        bot.update_game_state() # GET updated board
-       
-        # keep updating the game state until it's the bot's turn.
-    
-        if bot.is_turn():
-            # it's the bot's turn so it needs to make a move.
-            bot.make_move() # sends it's move to the server via a POST request.
+        for game_id in all_game_ids:
+            bot.game_id = game_id
+            bot.update_game_state() # GET updated board
+            if bot.is_turn():
+                # it's the bot's turn so it needs to make a move.
+                bot.make_move() # sends it's move to the server via a POST request.
 
 if __name__ == "__main__":
     main()
