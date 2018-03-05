@@ -3,6 +3,7 @@ package ie.gmit.sw.services;
 import ie.gmit.sw.chess.board.ChessFactory;
 import ie.gmit.sw.chess.board.Move;
 import ie.gmit.sw.chess.game.Game;
+import ie.gmit.sw.chess.game.GameStatus;
 import ie.gmit.sw.chess.game.Player;
 import ie.gmit.sw.model.GameState;
 import ie.gmit.sw.model.NewGameResponse;
@@ -36,8 +37,15 @@ public class ChessService {
     public GameState getGameState(int gameId, int playerId) {
 
         Game game = gameRepository.findOne(gameId);
-        // TODO handle game not found
-        return game.getGameState(playerId);
+        // TODO handle game not found / doesn't exist
+
+        // delete the game if it's over.
+        GameState gameState = game.getGameState(playerId);
+        if(gameState.getGameStatus() == GameStatus.FINISHED){
+            gameRepository.delete(game);
+        }
+
+        return gameState; // this will contain info that the game is finished for the clients.
     }
 
     private Game generateGame(){
