@@ -21,6 +21,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -58,6 +59,8 @@ public class Game {
     @Enumerated(EnumType.STRING)
     private Colour currentTurnColour;
 
+
+
     @Convert(converter = ChessBoardConverter.class)
     private ChessBoard chessBoard;
 
@@ -75,8 +78,23 @@ public class Game {
     }
 
 
+    public Colour getCurrentTurnColour() {
+        return currentTurnColour;
+    }
+
     private Player getById(int id) {
         return players.stream().filter(player -> player.getId() == id).findFirst().orElse(null);
+    }
+
+    public Player getPlayerByColour(Colour colour){
+        Collection<Player> allPlayers = getPlayers();
+        for(Player p : allPlayers){
+            Colour c = getColourFor(p.getId());
+            if(c == colour){
+                return p;
+            }
+        }
+        return null;
     }
 
     /**
@@ -164,9 +182,9 @@ public class Game {
         check.put("BLACK", new HashMap<>());
         check.put("WHITE", new HashMap<>());
         check.get("BLACK").put("inCheck", "" + blackInCheck);
-        check.get("BLACK").put("location", chessBoard.getKing(Colour.BLACK).getPosition().toString());
+        check.get("BLACK").put("location", chessBoard.getKing(Colour.BLACK).getPosition().toChess());
         check.get("WHITE").put("inCheck", "" + whiteInCheck);
-        check.get("WHITE").put("location", chessBoard.getKing(Colour.WHITE).getPosition().toString());
+        check.get("WHITE").put("location", chessBoard.getKing(Colour.WHITE).getPosition().toChess());
         return check;
     }
 
