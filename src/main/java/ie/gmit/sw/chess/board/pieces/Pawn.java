@@ -3,18 +3,16 @@ package ie.gmit.sw.chess.board.pieces;
 import ie.gmit.sw.chess.board.ChessBoard;
 import ie.gmit.sw.chess.board.Position;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 
 public class Pawn extends Piece {
-    public Pawn(ChessBoard board,  Colour colour) {
+    public Pawn(ChessBoard board, Colour colour) {
         super(board, colour);
     }
 
     @Override
-    public String getName(){
+    public String getName() {
         return super.getName() + "Pawn";
     }
 
@@ -32,6 +30,8 @@ public class Pawn extends Piece {
             };
             // add these to validPositions
             addIfDiagonalsValid(validPositions, diagonals);
+            addIfSecondSpotIsValid(validPositions);
+
 
         } // else for BLACK pieces
         else {
@@ -45,17 +45,45 @@ public class Pawn extends Piece {
             };
             // add these to validPositions
             addIfDiagonalsValid(validPositions, diagonals);
+            addIfSecondSpotIsValid(validPositions);
         }//else
 
         return validPositions;
 
     }
 
+    private void addIfSecondSpotIsValid(Collection<Position> validPositions) {
+        if (colour.equals(Colour.WHITE)) {
+            if (position.y() != 6) { // 6 is the starting position of white pawns.
+                return;
+            }
+
+
+            boolean positionInFrontIsEmpty = board.posIsEmpty(new Position(position.x(), position.y() - 1));
+            boolean positionsTwoSpacesInFrontIsEmpty = board.posIsEmpty(new Position(position.x(), position.y() - 2));
+
+            if (positionInFrontIsEmpty && positionsTwoSpacesInFrontIsEmpty) {
+                validPositions.add(new Position(position.x(), position.y() - 2));
+            }
+
+        } else { // BLACK
+            if (this.position.y() != 1) { // 1 is the starting position of black pawns.
+                return;
+            }
+            boolean positionInFrontIsEmpty = board.posIsEmpty(new Position(position.x(), position.y() + 1));
+            boolean positionsTwoSpacesInFrontIsEmpty = board.posIsEmpty(new Position(position.x(), position.y() + 2));
+
+            if (positionInFrontIsEmpty && positionsTwoSpacesInFrontIsEmpty) {
+                validPositions.add(new Position(position.x(), position.y() + 2));
+            }
+        }
+    }
+
     private void addIfFrontPositionValid(Collection<Position> positions, Position pos) {
         // white row
-        if(position.y() == board.size() - 1){ // white pawns are in the second last row
+        if (position.y() == board.size() - 1) { // white pawns are in the second last row
 
-        } else if (position.y() == 1){ // back row
+        } else if (position.y() == 1) { // back row
 
         }
         if (!board.isOnBoard(pos)) {
@@ -86,6 +114,5 @@ public class Pawn extends Piece {
             }
 
         }
-
     }
 }

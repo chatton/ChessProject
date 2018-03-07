@@ -1,6 +1,7 @@
 package ie.gmit.sw.chess.board.pieces;
 
 import ie.gmit.sw.chess.board.ChessBoard;
+import ie.gmit.sw.chess.board.ChessFactory;
 import ie.gmit.sw.chess.board.Position;
 import org.junit.Test;
 
@@ -10,6 +11,39 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class PawnTest {
+
+    @Test
+    public void whitePawnDoubleSpaceMovement(){
+        ChessBoard board = ChessFactory.newStandardChessBoard();
+
+        Piece pawn = board.getAt("B2");
+        Collection<Position> positions = pawn.getPossiblePositions();
+        assertEquals("White pawn didn't have 2 possible moves at the start of the game", 2, positions.size());
+
+        Piece enemyPiece = new Bishop(board, Colour.BLACK);
+        board.setAt("B4", enemyPiece);
+
+        positions = pawn.getPossiblePositions();
+        assertEquals("White pawn had more than one move when an enemy piece was 2 tiles in front.", 1, positions.size());
+
+
+        Piece pawn2 = board.getAt("D2");
+        Piece enemyPiece2 = new Rook(board, Colour.BLACK);
+        board.setAt("D3", enemyPiece2);
+
+        positions = pawn2.getPossiblePositions();
+        assertTrue("White pawn was blocked, but had some moves.",  positions.isEmpty());
+
+        Pawn newPawn = new Pawn(board, Colour.WHITE);
+        board.setAt("C4", newPawn);
+        assertEquals("Pawn was able to move 2 spaces, even though they weren't on their starting tile", 1, newPawn.getPossiblePositions().size());
+
+    }
+
+    @Test
+    public void blackPawnDoubleSpaceMovement(){
+
+    }
 
     @Test
     public void testWhitePawnGetPossiblePositions() {
@@ -44,19 +78,13 @@ public class PawnTest {
 
         Collection<Position> possibleMoves = pawn.getPossiblePositions();
         assertEquals("Pawn had 3 empty spaces in front of it and didn't have just 1 position.", possibleMoves.size(), 1);
-        assertTrue(possibleMoves.contains(new Position("D5")));
+        assertTrue(possibleMoves.contains(new Position("D4")));
 
         Pawn enemyPawn = new Pawn(board, Colour.WHITE);
-        board.setAt("D6", enemyPawn);
+        board.setAt("E3", enemyPawn);
 
         possibleMoves = pawn.getPossiblePositions();
-        assertEquals(possibleMoves.size(), 2);
-
-        Piece allyKing = new King(board, Colour.BLACK);
-        board.setAt(new Position("C6"), allyKing);
-
-        possibleMoves = pawn.getPossiblePositions();
-        assertEquals(possibleMoves.size(), 2);
+        assertEquals(possibleMoves.size(), 1);
     }
 
 }
