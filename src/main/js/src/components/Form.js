@@ -79,19 +79,23 @@ export default class Form extends React.Component {
     renderForm = () => {
         if (!this.props.loggedIn) {
             return (
-                <form ref="form">
-                    <div className="form-group">
-                        <label htmlFor="name">Username</label>
-                        <input type="email" className="form-control" name="name" id="name" placeholder="Username"/>
+                <div className="container">
+                    <div className="row">
+                        <div className="col-md-3 col-lg-3 col-xs-12"></div>
+                        <form ref="form" className="col-md-6 col-lg-6 col-xs-12">
+                            <div className="form-group">
+                                <input type="email" className="form-control" name="name" id="name" placeholder="Username"/>
+                            </div>
+                            <div className="form-group">
+                                <input type="password" className="form-control" name="password" id="password" placeholder="Password"/>
+                            </div>
+                            <button className="col-lg-6 col-md-6 col-sm-6 col-xs-6 btn btn-primary" onClick={this.register}>Register</button>
+                            <button className="col-lg-6 col-md-6 col-sm-6 col-xs-6 btn btn-success" onClick={this.login}>Login</button>
+
+                        </form>
+                        <div className="col-md-3"></div>
                     </div>
-                    <div className="form-group">
-                        <label htmlFor="exampleInputPassword1">Password</label>
-                        <input type="password" className="form-control" name="password" id="password"
-                               placeholder="Password"/>
-                    </div>
-                    <button className="btn btn-normal" onClick={this.register}>Register</button>
-                    <button className="btn btn-normal" onClick={this.login}>Login</button>
-                </form>
+                </div>
             );
         }
     }
