@@ -23,6 +23,7 @@ function getMousePos(canvas, evt) {
 }
 
 let numClicks = 0;
+let lastId = 0;
 export default class CanvasWindow extends React.Component {
 
     state = {
@@ -51,6 +52,12 @@ export default class CanvasWindow extends React.Component {
     }
 
     componentDidUpdate() {
+        // want to check if it's the id that's been updated.
+        // if it is, it means that the user has switched to a different active game and we want to poll and get the game state.
+        if(lastId !== this.props.currentGameId){
+            lastId = this.props.currentGameId;
+            this.poll();
+        }
         this.updateCanvas();
     }
 
@@ -104,7 +111,6 @@ export default class CanvasWindow extends React.Component {
             }).catch(err => {
                 console.log(err);
             });
-
     }
 
  
@@ -125,10 +131,23 @@ export default class CanvasWindow extends React.Component {
             image.onload = () => {
                 const ctx = this.getCtx();
                 ctx.fillStyle = colour;
+
+                // draw the opponenents moves.
+                const lastMove = this.state.gameState.lastMove;
+                if (lastMove){
+                    const mapped = this.mapToChess(x, y)
+                    if(mapped == lastMove.from || mapped == lastMove.to ){
+                        // display your own last move in blue, display the enemeies last move in red.
+                        ctx.fillStyle = this.state.gameState.currentTurn !== this.state.gameState.yourColour ? "blue" : "red";
+                    }
+                }
+            
                 // if the tile being drawn is the selected tile, draw it yellow instead.
                 if (this.mapToChess(x, y) === this.state.selectedTile) {
                     ctx.fillStyle = "yellow";
                 }
+
+                
 
                 // draw a rectangle
                 ctx.fillRect(this.props.squareSize * x, this.props.squareSize * y, this.props.squareSize, this.props.squareSize);
@@ -137,16 +156,11 @@ export default class CanvasWindow extends React.Component {
                 ctx.drawImage(image, this.props.squareSize * x, this.props.squareSize * y, this.props.squareSize, this.props.squareSize);
 
                 this.drawCheck(x, y);
-
-                // if (gameOver) {
-                //     this.setState(() => ({shouldDrawGrid: false}));
-                // }
             };
         }
     }
 
     updateCanvas = () => {
-        // console.log("Drawing canvas.");
         for (let x = 0; x < this.props.size; x++) {
             for (let y = 0; y < this.props.size; y++) {
                 if (isWhiteSquare(x, y)) {

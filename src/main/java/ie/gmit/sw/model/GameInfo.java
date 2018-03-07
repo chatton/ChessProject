@@ -1,6 +1,7 @@
 package ie.gmit.sw.model;
 
 import ie.gmit.sw.chess.board.pieces.Colour;
+import ie.gmit.sw.chess.game.GameStatus;
 
 public class GameInfo {
 
@@ -8,6 +9,15 @@ public class GameInfo {
     private String blackPlayerName;
     private int gameId;
     private Colour currentTurn;
+    private GameStatus gameStatus;
+
+    public GameStatus getGameStatus() {
+        return gameStatus;
+    }
+
+    public void setGameStatus(GameStatus gameStatus) {
+        this.gameStatus = gameStatus;
+    }
 
     public String getWhitePlayerName() {
         return whitePlayerName;

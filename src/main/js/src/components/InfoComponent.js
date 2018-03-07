@@ -1,4 +1,5 @@
 import React from "react";
+import _ from "lodash";
 
 export default class InfoComponent extends React.Component {
 
@@ -9,6 +10,7 @@ export default class InfoComponent extends React.Component {
         }
         const colour = this.props.playerColour; // "WHITE"
         const playerColour = colour.charAt(0) + colour.substring(1, colour.length).toLowerCase(); // "White" 
+        // const colour = _.startCase(_.toLower(this.props.playerColour)); // "WHITE" -> "White"
         return (
             <div>
                 <p className="alert alert-info">You are the <strong>{playerColour}</strong> player</p>

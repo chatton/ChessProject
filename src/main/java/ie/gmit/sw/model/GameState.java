@@ -1,6 +1,7 @@
 package ie.gmit.sw.model;
 
 import ie.gmit.sw.chess.board.ChessBoard;
+import ie.gmit.sw.chess.board.Move;
 import ie.gmit.sw.chess.board.pieces.Colour;
 import ie.gmit.sw.chess.board.pieces.Piece;
 import ie.gmit.sw.chess.game.GameStatus;
@@ -23,6 +24,7 @@ public class GameState {
     private Colour winner;
     private Colour currentTurn; // "WHITE" / "BLACK"
     private Colour yourColour;
+    private Map<String, String> lastMove;
 
     private Map<String, Map<String, String>> check;
 
@@ -91,5 +93,17 @@ public class GameState {
 
     public Colour getYourColour() {
         return yourColour;
+    }
+
+    public Map<String, String> getLastMove() {
+        return lastMove;
+    }
+
+    public void setLastMove(Move move) {
+        this.lastMove = new HashMap<>();
+        if(move != null){
+            this.lastMove.put("from", move.from().toChess());
+            this.lastMove.put("to", move.to().toChess());
+        }
     }
 }

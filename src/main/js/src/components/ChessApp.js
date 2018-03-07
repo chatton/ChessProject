@@ -18,6 +18,24 @@ export default class ChessApp extends React.Component {
         ongoingGames : [],
         playerName : undefined
     }
+
+    // poll = () => {
+    //     axios.get("/chess/v1/gamestate?gameId=" + this.state.currentGameId + "&playerId=" + this.state.playerId)
+    //         .then(response => {
+    //             this.setState(() => ({
+    //                 gameState: response.data,
+    //                 shouldDraw: true
+    //                 // shouldDrawGrid: true
+    //             }));
+    
+    //             this.props.setGameStatus(response.data.gameStatus);
+    //             this.props.setYourTurn(response.data.currentTurn === response.data.yourColour);
+    //         }).catch(err => {
+    //             console.log(err);
+    //         });
+
+    // }
+
     
     setPlayerName = name => {
         this.setState(() => ({playerName:name}));
@@ -45,6 +63,7 @@ export default class ChessApp extends React.Component {
 
     setCurrentGameId = id => {
         this.setState(() => ({currentGameId: id}));
+        this.poll();
     }
 
     setGameStatus = status => {
@@ -59,6 +78,12 @@ export default class ChessApp extends React.Component {
         return (
             <div className="container">
                 <HeaderComponent title="Chess Online" loggedIn={this.state.loggedIn}/>
+                {/*https://stackoverflow.com/questions/12273588/add-vertical-blank-space-using-twitter-bootstrap*/}
+                {/*this div exists purely to add some spacing between the header and the form.*/}
+                <div className="form-group">
+                    &nbsp;
+                </div>
+
                 <Form 
                     updateId={this.setPlayerId} 
                     setLoggedIn={this.setLoggedIn} 
@@ -66,6 +91,7 @@ export default class ChessApp extends React.Component {
                     setOngoingGames={this.setOngoingGames}
                     setPlayerName={this.setPlayerName}
                 />
+                
                 <NewGameButton
                     playerId={this.state.playerId}
                     setPlayerColour={this.setPlayerColour}
@@ -82,7 +108,7 @@ export default class ChessApp extends React.Component {
                 />
 
                 <div className="row">
-                    <div className="col-md-8 col-lg-8 col-sm-8">
+                    <div className="col-md-8 col-lg-8 col-sm-12 col-xs-12">
                         <CanvasWindow
                             size={8}
                             squareSize={88}
@@ -93,7 +119,7 @@ export default class ChessApp extends React.Component {
                             setYourTurn={this.setYourTurn}
                         />
                     </div>
-                    <div className="col-md-4 col-lg-4 col-sm-4">
+                    <div className="col-md-4 col-lg-4 col-sm-4 col-xs-12">
                         <GameListComponent 
                             loggedIn={this.state.loggedIn}
                             onGoingGames={this.state.ongoingGames}

@@ -42,9 +42,9 @@ public class ChessService {
 
         // delete the game if it's over.
         GameState gameState = game.getGameState(playerId);
-        if(gameState.getGameStatus() == GameStatus.FINISHED){
-            gameRepository.delete(game);
-        }
+//        if(gameState.getGameStatus() == GameStatus.FINISHED){
+//            gameRepository.delete(game);
+//        }
 
         return gameState; // this will contain info that the game is finished for the clients.
     }
@@ -164,6 +164,8 @@ public class ChessService {
             info.setBlackPlayerName(blackPlayer == null ? null : blackPlayer.getName());
 
             info.setCurrentTurn(game.getCurrentTurnColour());
+
+            info.setGameStatus(game.getGameState(playerId).getGameStatus());
             allGameInfo.add(info);
         }
 

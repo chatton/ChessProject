@@ -3,6 +3,7 @@ package ie.gmit.sw.chess.game;
 import ie.gmit.sw.chess.board.ChessBoard;
 import ie.gmit.sw.chess.board.ChessBoardConverter;
 import ie.gmit.sw.chess.board.Move;
+import ie.gmit.sw.chess.board.MoveConverter;
 import ie.gmit.sw.chess.board.pieces.Colour;
 import ie.gmit.sw.chess.board.pieces.Piece;
 import ie.gmit.sw.model.GameState;
@@ -48,7 +49,6 @@ public class Game {
     @Column(name = "black_id")
     private Integer blackPlayerId = -1;
 
-
     @ManyToMany(mappedBy = "games"/*, fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE}*/)
     @LazyCollection(LazyCollectionOption.FALSE)
     private Set<Player> players;
@@ -59,7 +59,8 @@ public class Game {
     @Enumerated(EnumType.STRING)
     private Colour currentTurnColour;
 
-
+    @Convert(converter = MoveConverter.class)
+    private Move lastMove;
 
     @Convert(converter = ChessBoardConverter.class)
     private ChessBoard chessBoard;
@@ -86,11 +87,11 @@ public class Game {
         return players.stream().filter(player -> player.getId() == id).findFirst().orElse(null);
     }
 
-    public Player getPlayerByColour(Colour colour){
+    public Player getPlayerByColour(Colour colour) {
         Collection<Player> allPlayers = getPlayers();
-        for(Player p : allPlayers){
+        for (Player p : allPlayers) {
             Colour c = getColourFor(p.getId());
-            if(c == colour){
+            if (c == colour) {
                 return p;
             }
         }
@@ -149,6 +150,7 @@ public class Game {
         state.setWinner(checkMate);
         boolean isCheckMate = checkMate != null;
         state.setGameStatus(determineStatus(isCheckMate));
+        state.setLastMove(lastMove);
         return state;
     }
 
@@ -240,7 +242,8 @@ public class Game {
         LOG.info("[{}] player moved their [{}] from [{}] to [{}].",
                 getColourFor(playerId), chessBoard.getAt(move.from()).getName().substring(1), move.from(), move.to());
         chessBoard.makeMove(move);
-
+        lastMove = move;
+        System.out.println("LAST MOVE: " + lastMove);
         // if the move was made successfully, swap turn.
         swapTurn();
 

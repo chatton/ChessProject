@@ -76,11 +76,15 @@ export default class GameListComponent extends React.Component {
                 <h2 className="page-header">Ongoing Games</h2>
                 <ul className="list-group">
                     {this.props.onGoingGames.map(gameInfo => {
+                        // don't display games that are finished.
+                        if(gameInfo.gameStatus === "FINISHED"){
+                            return <div/>
+                        }
                         return (
                             <li key={gameInfo.gameId} className="list-group-item">
                                 <div>
                                   {this.getMessage(gameInfo)}
-                                     <button className="btn btn-normal" onClick={() => this.props.setCurrentGameId(gameInfo.gameId)}>Join Game</button>
+                                     <button className="btn btn-info" onClick={() => this.props.setCurrentGameId(gameInfo.gameId)}>Join Game</button>
                                 </div>
                             </li>
                         );
