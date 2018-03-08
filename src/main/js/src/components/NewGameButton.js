@@ -27,12 +27,11 @@ export default class NewGameButton extends React.Component {
     }
 
     render() {
-        if(!this.props.loggedIn){
-            return <div/>
-        }
+        const classes = !this.props.loggedIn ? "container fade-anim hide" : "container fade-anim"
+      
         return (
-            <div>
-                {this.props.playerId !== undefined && <button type="button" className="btn btn-success btn-lg btn-block" onClick={this.requestNewGame}>New Game</button>}
+            <div className={classes}>
+                {this.props.playerId !== undefined && <button type="button" className="btn btn-success btn-block" onClick={this.requestNewGame}>New Game</button>}
             </div>
         );
     }

@@ -19,12 +19,12 @@ export default class HeaderComponent extends React.Component {
             return <div/>
         } else {
             return (
-                <div className="container chess-background">
+                <div className="container">
                 <div className="col-xs-12 padded-top"></div>
                 <div className="row">
                     <div className="col-md-12 col-lg-12 col-sm-12 col-xs-12">
-                        <h1 className="page-header large-h1 white outline"><em>{this.props.title}</em></h1>
-                        <p className="white medium-p">{this.determineSubtitle()}</p>
+                        <h1 className="text-left page-header display-1 white outline"><strong>{this.props.title}</strong></h1>
+                        <h2 className="text-left white medium-p">{this.determineSubtitle()}</h2>
                     </div>
                 </div>
                 <div className="col-xs-12 padded-bot"></div>

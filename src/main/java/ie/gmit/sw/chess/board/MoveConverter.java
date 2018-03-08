@@ -10,15 +10,15 @@ public class MoveConverter implements AttributeConverter<Move, String> {
 
     @Override
     public String convertToDatabaseColumn(Move move) {
-        if(move == null){
+        if (move == null) {
             return null;
         }
-        return move.to().toChess() +"_" + move.from().toChess();
+        return move.to().toChess() + "_" + move.from().toChess();
     }
 
     @Override
     public Move convertToEntityAttribute(String s) {
-        if(s == null){
+        if (s == null) {
             return null;
         }
         String[] fromTo = s.split("_");

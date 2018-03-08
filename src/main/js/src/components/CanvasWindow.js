@@ -148,7 +148,7 @@ export default class CanvasWindow extends React.Component {
                 }
 
                 
-
+                    
                 // draw a rectangle
                 ctx.fillRect(this.props.squareSize * x, this.props.squareSize * y, this.props.squareSize, this.props.squareSize);
 
@@ -225,21 +225,17 @@ export default class CanvasWindow extends React.Component {
     }
 
     render() {
-        if(!this.props.loggedIn){
-            return <div/>;
-        }
-        return (
-            <div className="container">
-                <div className="row">
-                    <div className="col">
-                        <canvas onClick={this.canvasClicked} 
-                            ref="canvas" 
-                            width={this.props.squareSize * this.props.size} 
-                            height={this.props.squareSize * this.props.size}
-                        />
-                    </div>
-                </div>
+        const classes = !this.props.loggedIn ? "container fade-anim hide canvas-border" : "container fade-anim canvas-border"
+        return(
+            <div>
+                <canvas onClick={this.canvasClicked}
+                className={classes}
+                ref="canvas" 
+                width={this.props.squareSize * this.props.size} 
+                height={this.props.squareSize * this.props.size}
+                />
             </div>
-        )
+        );
+   
     }
 }

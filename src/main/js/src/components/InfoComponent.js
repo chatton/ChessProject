@@ -18,6 +18,17 @@ export default class InfoComponent extends React.Component {
         );
     }
 
+    renderUserName = () => {
+        if (this.props.loggedIn) {
+            return(
+                <div className="alert alert-success">
+                    <strong>Success!</strong> You are Logged in as <strong>{this.props.playerName}</strong>.
+                </div>
+            );
+        }
+        return <div/>
+    }
+
     renderGameStatus = () => {
         if(!this.props.gameStatus){
             return <div/>
@@ -56,13 +67,11 @@ export default class InfoComponent extends React.Component {
 
     render() {
 
-        if(!this.props.loggedIn){
-            return <div/>
-        }
-
+        const classes = !this.props.loggedIn ? "container fade-anim hide" : "container fade-anim"
         return (
            
-            <div>
+            <div className={classes}>
+                {this.renderUserName()}
                 {this.renderPlayerInfo()}
                 {this.renderGameStatus()}
             </div>

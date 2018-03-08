@@ -7,6 +7,7 @@ export default class Form extends React.Component {
         badRequest: false
     };
 
+
     makePostRequest = endpoint => {
         const nameField = this.refs.form.elements.name;
         const name = nameField.value;
@@ -30,7 +31,7 @@ export default class Form extends React.Component {
                     badRequest: false,
                 }));
 
-                this.props.setPlayerName(name)
+                this.props.setPlayerName(name);
                 this.props.updateId(data.id);
                 this.props.setLoggedIn(true);
                 
@@ -60,29 +61,21 @@ export default class Form extends React.Component {
                     <strong>User already exists!</strong> Pick a different user name.
                 </div>
             );
-
         }
-        if (this.props.loggedIn) {
-            return(
-                <div className="alert alert-success">
-                    <strong>Success!</strong> You are Logged in as <strong>{this.state.userName}</strong>.
-                </div>
-            );
-        }
-    }
-
-    logout = () => {
-        this.props.setLoggedIn(false);
+        return <div/>
     }
 
 
     renderForm = () => {
-        if (!this.props.loggedIn) {
+        // if (!this.props.loggedIn) {
+            const classes = this.props.loggedIn ? "container fade-anim hide slider" : "container fade-anim"
             return (
-                <div className="container">
+                <div className={classes}>
                     <div className="row">
                         <div className="col-md-3 col-lg-3 col-xs-12"></div>
+                        
                         <form ref="form" className="col-md-6 col-lg-6 col-xs-12">
+                            {this.displayLoggedInMessage()}
                             <div className="form-group">
                                 <input type="email" className="form-control" name="name" id="name" placeholder="Username"/>
                             </div>
@@ -98,15 +91,14 @@ export default class Form extends React.Component {
                 </div>
             );
         }
-    }
+    
 
 
     render() {
         return (
             <div>
-                {this.displayLoggedInMessage()}
                 {this.renderForm()}
-                {this.props.loggedIn && <button className="btn btn-default" onClick={this.logout}>Logout</button>}
+            
             </div>
         );
     }

@@ -5,6 +5,7 @@ import InfoComponent from "./InfoComponent";
 import CanvasWindow from "./CanvasWindow";
 import HeaderComponent from "./HeaderComponent";
 import GameListComponent from "./GameListComponent";
+import LogoutButton from "./LogoutButton";
 
 export default class ChessApp extends React.Component {
 
@@ -18,24 +19,6 @@ export default class ChessApp extends React.Component {
         ongoingGames : [],
         playerName : undefined
     }
-
-    // poll = () => {
-    //     axios.get("/chess/v1/gamestate?gameId=" + this.state.currentGameId + "&playerId=" + this.state.playerId)
-    //         .then(response => {
-    //             this.setState(() => ({
-    //                 gameState: response.data,
-    //                 shouldDraw: true
-    //                 // shouldDrawGrid: true
-    //             }));
-    
-    //             this.props.setGameStatus(response.data.gameStatus);
-    //             this.props.setYourTurn(response.data.currentTurn === response.data.yourColour);
-    //         }).catch(err => {
-    //             console.log(err);
-    //         });
-
-    // }
-
     
     setPlayerName = name => {
         this.setState(() => ({playerName:name}));
@@ -74,60 +57,86 @@ export default class ChessApp extends React.Component {
         this.setState(()=>({yourTurn : value}));
     }
 
+    verticalPadding = () => {
+        {/*https://stackoverflow.com/questions/12273588/add-vertical-blank-space-using-twitter-bootstrap*/}
+        {/*this div exists purely to add some spacing between the header and the form.*/}
+        return(
+            <div className="form-group">
+                &nbsp;
+            </div>
+        );
+    }
+
     render() {
         return (
-            <div className="container">
-                <HeaderComponent title="Chess Online" loggedIn={this.state.loggedIn}/>
-                {/*https://stackoverflow.com/questions/12273588/add-vertical-blank-space-using-twitter-bootstrap*/}
-                {/*this div exists purely to add some spacing between the header and the form.*/}
-                <div className="form-group">
-                    &nbsp;
-                </div>
+            <div>
+                <div className="container">
+                    <HeaderComponent title="Chess Online" loggedIn={this.state.loggedIn}/>
+                    {this.verticalPadding()}
 
-                <Form 
-                    updateId={this.setPlayerId} 
-                    setLoggedIn={this.setLoggedIn} 
-                    loggedIn={this.state.loggedIn}
-                    setOngoingGames={this.setOngoingGames}
-                    setPlayerName={this.setPlayerName}
-                />
-                
-                <NewGameButton
-                    playerId={this.state.playerId}
-                    setPlayerColour={this.setPlayerColour}
-                    setCurrentGameId={this.setCurrentGameId}
-                    loggedIn={this.state.loggedIn}
-                    setOngoingGames={this.setOngoingGames}
-                />
+                    <Form 
+                        updateId={this.setPlayerId} 
+                        setLoggedIn={this.setLoggedIn} 
+                        loggedIn={this.state.loggedIn}
+                        setOngoingGames={this.setOngoingGames}
+                        setPlayerName={this.setPlayerName}
+                    />
 
-                <InfoComponent 
-                    gameStatus={this.state.gameStatus}
-                    playerColour={this.state.playerColour} 
-                    loggedIn={this.state.loggedIn}
-                    yourTurn={this.state.yourTurn}
-                />
+                    {this.verticalPadding()}
 
-                <div className="row">
-                    <div className="col-md-8 col-lg-8 col-sm-12 col-xs-12">
-                        <CanvasWindow
-                            size={8}
-                            squareSize={88}
-                            currentGameId={this.state.currentGameId}
-                            loggedIn={this.state.loggedIn}
-                            playerId={this.state.playerId}
-                            setGameStatus={this.setGameStatus}
-                            setYourTurn={this.setYourTurn}
-                        />
-                    </div>
-                    <div className="col-md-4 col-lg-4 col-sm-4 col-xs-12">
-                        <GameListComponent 
-                            loggedIn={this.state.loggedIn}
-                            onGoingGames={this.state.ongoingGames}
-                            setCurrentGameId={this.setCurrentGameId}
-                            playerName={this.state.playerName}
-                            playerId={this.state.playerId}
-                            setOngoingGames={this.setOngoingGames}
-                        />
+                    <div className={this.state.loggedIn ? "row slide-right" : "row slide-right back" }>
+                        <div className="col-md-8 col-lg-8 col-sm-12 col-xs-12">
+                            <div className="row">
+
+                                <div className="col-md-6 col-lg-6 col-sm-6 col-xs-6">
+                                    <LogoutButton
+                                        loggedIn={this.state.loggedIn}
+                                        setLoggedIn={this.setLoggedIn}
+                                    />
+                                </div>
+
+                                <div className="col-md-6 col-lg-6 col-sm-6 col-xs-6">
+                                    <NewGameButton
+                                        playerId={this.state.playerId}
+                                        setPlayerColour={this.setPlayerColour}
+                                        setCurrentGameId={this.setCurrentGameId}
+                                        loggedIn={this.state.loggedIn}
+                                        setOngoingGames={this.setOngoingGames}
+                                    />
+                                </div>
+
+                            </div>
+
+                            {this.verticalPadding()}
+
+                            <InfoComponent 
+                                playerName={this.state.playerName}
+                                gameStatus={this.state.gameStatus}
+                                playerColour={this.state.playerColour} 
+                                loggedIn={this.state.loggedIn}
+                                yourTurn={this.state.yourTurn}
+                            />
+                            <CanvasWindow
+                                size={8}
+                                squareSize={88}
+                                currentGameId={this.state.currentGameId}
+                                loggedIn={this.state.loggedIn}
+                                playerId={this.state.playerId}
+                                setGameStatus={this.setGameStatus}
+                                setYourTurn={this.setYourTurn}
+                            />
+                        </div>
+
+                        <div className="col-md-4 col-lg-4 col-sm-4 col-xs-12">
+                            <GameListComponent 
+                                loggedIn={this.state.loggedIn}
+                                onGoingGames={this.state.ongoingGames}
+                                setCurrentGameId={this.setCurrentGameId}
+                                playerName={this.state.playerName}
+                                playerId={this.state.playerId}
+                                setOngoingGames={this.setOngoingGames}
+                            />
+                        </div>
                     </div>
                 </div>
             </div>

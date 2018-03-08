@@ -73,7 +73,7 @@ export default class GameListComponent extends React.Component {
         }
         return (
             <div>
-                <h2 className="page-header">Ongoing Games</h2>
+                <h2 className="page-header text-white">Ongoing Games</h2>
                 <ul className="list-group">
                     {this.props.onGoingGames.map(gameInfo => {
                         // don't display games that are finished.
@@ -84,7 +84,7 @@ export default class GameListComponent extends React.Component {
                             <li key={gameInfo.gameId} className="list-group-item">
                                 <div>
                                   {this.getMessage(gameInfo)}
-                                     <button className="btn btn-info" onClick={() => this.props.setCurrentGameId(gameInfo.gameId)}>Join Game</button>
+                                     <button className="btn btn-info" onClick={() => this.props.setCurrentGameId(gameInfo.gameId)}>Switch to Game</button>
                                 </div>
                             </li>
                         );
