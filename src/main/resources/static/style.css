@@ -28,7 +28,7 @@
 }
 
 .chess-background2 {
-    background-image: url(http://localhost:8080/chess-background.jpg);
+    background-image: url(chess-background.jpg);
 }
 
 .white-player {
@@ -49,12 +49,12 @@
 }
 
 .slide-right {
-    transform: translateX(25px);
+    transform: translateY(-25px);
     transition: all 1s ease-in;
 }
 
 .slide-right.back {
-    transform: translateX(-25px);
+    transform: translateY(25px);
     transition: all 1s linear;
 }
 
