@@ -1,79 +1,75 @@
 import React from "react";
-import _ from "lodash";
 
 export default class InfoComponent extends React.Component {
 
-
     renderPlayerInfo = () => {
-        if(!this.props.loggedIn || !this.props.playerColour){
-            return <div/>
+        if (!this.props.loggedIn || !this.props.playerColour) {
+            return <div />
         }
         const colour = this.props.playerColour; // "WHITE"
-        const playerColour = colour.charAt(0) + colour.substring(1, colour.length).toLowerCase(); // "White" 
-        // const colour = _.startCase(_.toLower(this.props.playerColour)); // "WHITE" -> "White"
+        const playerColour = colour.charAt(0) + colour.substring(1, colour.length).toLowerCase(); // "White"
         return (
-            <div>
-                <p className="alert alert-info">You are the <strong>{playerColour}</strong> player</p>
-            </div>
+            <h4 className="text-info card-text">You are the <strong>{playerColour}</strong> player</h4>
         );
     }
 
     renderUserName = () => {
         if (this.props.loggedIn) {
-            return(
-                <div className="alert alert-success">
+            return (
+                <h4 className="text-success card-title">
                     <strong>Success!</strong> You are Logged in as <strong>{this.props.playerName}</strong>.
-                </div>
+                </h4>
             );
         }
-        return <div/>
+        return <div />
     }
 
     renderGameStatus = () => {
-        if(!this.props.gameStatus){
-            return <div/>
+        if (!this.props.gameStatus) {
+            return <div />
         }
-        
-        switch(this.props.gameStatus){
+
+        switch (this.props.gameStatus) {
             case "WAITING":
                 return (
-                    <div>
-                        <p className="alert alert-info">Waiting for another player to join...</p>
-                    </div>
+                    <h4 className="text-warning card-text">Waiting for another player to join...</h4>
                 );
             case "ONGOING": {
-                if(this.props.yourTurn === undefined){
+                if (this.props.yourTurn === undefined) {
                     return (
-                        <div>
-                            <p className="alert alert-info">Opponent joined!</p>
-                        </div>
+                        <h4 className="text-info card-text">Opponent joined!</h4>
                     );
-                } else if(this.props.yourTurn) {
+                } else if (this.props.yourTurn) {
                     return (
-                        <div>
-                            <p className="alert alert-success">It's your turn!</p>
-                        </div>
+                        <h4 className="text-success card-text">It's your turn!</h4>
                     );
-                } else{
+                } else {
                     return (
-                        <div>
-                            <p className="alert alert-warning">It's your opponent's turn.</p>
-                        </div>
+                        <h4 className="text-warning card-text">It's your opponent's turn.</h4>
+
                     );
                 }
             }
         }
     }
 
+    renderGameId = () => {
+        return this.props.currentGameId && <h3 className="card-header text-white">Game ID: {this.props.currentGameId}</h3>
+    }
+
     render() {
 
-        const classes = !this.props.loggedIn ? "container fade-anim hide" : "container fade-anim"
+        const anim = !this.props.loggedIn ? "fade-anim hide" : "fade-anim"
         return (
-           
-            <div className={classes}>
-                {this.renderUserName()}
-                {this.renderPlayerInfo()}
-                {this.renderGameStatus()}
+            <div className="container">
+                <div className={anim + " card bg-dark"}>
+                    <div className="card-body">
+                        {this.renderGameId()}
+                        {this.renderUserName()}
+                        {this.renderPlayerInfo()}
+                        {this.renderGameStatus()}
+                    </div>
+                </div>
             </div>
         );
     }
