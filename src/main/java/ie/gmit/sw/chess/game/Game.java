@@ -40,6 +40,9 @@ public class Game {
     @Id
     private int id;
 
+    @Column(name = "is_private", columnDefinition = "boolean default false", nullable = false)
+    private boolean isPrivate;
+
     @ElementCollection
     private Map<Integer, Colour> playerColourMap;
 
@@ -281,5 +284,18 @@ public class Game {
 
     public boolean contains(Player player) {
         return players.contains(player);
+    }
+
+
+    public boolean isPrivate() {
+        return getIsPrivate();
+    }
+
+    public boolean getIsPrivate() {
+        return isPrivate;
+    }
+
+    public void setIsPrivate(boolean aPrivate) {
+        isPrivate = aPrivate;
     }
 }

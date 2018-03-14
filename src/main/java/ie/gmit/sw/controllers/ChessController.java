@@ -24,8 +24,18 @@ public class ChessController {
     }
 
     @GetMapping("newgame")
-    public NewGameResponse newGameResponse(@RequestParam("playerId") int playerId) {
-        return chessService.newGame(playerId);
+    public NewGameResponse newGameResponse(
+            @RequestParam("playerId") int playerId,
+            @RequestParam(name = "private", required = false) boolean isPrivate) {
+        return chessService.newGame(playerId, isPrivate);
+    }
+
+    @GetMapping("joinprivategame")
+    public NewGameResponse joinPrivateGame(
+            @RequestParam("gameId") int gameId,
+            @RequestParam("playerId") int playerId
+    ) {
+        return chessService.joinPrivateGame(gameId, playerId);
     }
 
     @GetMapping("gamestate")
@@ -45,15 +55,14 @@ public class ChessController {
     public RegistrationResponse registerUser(@RequestBody RegisterRequest request) {
         return chessService.register(request);
     }
+
     @PostMapping("login")
-    public LoginResponse loginUser(@RequestBody LoginRequest request){
+    public LoginResponse loginUser(@RequestBody LoginRequest request) {
         return chessService.login(request);
     }
+
     @GetMapping("allgames")
-    public List<GameInfo> allGames(@RequestParam("playerId") int playerId){
+    public List<GameInfo> allGames(@RequestParam("playerId") int playerId) {
         return chessService.getAllGames(playerId);
     }
 }
-
-
-

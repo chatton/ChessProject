@@ -4,9 +4,14 @@ import ie.gmit.sw.chess.board.ChessFactory;
 import ie.gmit.sw.chess.board.Move;
 import ie.gmit.sw.chess.board.pieces.Colour;
 import ie.gmit.sw.chess.game.Game;
-import ie.gmit.sw.chess.game.GameStatus;
 import ie.gmit.sw.chess.game.Player;
-import ie.gmit.sw.model.*;
+import ie.gmit.sw.model.GameInfo;
+import ie.gmit.sw.model.GameState;
+import ie.gmit.sw.model.LoginRequest;
+import ie.gmit.sw.model.LoginResponse;
+import ie.gmit.sw.model.NewGameResponse;
+import ie.gmit.sw.model.RegisterRequest;
+import ie.gmit.sw.model.RegistrationResponse;
 import ie.gmit.sw.repositories.GameRepository;
 import ie.gmit.sw.repositories.PlayerRepository;
 import org.slf4j.Logger;
@@ -40,30 +45,51 @@ public class ChessService {
         Game game = gameRepository.findOne(gameId);
         // TODO handle game not found / doesn't exist
 
-        // delete the game if it's over.
         GameState gameState = game.getGameState(playerId);
-//        if(gameState.getGameStatus() == GameStatus.FINISHED){
-//            gameRepository.delete(game);
-//        }
-
         return gameState; // this will contain info that the game is finished for the clients.
     }
 
-    private Game generateGame(){
-        return new Game(ChessFactory.newStandardChessBoard(), Math.abs(rnd.nextInt()));
+    private Game generateGame(boolean isPrivate){
+        Game game = new Game(ChessFactory.newStandardChessBoard(), Math.abs(rnd.nextInt()));
+        game.setIsPrivate(isPrivate);
+        return game;
     }
 
-    public NewGameResponse newGame(int playerId) { // TODO implement player game list and add this game to it.
+    public NewGameResponse joinPrivateGame(int gameId, int playerId) {
+        Player player = playerRepository.findOne(playerId);
+        List<Game> privateGames = gameRepository.findPrivateGames();
+
+        for(Game game : privateGames){
+            if(game.getId() == gameId && game.isFree()){
+                player.addGame(game);
+                game.addPlayer(player);
+                playerRepository.save(player);
+                return new NewGameResponse(gameId, playerId, game.getColourFor(playerId));
+            }
+        }
+        return null; // no game by that id!
+    }
+
+    public NewGameResponse newGame(int playerId, boolean isPrivate) {
+
 
         // Find the player with the given id.
         Player player = playerRepository.findOne(playerId);
 
         // TODO handle invalid player
 
+        if(isPrivate){ // the user wants to start a private game.
+            Game game = generateGame(true);
+            player.addGame(game);
+            game.addPlayer(player);
+            playerRepository.save(player);
+            return new NewGameResponse(game.getId(), player.getId(), game.getColourFor(player.getId()));
+        }
+
         Iterable<Game> allGames = gameRepository.findAll();
 
-        for (Game game : allGames) {
-            if (game.isFree() && !game.contains(player)) {
+        for (Game game : allGames) { // only look at public games that have a free space
+            if (game.isFree() && !game.isPrivate() && !game.contains(player)) {
                 LOG.info("Game was free. Adding player to game: [{}]", game.getId());
                 player.addGame(game);
                 game.addPlayer(player); // put player in that game.
@@ -75,8 +101,8 @@ public class ChessService {
             }
         }
 
-        LOG.info("Found no free games. Making new game.");
-        Game game = generateGame();
+        LOG.info("Found no free games. Making new public game.");
+        Game game = generateGame(false);
         player.addGame(game);
         game.addPlayer(player);
         playerRepository.save(player);
