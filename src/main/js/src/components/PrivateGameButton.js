@@ -3,7 +3,12 @@ import axios from "axios"; // for http requests
 
 export default class PrivateGameButton extends React.Component {
 
+    state = {
+        willCreateNewGame: true
+    }
+
     requestNewPrivateGame = () => {
+        this.setState(() => ({ willCreateNewGame: true }));
         const id = this.props.playerId;
         axios.get("/chess/v1/newgame?playerId=" + id + "&private=true")
             .then(response => {
@@ -26,6 +31,7 @@ export default class PrivateGameButton extends React.Component {
     }
 
     joinExistingPrivateGame = () => {
+        this.setState(() => ({ willCreateNewGame: true }));
         const playerId = this.props.playerId;
         const gameId = this.refs.gameIdForm.elements.gameId.value.trim();
         this.refs.gameIdForm.elements.gameId.value = "";
@@ -60,22 +66,18 @@ export default class PrivateGameButton extends React.Component {
                 </button>
             );
         }
-        const idField = this.refs.gameIdForm.elements.gameId;
-        const typedId = idField.value.trim();
 
-        let willCreateNewGame = false;
         let text;
         let clickEvent;
-        if (typedId === "") {
+        if (this.state.willCreateNewGame) {
             text = "Create Private Game";
-            willCreateNewGame = true;
             clickEvent = this.requestNewPrivateGame;
         } else {
             text = "Join Private Game";
             clickEvent = this.joinExistingPrivateGame;
         }
 
-        let classes = willCreateNewGame ? "btn-info" : "btn-danger";
+        let classes = this.state.willCreateNewGame ? "btn-info" : "btn-danger";
         classes += " btn btn-block";
 
         return (
@@ -86,6 +88,14 @@ export default class PrivateGameButton extends React.Component {
                 {text}
             </button>
         );
+    }
+
+    handleChange = () => {
+        const idField = this.refs.gameIdForm.elements.gameId;
+        const typedId = idField.value.trim();
+        this.setState(() => ({
+            willCreateNewGame: typedId === ""
+        }))
     }
 
     render() {
@@ -99,10 +109,9 @@ export default class PrivateGameButton extends React.Component {
                         {this.renderButton()}
                         <form ref="gameIdForm">
                             <div className="form-group">
-                                <input className="form-control" name="gameId" id="gameId" type="text" placeholder="Enter game id"></input>
+                                <input className="form-control" onChange={this.handleChange} name="gameId" id="gameId" type="text" placeholder="Enter game id"></input>
                             </div>
                         </form>
-
                     </div>
                 )}
             </div>

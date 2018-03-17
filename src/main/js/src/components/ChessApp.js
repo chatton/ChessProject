@@ -121,31 +121,36 @@ export default class ChessApp extends React.Component {
                                     />
                                 </div>
 
+                                <div className="col-md-6 col-lg-6 col-sm-6 col-6"/>
+
                             </div>
 
                             {this.verticalPadding()}
+                            <div>
 
-                            <InfoComponent
-                                playerName={this.state.playerName}
-                                gameStatus={this.state.gameStatus}
-                                playerColour={this.state.playerColour}
-                                loggedIn={this.state.loggedIn}
-                                yourTurn={this.state.yourTurn}
-                                currentGameId={this.state.currentGameId}
-                            />
+                                <InfoComponent
+                                    playerName={this.state.playerName}
+                                    gameStatus={this.state.gameStatus}
+                                    playerColour={this.state.playerColour}
+                                    loggedIn={this.state.loggedIn}
+                                    yourTurn={this.state.yourTurn}
+                                    currentGameId={this.state.currentGameId}
+                                />
 
-                            <div className="pt-3"></div>
+                                <div className="pt-3"/>
 
-                            <CanvasWindow
-                                size={8}
-                                squareSize={88}
-                                currentGameId={this.state.currentGameId}
-                                loggedIn={this.state.loggedIn}
-                                playerId={this.state.playerId}
-                                setGameStatus={this.setGameStatus}
-                                setYourTurn={this.setYourTurn}
-                                setPlayerColour={this.setPlayerColour}
-                            />
+                                <CanvasWindow
+                                    size={8}
+                                    squareSize={88}
+                                    currentGameId={this.state.currentGameId}
+                                    loggedIn={this.state.loggedIn}
+                                    playerId={this.state.playerId}
+                                    setGameStatus={this.setGameStatus}
+                                    setYourTurn={this.setYourTurn}
+                                    setPlayerColour={this.setPlayerColour}
+                                />
+                            </div>
+
                         </div>
 
                         <div className="col-md-4 col-lg-4 col-sm-12 col-12">
