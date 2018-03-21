@@ -17,8 +17,10 @@ import ie.gmit.sw.repositories.PlayerRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -32,6 +34,9 @@ public class ChessService {
     private Random rnd;
     private PlayerRepository playerRepository;
     private GameRepository gameRepository;
+
+    @Value("${python-path}") // read the value from application.properties
+    private String pythonPath;
 
     @Autowired
     public ChessService(PlayerRepository playerRepository, GameRepository gameRepository) {
@@ -49,7 +54,7 @@ public class ChessService {
         return gameState; // this will contain info that the game is finished for the clients.
     }
 
-    private Game generateGame(boolean isPrivate){
+    private Game generateGame(boolean isPrivate) {
         Game game = new Game(ChessFactory.newStandardChessBoard(), Math.abs(rnd.nextInt()));
         game.setIsPrivate(isPrivate);
         return game;
@@ -59,8 +64,12 @@ public class ChessService {
         Player player = playerRepository.findOne(playerId);
         List<Game> privateGames = gameRepository.findPrivateGames();
 
-        for(Game game : privateGames){
-            if(game.getId() == gameId && game.isFree()){
+        for (Game game : privateGames) {
+            // needed for bot joining.
+            if (game.getId() == gameId && player.inGame(game)) { // player is already in the game so just give back the response for this game
+                return new NewGameResponse(gameId, playerId, game.getColourFor(playerId));
+            }
+            if (game.getId() == gameId && game.isFree()) {
                 player.addGame(game);
                 game.addPlayer(player);
                 playerRepository.save(player);
@@ -78,7 +87,7 @@ public class ChessService {
 
         // TODO handle invalid player
 
-        if(isPrivate){ // the user wants to start a private game.
+        if (isPrivate) { // the user wants to start a private game.
             Game game = generateGame(true);
             player.addGame(game);
             game.addPlayer(player);
@@ -130,7 +139,7 @@ public class ChessService {
         // validate the entered values.
         boolean badUserName = request.getUserName().trim().isEmpty();
         boolean badPassword = request.getPassword().trim().isEmpty();
-        if(badPassword || badUserName){
+        if (badPassword || badUserName) {
             return new RegistrationResponse(null, "BAD");
         }
 
@@ -139,7 +148,7 @@ public class ChessService {
         Player playerWithName = playerRepository.findByName(playerToRegister.getName());
         boolean nameInUse = playerWithName != null;
 
-        if(nameInUse){
+        if (nameInUse) {
             return new RegistrationResponse(null, "BAD");
         }
 
@@ -152,13 +161,13 @@ public class ChessService {
 
         // check to see if a user exists with the user name
         Player player = playerRepository.findByName(request.getUserName());
-        if(player == null){ // player doesn't exist!
+        if (player == null) { // player doesn't exist!
             // return error
             return new LoginResponse(null, "BAD");
         }
 
         // check if they have the right password
-        if(request.getPassword().hashCode() == player.getPasswordHash()){
+        if (request.getPassword().hashCode() == player.getPasswordHash()) {
             // the user exists, and they have the right password
             // return the info for that user.
             return new LoginResponse(player.getId(), "OK");
@@ -171,7 +180,7 @@ public class ChessService {
     public List<GameInfo> getAllGames(int playerId) {
         Player player = playerRepository.findOne(playerId);
 
-        if(player == null){
+        if (player == null) {
             // TODO handle player not in db
         }
 
@@ -179,7 +188,7 @@ public class ChessService {
 
         List<GameInfo> allGameInfo = new ArrayList<>();
 
-        for(Game game : games){
+        for (Game game : games) {
             GameInfo info = new GameInfo();
             info.setGameId(game.getId());
 
@@ -196,5 +205,13 @@ public class ChessService {
         }
 
         return allGameInfo;
+    }
+
+    public NewGameResponse newComputerGame(int playerId) throws IOException {
+        NewGameResponse resp = newGame(playerId, true);
+        int gameId = resp.getGameId();
+        String cmd = "python " + pythonPath + " --game_id " + gameId;
+        Runtime.getRuntime().exec(cmd); // start the bot
+        return resp;
     }
 }

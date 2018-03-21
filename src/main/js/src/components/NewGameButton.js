@@ -38,7 +38,7 @@ export default class NewGameButton extends React.Component {
                         className="btn btn-success btn-block"
                         onClick={this.requestNewPublicGame}
                     >
-                        New Game
+                        New Public Game
                     </button>
                 )}
             </div>

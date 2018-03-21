@@ -7,6 +7,7 @@ import HeaderComponent from "./HeaderComponent";
 import GameListComponent from "./GameListComponent";
 import LogoutButton from "./LogoutButton";
 import PrivateGameButton from "./PrivateGameButton";
+import BotButton from "./BotButton";
 
 export default class ChessApp extends React.Component {
     state = {
@@ -21,47 +22,47 @@ export default class ChessApp extends React.Component {
     };
 
     setPlayerName = name => {
-        this.setState(() => ({ playerName: name }));
+        this.setState(() => ({playerName: name}));
     };
 
     setOngoingGames = games => {
-        this.setState(() => ({ ongoingGames: games }));
+        this.setState(() => ({ongoingGames: games}));
     };
 
     /*
-       updates the player id, this is called by the FormComponent
-       in order to pass it down as props to the NewGameButtonComponent
-       */
+     updates the player id, this is called by the FormComponent
+     in order to pass it down as props to the NewGameButtonComponent
+     */
     setPlayerId = id => {
-        this.setState(() => ({ playerId: id }));
+        this.setState(() => ({playerId: id}));
     };
 
     setPlayerColour = colour => {
-        this.setState(() => ({ playerColour: colour }));
+        this.setState(() => ({playerColour: colour}));
     };
 
     setLoggedIn = value => {
-        this.setState(() => ({ loggedIn: value }));
+        this.setState(() => ({loggedIn: value}));
     };
 
     setCurrentGameId = id => {
-        this.setState(() => ({ currentGameId: id }));
+        this.setState(() => ({currentGameId: id}));
         this.poll();
     };
 
     setGameStatus = status => {
-        this.setState(() => ({ gameStatus: status }));
+        this.setState(() => ({gameStatus: status}));
     };
 
     setYourTurn = value => {
-        this.setState(() => ({ yourTurn: value }));
+        this.setState(() => ({yourTurn: value}));
     };
 
     verticalPadding = () => {
 
-            //https://stackoverflow.com/questions/12273588/add-vertical-blank-space-using-twitter-bootstrap
+        //https://stackoverflow.com/questions/12273588/add-vertical-blank-space-using-twitter-bootstrap
 
-            //this div exists purely to add some spacing between the header and the form.
+        //this div exists purely to add some spacing between the header and the form.
 
         return <div className="form-group">&nbsp;</div>;
     };
@@ -94,14 +95,14 @@ export default class ChessApp extends React.Component {
                         <div className="col-md-8 col-lg-8 col-sm-12 col-12">
                             <div className="row">
 
-                                <div className="col-md-6 col-lg-6 col-sm-6 col-6">
+                                <div className="col-md-6 col-lg-6 col-sm-12 col-12">
                                     <LogoutButton
                                         loggedIn={this.state.loggedIn}
                                         setLoggedIn={this.setLoggedIn}
                                     />
                                 </div>
 
-                                <div className="col-md-6 col-lg-6 col-sm-6 col-6">
+                                <div className="col-md-6 col-lg-6 col-sm-12 col-12">
                                     <NewGameButton
                                         playerId={this.state.playerId}
                                         setPlayerColour={this.setPlayerColour}
@@ -111,7 +112,7 @@ export default class ChessApp extends React.Component {
                                     />
                                 </div>
 
-                                <div className="col-md-6 col-lg-6 col-sm-6 col-6 pt-3">
+                                <div className="col-md-6 col-lg-6 col-sm-12 col-12 pt-3">
                                     <PrivateGameButton
                                         setPlayerColour={this.setPlayerColour}
                                         setCurrentGameId={this.setCurrentGameId}
@@ -121,7 +122,15 @@ export default class ChessApp extends React.Component {
                                     />
                                 </div>
 
-                                <div className="col-md-6 col-lg-6 col-sm-6 col-6"/>
+                                <div className="col-md-6 col-lg-6 col-sm-12 col-12 pt-3">
+                                    <BotButton
+                                        playerId={this.state.playerId}
+                            
+                                        loggedIn={this.state.loggedIn}
+                                        setCurrentGameId={this.setCurrentGameId}
+                                        setPlayerColour={this.setPlayerColour}
+                                    />
+                                </div>
 
                             </div>
 

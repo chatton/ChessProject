@@ -22,6 +22,14 @@ class ChessBot:
         self.game_id = None
 
 
+    def join_game(self, game_id):
+        query = "http://{0}:{1}/chess/v1/joinprivategame/".format(self.host, self.port)
+        resp = requests.get(query, params={"playerId" : self.player_id, "gameId" : game_id})
+        result = resp.json()
+        print(result)
+        self.player_id = result["playerId"]
+        self.game_id = result["gameId"]
+        self.colour = result["colour"]
 
     def login(self):
         query = "http://{0}:{1}/chess/v1/login/".format(self.host, self.port)
@@ -33,13 +41,13 @@ class ChessBot:
         data = resp.json()
         if data["status"] == "BAD":
             print("Error logging in.")
-            sys.exit()
+            return False
         
         print("Successfully logged in as [{}]".format(self.name))
 
         self.player_id = data["id"]
         print(f"Received id of [{self.player_id}]")
-        
+        return True
 
     def register(self):
         query = "http://{0}:{1}/chess/v1/register/".format(self.host, self.port)
@@ -50,12 +58,13 @@ class ChessBot:
         data = resp.json()
         if data["status"] == "BAD":
             print(f"Error registering as {self.config['name']}")
-            sys.exit()
+            return False
 
         print(f"Successfully registered as [{self.config['name']}]")
 
         self.player_id = data["id"]
         print(f"Received id of [{self.player_id}]")
+        return True
 
         
 
@@ -73,18 +82,20 @@ class ChessBot:
         self.game_id = result["gameId"]
         self.colour = result["colour"]
 
-    def update_game_state(self):
+    def update_game_state(self, game_id):
         """this method makes a get request to the server and updates
         the current board dict with the most up-to-date positions of 
         the pieces."""
         query = "http://{0}:{1}/chess/v1/gamestate".format(self.host, self.port)
-        resp = requests.get(query, params={"gameId": self.game_id, "playerId" : self.player_id})
+        resp = requests.get(query, params={"gameId": game_id, "playerId" : self.player_id})
 
         # TODO handle errors in response.
 
         self.game_state = resp.json()
 
+        self.game_id = game_id
         self.board = Board(self.game_state["positions"])
+        self.colour = self.game_state["yourColour"]
         self.ai = MediumAI(self.board, self.colour)
 
     def make_move(self):
@@ -136,8 +147,6 @@ class ChessBot:
             'currentTurn': 'WHITE'
         }]
         """
-        
-       
         
         query = "http://{0}:{1}/chess/v1/allgames?playerId={2}".format(self.host, self.port, self.player_id)
         resp = requests.get(query)

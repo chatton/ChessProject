@@ -62,7 +62,7 @@ export default class PrivateGameButton extends React.Component {
                     type="button"
                     className="btn btn-info btn-block"
                     onClick={this.requestNewPrivateGame}>
-                    Create Private Game
+                    Create New Private Game
                 </button>
             );
         }
@@ -109,7 +109,7 @@ export default class PrivateGameButton extends React.Component {
                         {this.renderButton()}
                         <form ref="gameIdForm">
                             <div className="form-group">
-                                <input className="form-control" onChange={this.handleChange} name="gameId" id="gameId" type="text" placeholder="Enter game id"></input>
+                                <input className="form-control" onChange={this.handleChange} name="gameId" id="gameId" type="text" placeholder="Enter with game id"></input>
                             </div>
                         </form>
                     </div>

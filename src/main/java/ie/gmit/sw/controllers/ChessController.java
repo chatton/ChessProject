@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -64,5 +65,10 @@ public class ChessController {
     @GetMapping("allgames")
     public List<GameInfo> allGames(@RequestParam("playerId") int playerId) {
         return chessService.getAllGames(playerId);
+    }
+
+    @GetMapping("computergame")
+    public NewGameResponse computerGame(@RequestParam("playerId") int playerId) throws IOException{
+        return chessService.newComputerGame(playerId);
     }
 }

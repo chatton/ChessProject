@@ -1,6 +1,7 @@
 from bot import ChessBot
 import argparse
 import time
+import sys
 
 def main():
     parser = argparse.ArgumentParser()
@@ -8,13 +9,8 @@ def main():
     parser.add_argument("-hn", "--host", help="The hostname you want to connect to", action="store", default="localhost")
     parser.add_argument("-pt", "--port", help="The port", action="store", type=int, default="8080")
     parser.add_argument("-p", "--password", help="the password", action="store", default="PyBotPass")
-    parser.add_argument("-nng", "--num_new_games", help="the number of new games pybot should start", action="store", type=int, default=0)
-
-    # you must either register or login
-    log_or_reg = parser.add_mutually_exclusive_group(required=True)
-    log_or_reg.add_argument("-r", "--register", help="If the bot needs to register a new account.", action="store_true", default=False)
-    log_or_reg.add_argument("-l", "--login", help="If the bot needs to login to the system with an existing account", action="store_true", default=False)
-    
+    parser.add_argument("-g", "--game_id", help="Game to join", action="store", type=int)
+    # parser.add_argument("-nng", "--num_new_games", help="the number of new games pybot should start", action="store", type=int, default=0)
     args = parser.parse_args()
 
     bot = ChessBot(
@@ -24,27 +20,26 @@ def main():
         password=args.password
     )
 
-    if args.register:
-        bot.register()
+    registerd_sucessfully = bot.register() # attempt register
+    if not registerd_sucessfully:
+        logged_in = bot.login()
+        if not logged_in:
+            sys.exit()
+    
+    bot.join_game(args.game_id)
+    
+    # for _ in range(args.num_new_games):
+        # bot.request_game()
 
-    if args.login:
-        bot.login()
+    # all_game_ids = bot.game_ids
+    # print("[{0}] is currently in [{1}] games.".format(args.name, len(all_game_ids)))
 
-    for _ in range(args.num_new_games):
-        bot.request_game()
-
-    all_game_ids = bot.game_ids
-
-    print("[{0}] is currently in [{1}] games.".format(args.name, len(all_game_ids)))
 
     while True:
-        time.sleep(5) # wait 5 seconds between GET requests.
-        for game_id in all_game_ids:
-            bot.game_id = game_id
-            bot.update_game_state() # GET updated board
-            if bot.is_turn():
-                # it's the bot's turn so it needs to make a move.
-                bot.make_move() # sends it's move to the server via a POST request.
+        bot.update_game_state(args.game_id)
+        if bot.is_turn():
+            bot.make_move()
+        time.sleep(5)
 
 if __name__ == "__main__":
     main()
