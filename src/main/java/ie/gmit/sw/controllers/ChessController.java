@@ -71,4 +71,11 @@ public class ChessController {
     public NewGameResponse computerGame(@RequestParam("playerId") int playerId) throws IOException{
         return chessService.newComputerGame(playerId);
     }
+    @GetMapping("surrender")
+    public void surrenderGame(
+            @RequestParam("playerId") int playerId,
+            @RequestParam("gameId") int gameId
+    ){
+        chessService.surrenderGame(playerId, gameId);
+    }
 }

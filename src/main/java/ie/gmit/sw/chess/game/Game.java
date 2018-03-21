@@ -37,6 +37,9 @@ import java.util.Set;
 @Table(name = "GAMES")
 public class Game {
 
+    @Column(name = "player_surrendered", columnDefinition = "boolean default false", nullable = false)
+    private boolean playerSurrendered;
+
     @Id
     private int id;
 
@@ -52,7 +55,7 @@ public class Game {
     @Column(name = "black_id")
     private Integer blackPlayerId = -1;
 
-    @ManyToMany(mappedBy = "games"/*, fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE}*/)
+    @ManyToMany(mappedBy = "games")
     @LazyCollection(LazyCollectionOption.FALSE)
     private Set<Player> players;
 
@@ -161,7 +164,7 @@ public class Game {
         if (isFree()) {
             return GameStatus.WAITING;
         }
-        if (isCheckMate) {
+        if (isCheckMate || playerSurrendered) {
             return GameStatus.FINISHED;
         }
         return GameStatus.ONGOING;
@@ -297,5 +300,13 @@ public class Game {
 
     public void setIsPrivate(boolean aPrivate) {
         isPrivate = aPrivate;
+    }
+
+    public boolean getPlayerSurrendered() {
+        return playerSurrendered;
+    }
+
+    public void setPlayerSurrendered(boolean playerSurrendered) {
+        this.playerSurrendered = playerSurrendered;
     }
 }

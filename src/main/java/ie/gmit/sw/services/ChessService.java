@@ -55,7 +55,11 @@ public class ChessService {
     }
 
     private Game generateGame(boolean isPrivate) {
-        Game game = new Game(ChessFactory.newStandardChessBoard(), Math.abs(rnd.nextInt()));
+        Game game;
+        do {
+            game = new Game(ChessFactory.newStandardChessBoard(), Math.abs(rnd.nextInt() % 10000));
+        } while (gameRepository.exists(game.getId())); // handle collisions with existing game ids
+
         game.setIsPrivate(isPrivate);
         return game;
     }
@@ -213,5 +217,11 @@ public class ChessService {
         String cmd = "python " + pythonPath + " --game_id " + gameId;
         Runtime.getRuntime().exec(cmd); // start the bot
         return resp;
+    }
+
+    public void surrenderGame(int playerId, int gameId) {
+        Game gameToSurrender = gameRepository.findOne(gameId);
+        gameToSurrender.setPlayerSurrendered(true);
+        gameRepository.save(gameToSurrender);
     }
 }
