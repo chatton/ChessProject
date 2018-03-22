@@ -8,8 +8,10 @@ import GameListComponent from "./GameListComponent";
 import LogoutButton from "./LogoutButton";
 import PrivateGameButton from "./PrivateGameButton";
 import BotButton from "./BotButton";
+import SurrenderButton from "./SurrenderButton";
 
 export default class ChessApp extends React.Component {
+
     state = {
         playerId: undefined,
         playerColour: undefined,
@@ -125,7 +127,7 @@ export default class ChessApp extends React.Component {
                                 <div className="col-md-6 col-lg-6 col-sm-12 col-12 pt-3">
                                     <BotButton
                                         playerId={this.state.playerId}
-                            
+
                                         loggedIn={this.state.loggedIn}
                                         setCurrentGameId={this.setCurrentGameId}
                                         setPlayerColour={this.setPlayerColour}
@@ -157,6 +159,15 @@ export default class ChessApp extends React.Component {
                                     setGameStatus={this.setGameStatus}
                                     setYourTurn={this.setYourTurn}
                                     setPlayerColour={this.setPlayerColour}
+                                />
+
+                                <div className="pt-3"/>
+
+                                <SurrenderButton
+                                    currentGameId = {this.state.currentGameId}
+                                    loggedIn ={this.state.loggedIn}
+                                    playerId = {this.state.playerId}
+                                    setCurrentGameId ={this.setCurrentGameId}
                                 />
                             </div>
 
