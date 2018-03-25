@@ -214,7 +214,14 @@ public class ChessService {
     public NewGameResponse newComputerGame(int playerId) throws IOException {
         NewGameResponse resp = newGame(playerId, true);
         int gameId = resp.getGameId();
-        String cmd = "python " + pythonPath + " --game_id " + gameId;
+        String os = System.getProperty("os.name");
+        String pythonCmd;
+        if(os.toLowerCase().contains("windows")){
+            pythonCmd = "python"; // windows defaults to just python
+        } else {
+            pythonCmd = "python3.6"; // need to specify version on linux, has to be 3.6 because there is use of string interpolation in the python code.
+        }
+        String cmd = pythonCmd + " " + pythonPath + " --game_id " + gameId;
         Runtime.getRuntime().exec(cmd); // start the bot
         return resp;
     }

@@ -1,0 +1,22 @@
+version: '3.3'
+
+services:
+    db:
+      image : mysql:5.7  # start off using the official mysql image
+      container_name : mysql_db
+      volumes : # provide a named volume so the data persists
+        - dbdata:/var/lib/mysql
+      # restart : always
+      environment:
+        MYSQL_ROOT_PASSWORD: "password" # roots password
+        MYSQL_DATABASE : chess_db # name of the db
+    
+    chess-online:
+      container_name : chess_online
+      depends_on:
+        - db # db needs to be created first
+      image : chess-online
+      ports : 
+        - "80:8080" # expose the app running on port 8080 to 80 on the host machine
+volumes:
+    dbdata: # the database that will be on the host

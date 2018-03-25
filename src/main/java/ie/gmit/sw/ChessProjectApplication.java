@@ -18,6 +18,10 @@ public class ChessProjectApplication {
         options.addOption(portOpt);
         Option pathOpt = new Option("b", "bot-path", true, "The absolute path of the python script.");
         options.addOption(pathOpt);
+        Option dbOpt = new Option("d" ,"db-ip", true, "The ip of the machine running the mysql database.");
+        options.addOption(dbOpt);
+        Option dbPassOpt = new Option("m", "db-pass", true, "The password used for the database.");
+        options.addOption(dbPassOpt);
 
         CommandLineParser parser = new DefaultParser();
         HelpFormatter formatter = new HelpFormatter();
@@ -36,9 +40,16 @@ public class ChessProjectApplication {
         int port = Integer.parseInt(portNum);
         String pythonPath = cmd.getOptionValue("bot-path");
 
+        String dbIp = cmd.hasOption("db-ip") ? cmd.getOptionValue("db-ip") : "localhost";
+        String dataSource = "jdbc:mysql://" + dbIp + ":3306/chess_db?verifyServerCertificate=false&useSSL=false&requireSSL=false";
+
+        String dbPass = cmd.hasOption("db-pass") ? cmd.getOptionValue("db-pass") : "";
+
         final Map<String, Object> props = new HashMap<>();
         props.put("server.port", port);
         props.put("python-path", pythonPath);
+        props.put("spring.datasource.url", dataSource);
+        props.put("spring.datasource.password", dbPass);
 
         new SpringApplicationBuilder()
                 .sources(ChessProjectApplication.class)
