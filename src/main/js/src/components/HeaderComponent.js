@@ -23,7 +23,7 @@ export default class HeaderComponent extends React.Component {
     componentDidMount() {
         setInterval(() => this.setState({
             selected: _.sample(allOptions)
-        }), 5000)
+        }), 7000)
     }
 
     render() {
@@ -31,14 +31,14 @@ export default class HeaderComponent extends React.Component {
             return <div />;
         } else {
             return (
-                <div className="container">
+                <div className="container ">
                     <div className="col-12 padded-top" />
                     <div className="row">
                         <div className="col-md-12 col-lg-12 col-sm-12 col-12">
-                            <h1 className="text-left page-header display-1 white outline">
+                            <h1 className="text-left page-header display-1 white outline main-header-right">
                                 <strong>{this.props.title}</strong>
                             </h1>
-                            <h2 className="text-left white medium-p">
+                            <h2 className="text-left medium-p main-header-left">
                                 {this.state.selected}
                             </h2>
                         </div>

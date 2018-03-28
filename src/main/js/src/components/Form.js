@@ -67,7 +67,7 @@ export default class Form extends React.Component {
             ? "container fade-anim hide slider"
             : "container fade-anim";
         return (
-            <div className={classes}>
+            <div className={classes + " fadeAndMoveUp"}>
                 <div className="row">
                     <div className="col-md-3 col-lg-3 col-12" />
 

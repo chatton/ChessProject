@@ -1,10 +1,4 @@
-.large-h1 {
-    font-size : 75px;
-}
 
-.medium-p {
-    font-size : 20px;
-}
 
 .outline {
     -webkit-text-stroke-width: 2px;
@@ -31,12 +25,59 @@
     background-image: url(chess-background.jpg);
 }
 
-.white-player {
-
+.fadeAndMoveUp {
+    animation: fadeAndMoveUp 1s;
+    animation-delay: 1.2s;
+    animation-fill-mode: backwards;
 }
 
-.black-player {
+@keyframes fadeAndMoveUp {
+    0% {
+        opacity: 0;
+        transform: translateY(150px)
+    }
 
+    100% {
+        opacity: 1;
+        transform: translate(0);
+    }
+}
+
+.main-header-right {
+    animation: moveInFromLeft 1.5s;
+    text-align: center;
+}
+
+.main-header-left {
+    animation: moveInFromRight 1.5s;
+    color : white;
+    font-size: 22px;
+    text-align: center;
+}
+
+@keyframes moveInFromRight{
+    0%{
+        transform: translateX(220px);
+    }
+    80% {
+        transform: translateX(-20px)
+    }
+    100%{
+        transform: translate(0);
+    }
+}
+
+
+@keyframes moveInFromLeft{
+    0%{
+        transform: translateX(-150px);
+    }
+    80% {
+        transform: translateX(20px)
+    }
+    100%{
+        transform: translate(0);
+    }
 }
 
 .fade-anim {
@@ -57,16 +98,3 @@
     transform: translateY(25px);
     transition: all 1s linear;
 }
-
-/*.slider {*/
-    /*overflow-y: hidden;*/
-    /*max-height: 500px; !* approximate max height *!*/
-
-    /*transition-property: all;*/
-    /*transition-duration: 0.5s;*/
-    /*transition-timing-function: cubic-bezier(0, 1, 0.5, 1);*/
-/*}*/
-
-/*.slider.closed {*/
-    /*max-height: 0;*/
-/*}*/
