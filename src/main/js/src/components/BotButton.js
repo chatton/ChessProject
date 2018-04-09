@@ -4,11 +4,12 @@ import axios from "axios";
 export default class BotButton extends React.Component {
 
     computerGame = () => {
-        axios.get("/chess/v1/computergame?playerId=" + this.props.playerId)
+        const { playerId, setCurrentGameId, setPlayerColour } = this.props;
+        axios.get(`/chess/v1/computergame?playerId=${playerId}`)
             .then(resp => {
-                // this.props.setOngoingGames(resp.data);
-                this.props.setCurrentGameId(resp.data.gameId);
-                this.props.setPlayerColour(resp.data.colour);
+                const { gameId, colour} = resp.data;
+                setCurrentGameId(gameId);
+                setPlayerColour(colour);
             })
             .catch(err => {
                 console.log(err);

@@ -3,7 +3,8 @@ import axios from "axios";
 
 export default class Form extends React.Component {
     state = {
-        badRequest: false
+        badRequest: false,
+        whichButton : undefined
     };
 
     makePostRequest = endpoint => {
@@ -33,7 +34,7 @@ export default class Form extends React.Component {
                 this.props.updateId(data.id);
                 this.props.setLoggedIn(true);
             } else if (data.status === "BAD") {
-                this.setState(() => ({ badRequest: true }));
+                this.setState(() => ({ badRequest: true, whichButton : endpoint.toUpperCase() }));
             }
         })
             .catch(error => {
@@ -53,11 +54,20 @@ export default class Form extends React.Component {
 
     displayLoggedInMessage = () => {
         if (this.state.badRequest) {
-            return (
-                <div className="alert alert-danger">
-                    <strong>User already exists!</strong> Pick a different user name.
-                </div>
-            );
+            if(this.state.whichButton === "LOGIN"){
+                return (
+                    <div className="alert alert-danger">
+                        <strong>User not found!</strong> Check details and try again.
+                    </div>
+                );
+            } else if (this.state.whichButton === "REGISTER"){
+                return (
+                    <div className="alert alert-danger">
+                        <strong>User already exists!</strong> Pick a different user name.
+                    </div>
+                );
+            }
+        
         }
         return <div />;
     };
@@ -80,6 +90,7 @@ export default class Form extends React.Component {
                                 name="name"
                                 id="name"
                                 placeholder="Username"
+                                required
                             />
                         </div>
                         <div className="form-group">
@@ -89,19 +100,21 @@ export default class Form extends React.Component {
                                 name="password"
                                 id="password"
                                 placeholder="Password"
+                                required
                             />
                         </div>
-                        <button
-                            className="col-lg-6 col-md-6 col-sm-6 col-6 btn btn-primary"
-                            onClick={this.register}
-                        >
-                            Register
-                        </button>
+
                         <button
                             className="col-lg-6 col-md-6 col-sm-6 col-6 btn btn-success"
                             onClick={this.login}
                         >
                             Login
+                        </button>
+                        <button
+                            className="col-lg-6 col-md-6 col-sm-6 col-6 btn btn-primary"
+                            onClick={this.register}
+                        >
+                            Register
                         </button>
                     </form>
                     <div className="col-md-3" />

@@ -168,6 +168,8 @@ export default class ChessApp extends React.Component {
                                     loggedIn ={this.state.loggedIn}
                                     playerId = {this.state.playerId}
                                     setCurrentGameId ={this.setCurrentGameId}
+                                    gameStatus = {this.state.gameStatus}
+                                    yourTurn = {this.state.yourTurn}
                                 />
                             </div>
 

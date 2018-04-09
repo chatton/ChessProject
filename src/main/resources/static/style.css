@@ -1,4 +1,126 @@
+.game-wrapper {
+    perspective: 1500px;
+    -moz-perspective: 1500px;
+    position: relative;
+    height: 100%;
+}
 
+.list-wrapper {
+    position: relative;
+}
+
+ul {
+    list-style: none;
+} 
+
+a:link,
+a:visited,
+a:active {
+    text-decoration: none;
+}
+
+li {
+    margin : 100px 0;
+}
+
+
+.my-btn {
+    border: black solid;
+    border-radius: 1000px;
+}
+
+.my-btn:active {
+    text-decoration: none;
+}
+
+
+.my-container {
+    position: relative;
+}
+
+.paragraph{
+    position: absolute;
+    bottom : 10%;
+    transform: translateY(-10%);
+}
+
+.padding-top-small {
+    padding-top : 15px;
+}
+
+.margin-bottom-small {
+    margin-bottom : 5px;
+}
+
+.vert {
+    position: absolute;
+    top: 50%;
+    left :50%;
+    transform: translateY(-150%) translateX(-50%);
+}
+
+.center {
+    position: absolute;
+    top: 60%;
+    left :50%;
+    transform: translateY(-60%) translateX(-50%);
+}
+
+.fill {
+    height: 100%;
+    width: 100%;
+}
+
+.game-card {
+    font-size: 32px;
+    color : black;
+    transition: all .8s ease;
+    position: absolute;
+    top : 0;
+    left : 0;
+    width: 100%;
+    height: 100px;
+    backface-visibility: hidden;
+}
+
+
+.waiting {
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(to right bottom ,#c6d30e, #7e7c05);
+}
+
+.your-turn {
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(to right bottom ,#5edd5e, #045215);
+    box-shadow:10px 10px 50px green; /* Make the div glow when it's your turn*/
+}
+
+.their-turn {
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(to right bottom ,#389adb, #130a94);
+}
+
+.game-card-front {
+    text-align: center;
+    color : white;
+}
+
+.game-card-back {
+    transform: rotateY(180deg); /* start of rotated */
+    box-shadow: 0 10px 40px black;
+}
+
+.game-card:hover .game-card-front {
+    transform: rotateY(-180deg) ;
+    box-shadow: none;
+}
+
+.game-card:hover .game-card-back {
+    transform: rotateY(0) scale(1.1) translateY(-8px);
+}
 
 .outline {
     -webkit-text-stroke-width: 2px;
@@ -17,12 +139,11 @@
     height : 15px;
 }
 
-.chess-background {
-    background-image: url(https://images.chesscomfiles.com/uploads/v1/user/16756554.64899e7a.1200x1200o.ea35b1a87a98.jpeg);
-}
-
 .chess-background2 {
-    background-image: url(chess-background.jpg);
+    background-image: url(chess-background.jpg) ;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
 .fadeAndMoveUp {
@@ -30,6 +151,7 @@
     animation-delay: 1.2s;
     animation-fill-mode: backwards;
 }
+
 
 @keyframes fadeAndMoveUp {
     0% {
@@ -54,6 +176,8 @@
     font-size: 22px;
     text-align: center;
 }
+
+
 
 @keyframes moveInFromRight{
     0%{

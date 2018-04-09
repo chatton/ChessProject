@@ -8,22 +8,18 @@ export default class PrivateGameButton extends React.Component {
     }
 
     requestNewPrivateGame = () => {
+        const { playerId : id ,setCurrentGameId : setId, setPlayerColour : setColour, setOngoingGames : setGames} = this.props;
         this.setState(() => ({ willCreateNewGame: true }));
-        const id = this.props.playerId;
-        axios.get("/chess/v1/newgame?playerId=" + id + "&private=true")
+        axios.get(`/chess/v1/newgame?playerId=${id}&private=true`)
             .then(response => {
-                const data = response.data;
-                this.props.setPlayerColour(data.colour);
-                this.props.setCurrentGameId(data.gameId);
-
-                axios.get("/chess/v1/allgames/?playerId=" + id)
+                const { colour, gameId } = response.data;
+                setColour(colour);
+                setId(gameId);
+                axios.get(`/chess/v1/allgames/?playerId=${id}`)
                     .then(resp => {
                         // save the ongoing games to be visible in the GameListComponent
-                        this.props.setOngoingGames(resp.data);
+                        setGames(resp.data);
                     })
-                    .catch(err => {
-                        console.log(err);
-                    });
             })
             .catch(err => {
                 console.log(err);
@@ -46,9 +42,6 @@ export default class PrivateGameButton extends React.Component {
                         // save the ongoing games to be visible in the GameListComponent
                         this.props.setOngoingGames(resp.data);
                     })
-                    .catch(err => {
-                        console.log(err);
-                    });
             })
             .catch(err => {
                 console.log(err);

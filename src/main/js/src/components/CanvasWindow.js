@@ -285,7 +285,6 @@ export default class CanvasWindow extends React.Component {
 
     determineSize = () => {
         const width = window.innerWidth;
-        console.log(width);
         if (width >= 1196) {
             // lg or xl
             return 8 * 88;

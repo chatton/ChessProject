@@ -3,21 +3,24 @@ import React from "react";
 export default class InfoComponent extends React.Component {
 
     renderPlayerInfo = () => {
-        if (!this.props.loggedIn || !this.props.playerColour) {
+        const { loggedIn, playerColour } = this.props;
+        
+        if (!loggedIn || !playerColour) {
             return <div />
         }
-        const colour = this.props.playerColour; // "WHITE"
-        const playerColour = colour.charAt(0) + colour.substring(1, colour.length).toLowerCase(); // "White"
+        const colour = playerColour.charAt(0) + playerColour.substring(1, playerColour.length).toLowerCase(); // "White"
         return (
-            <h4 className="text-info card-text">You are the <strong>{playerColour}</strong> player</h4>
+            <h4 className="text-info card-text">You are the <strong>{colour}</strong> player</h4>
         );
     }
 
     renderUserName = () => {
-        if (this.props.loggedIn) {
+        const { loggedIn, playerName } = this.props;
+
+        if (loggedIn) {
             return (
                 <h4 className="text-success card-title">
-                    <strong>Success!</strong> You are Logged in as <strong>{this.props.playerName}</strong>.
+                    <strong>Success!</strong> You are Logged in as <strong>{playerName}</strong>.
                 </h4>
             );
         }
@@ -25,36 +28,46 @@ export default class InfoComponent extends React.Component {
     }
 
     renderGameStatus = () => {
-        if (!this.props.gameStatus) {
+        const { gameStatus, yourTurn } = this.props;
+
+        if (!gameStatus) {
             return <div />
         }
 
-        switch (this.props.gameStatus) {
+        switch (gameStatus) {
             case "WAITING":
                 return (
                     <h4 className="text-warning card-text">Waiting for another player to join...</h4>
                 );
             case "ONGOING": {
-                if (this.props.yourTurn === undefined) {
+                if (yourTurn === undefined) {
                     return (
                         <h4 className="text-info card-text">Opponent joined!</h4>
                     );
-                } else if (this.props.yourTurn) {
+                } else if (yourTurn) {
                     return (
                         <h4 className="text-success card-text">It's your turn!</h4>
                     );
                 } else {
                     return (
                         <h4 className="text-warning card-text">It's your opponent's turn.</h4>
-
                     );
                 }
+            }
+            case "FINISHED": {
+                const classes = yourTurn ? "card-text text-warning" : "card-text text-success";
+                return(
+                    <h4 className={classes}>
+                            {yourTurn ? "You lost, better luck next time!" : "Contratulations, You won!"}
+                    </h4>
+                );
             }
         }
     }
 
     renderGameId = () => {
-        return this.props.currentGameId && <h3 className="card-header text-white">Game ID: {this.props.currentGameId}</h3>
+        const { currentGameId : id } = this.props; 
+        return id && <h3 className="card-header text-white">Game ID: {id}</h3>
     }
 
     render() {
