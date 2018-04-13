@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/reveal.css">
+    <link rel="stylesheet" href="./css/themes/league.css" id="theme">
+    <!-- for syntax highlighting -->
+    <link rel="stylesheet" href="./css/zenburn.css">
+    <title>Chess Online Presentation</title>
+</head>
+
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <section>
+                <section>
+                    <h2>Chess Online</h2>
+                    <em>
+                        <h6>An HTTP web API</h6>
+                    </em>
+                </section>
+                <section>
+                    <video src="videos/vid.mp4" controls></video>
+                </section>
+            </section>
+
+            <section>
+                <h5>Chess Online is an HTTP web API.</h5>
+                <p>It provides a mechanism through which you can play and maintain games via HTTP requests.</p>
+                <p>There are several core components.</p>
+            </section>
+
+            <section>
+                <section>
+                    <div class="component">
+                        <h3>The Spring Boot Java Server</h3>
+                        <img class="arrow" src="images/arrow.png" alt="">
+                    </div>
+
+                </section>
+                <section>
+                    <p> The backend server was created using Spring Boot. Our application uses the Model View Controller (MVC)
+                        pattern.
+                    </p>
+                    <p> Multiple endpoints are provided which allow consumers of the API to have control over their games. </p>
+                </section>
+
+
+                <section>
+                    <h4>Design</h4>
+                    <img src="https://github.com/chatton/ChessProject/blob/master/assets/images/project-structure.png?raw=true" alt="Design Image">
+                </section>
+                <section style="text-align: left;">
+                    <h6 style="text-align: center; padding : 5px;">Some Endpoints</h6>
+                    <ul>
+                        <li>/chess/v1/newgame
+                            <em>GET</em>
+                        </li>
+                        <li>/chess/v1/surrender
+                            <em>POST</em>
+                        </li>
+                        <li>/chess/v1/makemove
+                            <em>POST</em>
+                        </li>
+                        <li>/chess/v1/register
+                            <em>POST</em>
+                        </li>
+                        <li>/chess/v1/login
+                            <em>POST</em>
+                        </li>
+                        <li>/chess/v1/allgames
+                            <em>GET</em>
+                        </li>
+                        <li>/chess/v1/gamestate
+                            <em>GET</em>
+                        </li>
+                        <li>/chess/v1/computergame
+                            <em>GET</em>
+                        </li>
+                    </ul>
+                </section>
+                <section>
+                    <p> You can find the API documentation
+                        <a href="https://github.com/chatton/ChessProject/wiki/Chess-Online-API">here</a>
+                    </p>
+                </section>
+                <section>
+                    <p> The game state of each game is saved in a MySQL database. </p>
+                    <p> We used Hibernate as our ORM tool to convert our models into rows and tables for insertion into the database.
+                    </p>
+                </section>
+
+                <section>
+                    <p>The main elements of model are the ChessBoard, Game, Player and Piece classes.</p>
+                    <p>When a client makes a request, the request is validated, and the model is updated to represent the new
+                        state of the game.</p>
+                </section>
+
+                <section>
+                    <h5>The Chess Board Model</h5>
+                    <pre class="java"><code>
+    
+public class ChessBoard {
+    private Piece[][] board;
+}
+
+public abstract class Piece {
+    public abstract Collection&lt;Move&gt; getPossibleMoves();
+}
+
+public class Pawn extends Piece {
+    // ...
+}
+                           
+                       </code></pre>
+                </section>
+
+
+                <section>
+                    <h5>The Game Model</h5>
+                    <pre class="java"><code>
+public class Player {
+    private int id;
+    private int passwordHash;
+    private String userName;
+}
+
+
+// Stored in database using Hibernate
+public class Game {
+    private Collection&lt;Player&gt; players;
+    private ChessBoard board;
+    // ...
+}
+                           </code></pre>
+                </section>
+            </section>
+
+            <section>
+                <section>
+                    <div class="component">
+                        <h3>The React JS Front End</h3>
+                        <img class="arrow" src="images/arrow.png" alt="">
+                    </div>
+
+                </section>
+                <section>
+                    <p>The first consumer of the API is our React JS front end.</p>
+                    <p>Using HTML5 Canvas, we provide a user interface so that users can interact with our API.</p>
+                    <p>Users can log into the system, as well as play and manage their active games.</p>
+                </section>
+                <section>
+                    <h4> Example Component</h4>
+                    <pre class="jsx"><code>
+import React from "react";
+import axios from "axios";
+
+export default class BotButton extends React.Component {
+    
+    /*
+    the render function is a special function that
+    all react components must have. It returns a single 
+    jsx element and describes how the component should look.
+    */
+    render() {
+        return (
+            <div>
+                <button onClick={this.computerGame}>Vs. Computer</button>
+            </div>
+        );
+    }
+
+    computerGame = () => {
+        const playerId = this.props.playerId;
+        
+        /*
+        sends a GET request to the Chess Online Server
+        which requests a new game vs the python bot.
+        */
+        axios.get(`/chess/v1/computergame?playerId=${playerId}`)
+            .then(resp => {
+                // handle response
+            });
+    }
+}
+                    </code></pre>
+                </section>
+
+                <section>
+                    <p>A more comprehensive breakdown of all the components in the app can be found
+                        <a href="https://github.com/chatton/ChessProject/wiki/React-Front-End">here</a>
+                    </p>
+                </section>
+            </section>
+
+            <section>
+                <section>
+                    <div class="component">
+                        <h3>PyBot</h3>
+                        <img class="arrow" src="images/arrow.png" alt="">
+                    </div>
+
+                </section>
+            </section>
+
+            <section>
+                <section>
+                    <div class="component">
+                        <h3>Docker</h3>
+                        <img class="arrow" src="images/arrow.png" alt="">
+                    </div>
+
+                </section>
+
+                <section>
+                    <p>There is a Dockerfile as well as a docker-compose.yml file to enable rapid deployment of Chess Online</p>
+                </section>
+
+                <section>
+                    <p>With Docker installed, you can run the commands: </p>
+                    <pre>
+                        <code>
+> git clone https://github.com/chatton/ChessProject.git
+> cd ChessProject
+> docker build -t chess-online .
+> docker-compose up
+                        </code>
+                    </pre>
+                    <p>To have a fully functional copy of Chess Online running at localhost:80. With no need to have Java, Python
+                        or MySQL installed on your machine.</p>
+                </section>
+                <section>
+                    <p>You can find the Dockerfile
+                        <a href="https://github.com/chatton/ChessProject/blob/master/Dockerfile">here</a>
+                    </p>
+                    <p>You can find docker-compose.yml
+                        <a href="https://github.com/chatton/ChessProject/blob/master/docker-compose.yml">here</a>
+                    </p>
+                </section>
+            </section>
+            <section>
+                <p>Chess Online is also live
+                    <a href="http://play-chess-online.com/">here</a>, if you just want to play!
+                </p>
+            </section>
+        </div>
+    </div>
+
+    <script src="js/reveal.js"></script>
+
+    <!-- Syntax highlighting -->
+    <script src="js/head.min.js"></script>
+    <script src="js/highlight.js"></script>
+
+    <script>
+        // required to enable syntax highlighting
+        Reveal.initialize({
+            dependencies: [
+                { src: './js/highlight.js', async: true, callback: function () { hljs.initHighlightingOnLoad(); } },
+            ]
+        });
+    </script>
+
+</body>
+
+</html>

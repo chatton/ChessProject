@@ -1,0 +1,37 @@
+.reveal ul {
+    list-style-type: none !important;
+  }
+
+  .reveal ul li{
+      margin: 15px 0;
+  }
+
+  body {
+    background-image : linear-gradient(to bottom right, 
+    rgba(14, 12, 44, 0) 15%, 
+    rgba(80, 46, 158, 0.2) 60%, 
+    rgba(95, 62, 240, 0.4) 100%), 
+    url('https://github.com/chatton/ChessProject/blob/master/src/main/resources/static/chess-background.jpg?raw=true') !important;
+    background-size:cover !important;
+}
+
+.component {
+    margin-top:100px !important;
+}
+
+.arrow {
+    all :unset !important;
+    margin-top : 100px !important;
+    border : 0 !important;
+    height: 150px !important;
+    width : auto !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+   text-shadow: 10px 10px black !important;
+}
+
+h1, h2, h3, h4, h5, h6, p {
+    text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black !important;
+    
+}
