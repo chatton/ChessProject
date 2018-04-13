@@ -93,7 +93,7 @@ There shouldn't be any additional steps required here. You can edit the code and
 ## Authors
 * Cian Hatton - cianhatton@gmail.com
 * Damian Gavin - damotaxo@gmail.com
-*
+* Marian Ziacik - majo.z@outlook.com
 
 ## License
 This project is licensed under the MIT License.
