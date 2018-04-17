@@ -203,6 +203,26 @@ export default class BotButton extends React.Component {
                     </div>
 
                 </section>
+                <section>
+                    <p>PyBot is a command line tool that is a consumer of the Chess Online HTTP API</p>
+                    <p>It can connect to a running instance of the Server either remote or local</p>
+                    <p>It can connect to any existing player, or can be used to create a new account.</p>
+                </section>
+                <section>
+                    <h4>How to use it</h4>
+                    <pre class="bash"><code>
+python .\chessbot.py 
+--name PyBot --password PyBotPass
+--host play-chess-online.com --port 8080
+--game_id 4342
+                    </code></pre>
+                    <p>Running this script inside the directory where chessbot.py is located, will make the bot log in as "PyBot"
+                        using the password "PyBotPass" and connect the the chess online service running at www.play-chess-online.com:8080
+                        and join the game with the id of 4342. If there is no PyBot user, this user will be created.</p>
+                </section>
+                <section>
+                    <p>The Java Server executes this script when you click on the "Vs Computer" button.</p>
+                </section>
             </section>
 
             <section>
@@ -219,12 +239,12 @@ export default class BotButton extends React.Component {
                 </section>
 
                 <section>
-                    <p>With Docker installed, you can run the commands: </p>
+                    <p>With Docker installed, and when you are logged into Docker cli with a free acount, you can run the commands:
+                    </p>
                     <pre>
                         <code>
 > git clone https://github.com/chatton/ChessProject.git
 > cd ChessProject
-> docker build -t chess-online .
 > docker-compose up
                         </code>
                     </pre>
