@@ -19,9 +19,14 @@ RUN apt-get update -qq && \
 RUN apt-get update && apt-get install -y \
     python-pip
 
+RUN apt install -y libssl-dev libncurses5-dev libsqlite3-dev libreadline-dev libtk8.6 libgdm-dev libdb4o-cil-dev libpcap-dev
+
+WORKDIR Python-${PYTHON_VER}
+RUN make
+RUN make install
 
 ADD requirements.txt .
-RUN python -m pip install -r requirements.txt
+RUN pip3.6 install -r requirements.txt
 
 # Copy the python bot into the /bot directory
 COPY src/main/python/ /bot/
