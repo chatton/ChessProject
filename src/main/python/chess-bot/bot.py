@@ -7,12 +7,7 @@ from game import Board
 
 class ChessBot:
     def __init__(self, name="PyBot", host="localhost", port=8080, password=""):
-        self.config = {
-            "name": name,
-            "host": host,
-            "port": port,
-            "password" : password
-        }
+        self.config = {"name": name, "host": host, "port": port, "password": password}
 
         self.board = None
         self.ai = None
@@ -21,10 +16,11 @@ class ChessBot:
         self.player_id = None
         self.game_id = None
 
-
     def join_game(self, game_id):
         query = "http://{0}:{1}/chess/v1/joinprivategame/".format(self.host, self.port)
-        resp = requests.get(query, params={"playerId" : self.player_id, "gameId" : game_id})
+        resp = requests.get(
+            query, params={"playerId": self.player_id, "gameId": game_id}
+        )
         result = resp.json()
         print(result)
         self.player_id = result["playerId"]
@@ -33,16 +29,15 @@ class ChessBot:
 
     def login(self):
         query = "http://{0}:{1}/chess/v1/login/".format(self.host, self.port)
-        resp = requests.post(query, json={
-            "userName" : self.name,
-            "password" : self.password
-        })
-        
+        resp = requests.post(
+            query, json={"userName": self.name, "password": self.password}
+        )
+
         data = resp.json()
         if data["status"] == "BAD":
             print("Error logging in.")
             return False
-        
+
         print("Successfully logged in as [{}]".format(self.name))
 
         self.player_id = data["id"]
@@ -51,10 +46,10 @@ class ChessBot:
 
     def register(self):
         query = "http://{0}:{1}/chess/v1/register/".format(self.host, self.port)
-        resp = requests.post(query, json={
-            "userName" : self.config["name"],
-            "password" : self.config["password"]
-        })
+        resp = requests.post(
+            query,
+            json={"userName": self.config["name"], "password": self.config["password"]},
+        )
         data = resp.json()
         if data["status"] == "BAD":
             print(f"Error registering as {self.config['name']}")
@@ -66,13 +61,11 @@ class ChessBot:
         print(f"Received id of [{self.player_id}]")
         return True
 
-        
-
     def request_game(self):
         """connect to a game and set the player and game ids as well as what colour the bot
         will be."""
         query = "http://{0}:{1}/chess/v1/newgame/".format(self.host, self.port)
-        resp = requests.get(query, params={"playerId" : self.player_id})
+        resp = requests.get(query, params={"playerId": self.player_id})
 
         # TODO handle errors.
 
@@ -84,10 +77,12 @@ class ChessBot:
 
     def update_game_state(self, game_id):
         """this method makes a get request to the server and updates
-        the current board dict with the most up-to-date positions of 
+        the current board dict with the most up-to-date positions of
         the pieces."""
         query = "http://{0}:{1}/chess/v1/gamestate".format(self.host, self.port)
-        resp = requests.get(query, params={"gameId": game_id, "playerId" : self.player_id})
+        resp = requests.get(
+            query, params={"gameId": game_id, "playerId": self.player_id}
+        )
 
         # TODO handle errors in response.
 
@@ -108,17 +103,23 @@ class ChessBot:
         query = "http://{0}:{1}/chess/v1/makemove".format(self.host, self.port)
         # sends the move as a post request to the server.
 
-        requests.post(query, json={
-            "from": move.origin,
-            "to": move.dest,
-            "gameId": self.game_id,
-            "playerId": self.player_id
-        })
+        requests.post(
+            query,
+            json={
+                "from": move.origin,
+                "to": move.dest,
+                "gameId": self.game_id,
+                "playerId": self.player_id,
+            },
+        )
 
     def is_turn(self):
         """determines if it's currently the bot's turn or not based on the current server status."""
-        return False if "currentTurn" not in self.game_state else self.game_state["currentTurn"] == self.colour
-
+        return (
+            False
+            if "currentTurn" not in self.game_state
+            else self.game_state["currentTurn"] == self.colour
+        )
 
     @property
     def host(self):
@@ -147,10 +148,10 @@ class ChessBot:
             'currentTurn': 'WHITE'
         }]
         """
-        
-        query = "http://{0}:{1}/chess/v1/allgames?playerId={2}".format(self.host, self.port, self.player_id)
+
+        query = "http://{0}:{1}/chess/v1/allgames?playerId={2}".format(
+            self.host, self.port, self.player_id
+        )
         resp = requests.get(query)
         results = resp.json()
         return [game["gameId"] for game in results]
-
-

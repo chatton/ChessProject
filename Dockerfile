@@ -1,44 +1,33 @@
-# https://gist.github.com/monkut/c4c07059444fd06f3f8661e13ccac619
-FROM ubuntu:16.04
+FROM openjdk:11
 
-# Install python 3.6
-RUN apt-get update
-RUN apt-get install -y software-properties-common vim
-RUN add-apt-repository ppa:jonathonf/python-3.6
-RUN apt-get update
+# Install python 3.6.8
+ARG PYTHON_VER="3.6.8"
+ARG BUILDDIR=/build
 
-RUN apt-get install -y build-essential python3.6 python3.6-dev python3-pip python3.6-venv
-RUN apt-get install -y git
-
-RUN python3.6 -m pip install pip --upgrade
-RUN python3.6 -m pip install wheel
-# requests module required for the bot script.
-RUN python3.6 -m pip install requests
-
-# Install Java 8
-# https://github.com/dockerfile/java/blob/master/oracle-java8/Dockerfile
-RUN \
-  echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | debconf-set-selections && \
-  add-apt-repository -y ppa:webupd8team/java && \
-  apt-get update && \
-  apt-get install -y oracle-java8-installer && \
-  rm -rf /var/lib/apt/lists/* && \
-  rm -rf /var/cache/oracle-jdk8-installer
+RUN apt-get update -qq && \
+    apt-get upgrade -y  > /dev/null 2>&1 && \
+    apt-get install wget gcc make zlib1g-dev -y -qq > /dev/null 2>&1 && \
+    wget --quiet https://www.python.org/ftp/python/${PYTHON_VER}/Python-${PYTHON_VER}.tgz > /dev/null 2>&1 && \
+    tar zxf Python-${PYTHON_VER}.tgz && \
+    cd Python-${PYTHON_VER} && \
+    ./configure  > /dev/null 2>&1 && \
+    make > /dev/null 2>&1 && \
+    make install > /dev/null 2>&1 && \
+    rm -rf ${BUILDDIR}
 
 
-# Define working directory.
-WORKDIR /data
+RUN apt-get update && apt-get install -y \
+    python-pip
 
-# Define commonly used JAVA_HOME variable
-ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
+
+ADD requirements.txt .
+RUN python -m pip install -r requirements.txt
 
 # Copy the python bot into the /bot directory
 COPY src/main/python/ /bot/
 
 # Copy the
 ADD /target/Chess-Online.jar Chess-Online.jar
-
 # expose the port the server runs on to be visible
 EXPOSE 8080
-
 CMD ["java", "-jar", "Chess-Online.jar", "--db-ip", "db", "--db-pass", "password", "--bot-path", "/bot/chess-bot/chessbot.py"]

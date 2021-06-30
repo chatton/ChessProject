@@ -113,7 +113,9 @@ class BoardState:
         self.move = move
         self.value = value
         self.board = copy_of(board)  # copy the board so as not to mutate it
-        self.board.make_move(move)  # apply the desired move so only the new board is altered.
+        self.board.make_move(
+            move
+        )  # apply the desired move so only the new board is altered.
 
     def is_check(self, colour):
         return self.board.is_check(colour)

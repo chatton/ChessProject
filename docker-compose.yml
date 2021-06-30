@@ -15,7 +15,7 @@ services:
       container_name : chess_online
       depends_on:
         - db # db needs to be created first
-      image : chatton/chess-online:firsttry
+      image : chatton/chess-online:latest
       ports : 
         - "80:8080" # expose the app running on port 8080 to 80 on the host machine
 volumes:

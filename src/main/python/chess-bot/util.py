@@ -1,5 +1,6 @@
 import random
 
+
 def new_pos(pos, up=0, down=0, left=0, right=0):
     """helper method to generate positions relative distances from an origin position
     >>> new_pos((0,0), down=1)
@@ -11,6 +12,7 @@ def new_pos(pos, up=0, down=0, left=0, right=0):
         return None
     x, y = pos
     return x + right - left, y - up + down
+
 
 def str_to_pos(chess_notation):
     """converts from chess notation to co-ordinates
@@ -24,6 +26,7 @@ def str_to_pos(chess_notation):
     y = 8 - int(chess_notation[1])
     return x, y
 
+
 def pos_to_str(pos):
     """
     >>> pos_to_str((0,0))
@@ -31,10 +34,11 @@ def pos_to_str(pos):
     >>> pos_to_str((3,4))
     'D4'
     """
-    x,y = pos
+    x, y = pos
     letter = chr(ord("A") + x)
     y = 8 - y
     return letter + str(y)
+
 
 def random_choice(seq):
     """wrapper around random.choice that returns None if the sequence is empty"""
@@ -43,7 +47,9 @@ def random_choice(seq):
 
 def _test():
     import doctest
+
     doctest.testmod()
 
+
 if __name__ == "__main__":
-   _test()
+    _test()
