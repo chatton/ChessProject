@@ -17,7 +17,7 @@ RUN apt-get update -qq && \
 
 
 RUN apt-get update && apt-get install -y \
-    python-pip
+    python3-pip
 
 RUN apt install -y libssl-dev libncurses5-dev libsqlite3-dev libreadline-dev libtk8.6 libgdm-dev libdb4o-cil-dev libpcap-dev
 

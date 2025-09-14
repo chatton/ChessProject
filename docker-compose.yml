@@ -1,8 +1,7 @@
-version: '3.3'
-
 services:
     db:
-      image : mysql:5.7  # start off using the official mysql image
+      image : mysql:5.7
+      platform: linux/amd64  # force x86_64 platform for ARM64 compatibility
       container_name : mysql_db
       volumes : # provide a named volume so the data persists
         - dbdata:/var/lib/mysql
@@ -10,13 +9,18 @@ services:
       environment:
         MYSQL_ROOT_PASSWORD: "password" # roots password
         MYSQL_DATABASE : chess_db # name of the db
+      healthcheck:
+        test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-ppassword"]
+        timeout: 20s
+        retries: 10
     
     chess-online:
       container_name : chess_online
       depends_on:
-        - db # db needs to be created first
-      image : quay.io/chatton/chess-online
-      ports : 
+        db:
+          condition: service_healthy
+      image : chess-online
+      ports :
         - "80:8080" # expose the app running on port 8080 to 80 on the host machine
 volumes:
     dbdata: # the database that will be on the host
